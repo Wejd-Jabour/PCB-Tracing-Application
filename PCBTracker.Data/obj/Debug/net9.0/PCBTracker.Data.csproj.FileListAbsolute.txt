@@ -15,3 +15,4 @@ C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\obj\Debug\net9
 C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\obj\Debug\net9.0\PCBTracker.Data.pdb
 C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\obj\Debug\net9.0\PCBTracker.Data.genruntimeconfig.cache
 C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\obj\Debug\net9.0\ref\PCBTracker.Data.dll
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\obj\Debug\net9.0\PCBTracker.Data.sourcelink.json

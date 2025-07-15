@@ -9,3 +9,4 @@ C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Domain\obj\Debug\ne
 C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Domain\obj\Debug\net9.0\refint\PCBTracker.Domain.dll
 C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Domain\obj\Debug\net9.0\PCBTracker.Domain.pdb
 C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Domain\obj\Debug\net9.0\ref\PCBTracker.Domain.dll
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Domain\obj\Debug\net9.0\PCBTracker.Domain.sourcelink.json

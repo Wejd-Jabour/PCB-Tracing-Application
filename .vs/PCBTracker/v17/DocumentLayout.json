@@ -3,24 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.ui\\pcbtracker.ui.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|solutionrelative:pcbtracker.ui\\pcbtracker.ui.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{0F6B3EF1-96E9-4551-80BF-B457A1865929}|PCBTracker.Data\\PCBTracker.Data.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.data\\context\\appdbcontextfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0F6B3EF1-96E9-4551-80BF-B457A1865929}|PCBTracker.Data\\PCBTracker.Data.csproj|solutionrelative:pcbtracker.data\\context\\appdbcontextfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0F6B3EF1-96E9-4551-80BF-B457A1865929}|PCBTracker.Data\\PCBTracker.Data.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.data\\context\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0F6B3EF1-96E9-4551-80BF-B457A1865929}|PCBTracker.Data\\PCBTracker.Data.csproj|solutionrelative:pcbtracker.data\\context\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0F6B3EF1-96E9-4551-80BF-B457A1865929}|PCBTracker.Data\\PCBTracker.Data.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.data\\migrations\\appdbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0F6B3EF1-96E9-4551-80BF-B457A1865929}|PCBTracker.Data\\PCBTracker.Data.csproj|solutionrelative:pcbtracker.data\\migrations\\appdbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0F6B3EF1-96E9-4551-80BF-B457A1865929}|PCBTracker.Data\\PCBTracker.Data.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.data\\migrations\\20250715124251_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0F6B3EF1-96E9-4551-80BF-B457A1865929}|PCBTracker.Data\\PCBTracker.Data.csproj|solutionrelative:pcbtracker.data\\migrations\\20250715124251_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.ui\\mauiprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -34,76 +22,35 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "PCBTracker.UI",
-              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\PCBTracker.UI.csproj",
-              "RelativeDocumentMoniker": "PCBTracker.UI\\PCBTracker.UI.csproj",
-              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\PCBTracker.UI.csproj",
-              "RelativeToolTip": "PCBTracker.UI\\PCBTracker.UI.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-07-15T14:39:06.244Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Data\\Context\\AppDbContext.cs",
               "RelativeDocumentMoniker": "PCBTracker.Data\\Context\\AppDbContext.cs",
               "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Data\\Context\\AppDbContext.cs",
               "RelativeToolTip": "PCBTracker.Data\\Context\\AppDbContext.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-15T14:35:13.199Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-15T16:25:52.883Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "AppDbContextModelSnapshot.cs",
-              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Data\\Migrations\\AppDbContextModelSnapshot.cs",
-              "RelativeDocumentMoniker": "PCBTracker.Data\\Migrations\\AppDbContextModelSnapshot.cs",
-              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Data\\Migrations\\AppDbContextModelSnapshot.cs",
-              "RelativeToolTip": "PCBTracker.Data\\Migrations\\AppDbContextModelSnapshot.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-15T14:26:41.473Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "20250715124251_InitialCreate.cs",
-              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Data\\Migrations\\20250715124251_InitialCreate.cs",
-              "RelativeDocumentMoniker": "PCBTracker.Data\\Migrations\\20250715124251_InitialCreate.cs",
-              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Data\\Migrations\\20250715124251_InitialCreate.cs",
-              "RelativeToolTip": "PCBTracker.Data\\Migrations\\20250715124251_InitialCreate.cs",
-              "ViewState": "AgIAAFoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-15T14:26:21.08Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 2,
               "Title": "MauiProgram.cs",
               "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\MauiProgram.cs",
               "RelativeDocumentMoniker": "PCBTracker.UI\\MauiProgram.cs",
               "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\MauiProgram.cs",
               "RelativeToolTip": "PCBTracker.UI\\MauiProgram.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABAAAAAAAAAAAAAcwCcAAABKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-15T13:11:50.506Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-15T13:11:50.506Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "AppDbContextFactory.cs",
               "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Data\\Context\\AppDbContextFactory.cs",
               "RelativeDocumentMoniker": "PCBTracker.Data\\Context\\AppDbContextFactory.cs",
