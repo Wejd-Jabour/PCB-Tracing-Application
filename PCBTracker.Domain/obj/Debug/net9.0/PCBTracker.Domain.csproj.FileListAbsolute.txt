@@ -1,0 +1,11 @@
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Domain\bin\Debug\net9.0\PCBTracker.Domain.deps.json
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Domain\bin\Debug\net9.0\PCBTracker.Domain.dll
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Domain\bin\Debug\net9.0\PCBTracker.Domain.pdb
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Domain\obj\Debug\net9.0\PCBTracker.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Domain\obj\Debug\net9.0\PCBTracker.Domain.AssemblyInfoInputs.cache
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Domain\obj\Debug\net9.0\PCBTracker.Domain.AssemblyInfo.cs
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Domain\obj\Debug\net9.0\PCBTracker.Domain.csproj.CoreCompileInputs.cache
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Domain\obj\Debug\net9.0\PCBTracker.Domain.dll
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Domain\obj\Debug\net9.0\refint\PCBTracker.Domain.dll
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Domain\obj\Debug\net9.0\PCBTracker.Domain.pdb
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Domain\obj\Debug\net9.0\ref\PCBTracker.Domain.dll

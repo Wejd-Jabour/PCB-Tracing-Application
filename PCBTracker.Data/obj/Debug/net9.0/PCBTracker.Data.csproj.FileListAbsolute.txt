@@ -1,0 +1,17 @@
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\bin\Debug\net9.0\PCBTracker.Data.deps.json
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\bin\Debug\net9.0\PCBTracker.Data.runtimeconfig.json
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\bin\Debug\net9.0\PCBTracker.Data.dll
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\bin\Debug\net9.0\PCBTracker.Data.pdb
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\bin\Debug\net9.0\PCBTracker.Domain.dll
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\bin\Debug\net9.0\PCBTracker.Domain.pdb
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\obj\Debug\net9.0\PCBTracker.Data.csproj.AssemblyReference.cache
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\obj\Debug\net9.0\PCBTracker.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\obj\Debug\net9.0\PCBTracker.Data.AssemblyInfoInputs.cache
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\obj\Debug\net9.0\PCBTracker.Data.AssemblyInfo.cs
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\obj\Debug\net9.0\PCBTracker.Data.csproj.CoreCompileInputs.cache
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\obj\Debug\net9.0\PCBTrack.72870EBE.Up2Date
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\obj\Debug\net9.0\PCBTracker.Data.dll
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\obj\Debug\net9.0\refint\PCBTracker.Data.dll
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\obj\Debug\net9.0\PCBTracker.Data.pdb
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\obj\Debug\net9.0\PCBTracker.Data.genruntimeconfig.cache
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.Data\obj\Debug\net9.0\ref\PCBTracker.Data.dll
