@@ -502,3 +502,6 @@ C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.UI\obj\Debug\net9.0
 C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.UI\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\MultipleQualifiersPerDimensionFound.txt
 C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.UI\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\BCrypt.Net-Next.dll
 C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.UI\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\PCBTracker.UI.sourcelink.json
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.UI\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\PCBTracker.Services.dll
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.UI\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\PCBTracker.Services.pdb
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.UI\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\CommunityToolkit.Mvvm.dll

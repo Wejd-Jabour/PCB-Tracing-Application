@@ -1,2 +1,7 @@
 # ignore Visual Studio workspace metadata
 .vs/
+
+
+# Build artifacts
+bin/
+obj/

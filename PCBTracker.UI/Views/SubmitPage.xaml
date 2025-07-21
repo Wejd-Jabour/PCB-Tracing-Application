@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="PCBTracker.UI.Views.SubmitPage"
+    Title="Submit a Board">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <Label Text="Submit Board" FontSize="24" HorizontalOptions="Center" />
+
+            <Picker
+                Title="Board Type"
+                ItemsSource="{Binding BoardTypes}"
+                SelectedItem="{Binding SelectedBoardType}" />
+
+            <Entry
+                Placeholder="Serial Number"
+                Text="{Binding SerialNumber}" />
+
+            <Entry
+                Placeholder="Part Number"
+                Text="{Binding PartNumber}" />
+
+            <DatePicker
+                Date="{Binding PrepDate}" />
+
+			<Label Text="Same Day Shipped" FontSize="12"/>
+            <Switch
+                IsToggled="{Binding IsShipped}" />
+
+			<Label Text="Skid #" VerticalOptions="Center"/>
+			<Label Text="{Binding SelectedSkid.SkidName}" VerticalOptions="Center"/>
+			<Button
+			  Text="Change Skid"
+			  Command="{Binding ChangeSkidCommand}"
+			  VerticalOptions="Center"/>
+
+            <Button
+                Text="Submit"
+                Command="{Binding SubmitCommand}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

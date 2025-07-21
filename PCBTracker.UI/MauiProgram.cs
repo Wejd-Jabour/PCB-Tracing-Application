@@ -1,8 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BCrypt.Net;                   // for password hashing
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using PCBTracker.Data.Context;
+using PCBTracker.Data.Context;          // for AppDbContext
 using PCBTracker.Domain.Entities;    // for the User entity
-using BCrypt.Net;                   // for password hashing
+using PCBTracker.Services;             // for UserService
+using PCBTracker.Services.Interfaces;  // for IUserService
+using PCBTracker.UI.ViewModels;
+
 
 namespace PCBTracker.UI;
 
@@ -30,6 +34,19 @@ public static class MauiProgram
               Integrated Security=True;";
         builder.Services.AddDbContext<AppDbContext>(opts =>
             opts.UseSqlServer(connStr));
+
+        builder.Services.AddScoped<IUserService, UserService>();
+
+        builder.Services.AddDbContext<AppDbContext>(opts =>
+            opts.UseSqlServer(connStr));
+
+        // Authentication & Board services
+        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IBoardService, BoardService>();
+
+        // ViewModels
+        builder.Services.AddTransient<LoginViewModel>();
+        builder.Services.AddTransient<SubmitViewModel>();
 
         // Build the app
         var app = builder.Build();
