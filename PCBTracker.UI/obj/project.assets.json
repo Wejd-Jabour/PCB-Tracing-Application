@@ -1527,7 +1527,8 @@
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
           "BCrypt.Net-Next": "4.0.3",
-          "PCBTracker.Data": "1.0.0"
+          "PCBTracker.Data": "1.0.0",
+          "PCBTracker.Domain": "1.0.0"
         },
         "compile": {
           "bin/placeholder/PCBTracker.Services.dll": {}
@@ -2980,7 +2981,8 @@
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
           "BCrypt.Net-Next": "4.0.3",
-          "PCBTracker.Data": "1.0.0"
+          "PCBTracker.Data": "1.0.0",
+          "PCBTracker.Domain": "1.0.0"
         },
         "compile": {
           "bin/placeholder/PCBTracker.Services.dll": {}

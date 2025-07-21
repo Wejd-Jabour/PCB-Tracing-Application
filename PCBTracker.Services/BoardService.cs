@@ -1,11 +1,12 @@
 ﻿// PCBTracker.Services/BoardService.cs
+using Microsoft.EntityFrameworkCore;
+using PCBTracker.Data.Context;
+using PCBTracker.Domain.DTOs;
+using PCBTracker.Domain.Entities;
+using PCBTracker.Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using PCBTracker.Data.Context;
-using PCBTracker.Domain.Entities;
-using PCBTracker.Services.Interfaces;
 
 namespace PCBTracker.Services
 {
@@ -52,6 +53,26 @@ namespace PCBTracker.Services
             await _db.SaveChangesAsync();
 
             return skid;
+        }
+
+        public async Task CreateBoardAsync(BoardDto dto)
+        {
+            // map DTO → entity
+            var board = new Board
+            {
+                SerialNumber = dto.SerialNumber,
+                PartNumber = dto.PartNumber,
+                BoardType = dto.BoardType,
+                PrepDate = dto.PrepDate,
+                ShipDate = dto.IsShipped
+                                 ? dto.ShipDate ?? dto.PrepDate
+                                 : null,
+                IsShipped = dto.IsShipped,
+                SkidID = dto.SkidID
+            };
+
+            _db.Boards.Add(board);
+            await _db.SaveChangesAsync();
         }
     }
 }

@@ -2821,7 +2821,8 @@
   "projectFileDependencyGroups": {
     "net9.0": [
       "BCrypt.Net-Next >= 4.0.3",
-      "PCBTracker.Data >= 1.0.0"
+      "PCBTracker.Data >= 1.0.0",
+      "PCBTracker.Domain >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -2859,6 +2860,9 @@
           "projectReferences": {
             "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Data\\PCBTracker.Data.csproj": {
               "projectPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Data\\PCBTracker.Data.csproj"
+            },
+            "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Domain\\PCBTracker.Domain.csproj": {
+              "projectPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Domain\\PCBTracker.Domain.csproj"
             }
           }
         }

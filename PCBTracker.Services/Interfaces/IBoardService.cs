@@ -1,7 +1,8 @@
 ﻿// PCBTracker.Services/Interfaces/IBoardService.cs
+using PCBTracker.Domain.DTOs;
+using PCBTracker.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using PCBTracker.Domain.Entities;
 
 namespace PCBTracker.Services.Interfaces
 {
@@ -28,5 +29,10 @@ namespace PCBTracker.Services.Interfaces
         /// Save a new Board record.
         /// </summary>
         Task SubmitBoardAsync(Board board);
+
+        /// <summary>
+        /// Creates a new Board record from the given DTO.
+        /// </summary>
+        Task CreateBoardAsync(BoardDto dto);
     }
 }

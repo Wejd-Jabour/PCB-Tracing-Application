@@ -14,9 +14,11 @@
                 ItemsSource="{Binding BoardTypes}"
                 SelectedItem="{Binding SelectedBoardType}" />
 
-            <Entry
-                Placeholder="Serial Number"
-                Text="{Binding SerialNumber}" />
+			<Entry
+              x:Name="SerialNumberEntry"
+              Placeholder="Serial Number"
+              Text="{Binding SerialNumber}"
+              Completed="OnSerialNumberEntryCompleted" />
 
             <Entry
                 Placeholder="Part Number"
@@ -25,20 +27,30 @@
             <DatePicker
                 Date="{Binding PrepDate}" />
 
-			<Label Text="Same Day Shipped" FontSize="12"/>
-            <Switch
-                IsToggled="{Binding IsShipped}" />
+			<HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+				<Label
+				  Text="Mark as Shipped"
+				  VerticalOptions="Center" />
+				<Switch
+				  IsToggled="{Binding IsShipped}" />
+			</HorizontalStackLayout>
 
 			<Label Text="Skid #" VerticalOptions="Center"/>
 			<Label Text="{Binding SelectedSkid.SkidName}" VerticalOptions="Center"/>
 			<Button
 			  Text="Change Skid"
 			  Command="{Binding ChangeSkidCommand}"
-			  VerticalOptions="Center"/>
+			  VerticalOptions="Center"
+			  HorizontalOptions="Center"/>
 
-            <Button
+			<Button
+                x:Name="SubmitButton"
                 Text="Submit"
-                Command="{Binding SubmitCommand}" />
+                Command="{Binding SubmitCommand}"
+                Clicked="OnSubmitClicked"
+                HorizontalOptions="Center" />
+			
+			
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PCBTracker.Data\PCBTracker.Data.csproj" />
+    <ProjectReference Include="..\PCBTracker.Domain\PCBTracker.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
