@@ -37,6 +37,8 @@ namespace PCBTracker.UI.ViewModels
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
         private string serialNumber = string.Empty;
+        partial void OnSerialNumberChanged(string oldValue, string newValue)
+            => DebounceAutoSubmit();
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
@@ -142,6 +144,36 @@ namespace PCBTracker.UI.ViewModels
 
             // ...and select it immediately
             SelectedSkid = newSkid;
+        }
+
+
+        private CancellationTokenSource _autoSubmitCts;
+
+        private void DebounceAutoSubmit()
+        {
+            // cancel any pending run
+            _autoSubmitCts?.Cancel();
+            _autoSubmitCts = new CancellationTokenSource();
+            var token = _autoSubmitCts.Token;
+
+            // fire-and-forget background task
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    // wait 1 second (1000 ms)
+                    await Task.Delay(1000, token);
+
+                    // if not cancelled and can submit, trigger the command on the UI thread
+                    if (!token.IsCancellationRequested && CanSubmit())
+                    {
+                        MainThread.BeginInvokeOnMainThread(() =>
+                            SubmitCommand.Execute(null)
+                        );
+                    }
+                }
+                catch (TaskCanceledException) { /* noop */ }
+            });
         }
 
     }
