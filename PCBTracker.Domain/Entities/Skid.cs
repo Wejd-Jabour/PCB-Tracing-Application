@@ -13,7 +13,7 @@ namespace PCBTracker.Domain.Entities
         public int SkidID { get; set; }
         public string SkidName { get; set; } = default!;
 
-        public string designatedType { get; set; }
+        public string? designatedType { get; set; }
         public ICollection<Board> Boards { get; set; } = new List<Board>();
     }
 }

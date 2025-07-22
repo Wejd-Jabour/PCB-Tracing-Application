@@ -112,7 +112,8 @@ namespace PCBTracker.UI.ViewModels
             => !string.IsNullOrWhiteSpace(SerialNumber)
                && !string.IsNullOrWhiteSpace(PartNumber)
                && !string.IsNullOrWhiteSpace(SelectedBoardType)
-               && SelectedSkid != null;
+               && SelectedSkid != null
+            && (SelectedSkid.designatedType == null || SelectedSkid.designatedType == SelectedBoardType);
 
         /// <summary>
         /// Gathers form data into a BoardDto and sends it to the service.
@@ -132,7 +133,7 @@ namespace PCBTracker.UI.ViewModels
                 SkidID = SelectedSkid.SkidID
             };
 
-            await _boardService.CreateBoardAsync(dto);
+            await _boardService.CreateBoardAndClaimSkidAsync(dto);
 
             await App.Current.MainPage.DisplayAlert("Success", "Board submitted.", "OK");
 

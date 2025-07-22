@@ -89,7 +89,6 @@ namespace PCBTracker.Services
                 PartNumber = dto.PartNumber,
                 BoardType = dto.BoardType,
                 PrepDate = dto.PrepDate,
-                // If marked shipped, ensure ShipDate is set (fallback to PrepDate if null)
                 ShipDate = dto.IsShipped
                                  ? dto.ShipDate ?? dto.PrepDate
                                  : null,
@@ -101,5 +100,35 @@ namespace PCBTracker.Services
             _db.Boards.Add(board);
             await _db.SaveChangesAsync();
         }
+
+        public async Task CreateBoardAndClaimSkidAsync(BoardDto dto)
+        {
+            // 1) Load the selected skid
+            var skid = await _db.Skids.FindAsync(dto.SkidID);
+
+            // 2) Claim it if unassigned
+            if (skid != null && skid.designatedType is null)
+            {
+                skid.designatedType = dto.BoardType;
+                _db.Skids.Update(skid);
+            }
+
+            // 3) Create the board
+            var entity = new Board
+            {
+                SerialNumber = dto.SerialNumber,
+                PartNumber = dto.PartNumber,
+                BoardType = dto.BoardType,
+                PrepDate = dto.PrepDate,
+                IsShipped = dto.IsShipped,
+                ShipDate = dto.IsShipped ? dto.ShipDate : null,
+                SkidID = dto.SkidID
+            };
+            _db.Boards.Add(entity);
+
+            // 4) Commit both changes atomically
+            await _db.SaveChangesAsync();
+        }
     }
+
 }

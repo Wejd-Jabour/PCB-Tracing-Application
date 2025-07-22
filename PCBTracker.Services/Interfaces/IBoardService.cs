@@ -42,5 +42,10 @@ namespace PCBTracker.Services.Interfaces
         /// This is the primary method used by ViewModels to create a new board entry.
         /// </summay>
         Task CreateBoardAsync(BoardDto boardDto);
+
+        ///<summary>
+        /// 
+        /// </summary>
+        Task CreateBoardAndClaimSkidAsync(BoardDto boardDto);
     }
 }
