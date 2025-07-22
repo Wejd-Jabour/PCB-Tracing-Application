@@ -1,36 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using PCBTracker.Domain.Entities;
 
-namespace PCBTracker.Data.Context
+namespace PCBTracker.Data.Context;
+
+/// <summary>
+/// EF Core DbContext defining your database schema via DbSet properties
+/// and model configuration (indexes, relationships, seed data).
+/// </summary>
+public class AppDbContext : DbContext
 {
-    // 1) Make class public
-    // 2) Inherit from DbContext
-    public class AppDbContext : DbContext
+    // Constructor: DbContextOptions (connection string, provider, etc.)
+    // are injected by the DI container at runtime.
+    public AppDbContext(DbContextOptions<AppDbContext> options)
+        : base(options)
     {
-        // 3) Keep this constructor
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
-        { }
+    }
 
-        // 4) Public DbSets
-        public DbSet<Board> Boards { get; set; } = null!;
-        public DbSet<Skid> Skids { get; set; } = null!;
-        public DbSet<User> Users { get; set; } = null!;
+    // Each DbSet<T> corresponds to a table in the database:
+    public DbSet<Board> Boards { get; set; } = null!;  // Boards table
+    public DbSet<Skid> Skids { get; set; } = null!;    // Skids table
+    public DbSet<User> Users { get; set; } = null!;    // Users table for authentication
 
-        // 5) Override OnModelCreating (call base too)
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
+    /// <summary>
+    /// Configure model rules: indexes, relationships, and optional seed data.
+    /// </summary>
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
 
-            // Unique index on SerialNumber
-            modelBuilder.Entity<Board>()
-                .HasIndex(b => b.SerialNumber)
-                .IsUnique();
-        }
+        // Enforce unique SerialNumber on the Boards table at the DB level.
+        modelBuilder.Entity<Board>()
+            .HasIndex(b => b.SerialNumber)
+            .IsUnique();
+
     }
 }

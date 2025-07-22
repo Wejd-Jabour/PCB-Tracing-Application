@@ -1,19 +1,23 @@
-﻿using System;
+﻿// SubmitPage.xaml.cs
+using System;
 using Microsoft.Maui.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using PCBTracker.UI.ViewModels;
 
 namespace PCBTracker.UI.Views
 {
+    /// <summary>
+    /// Code-behind for SubmitPage. Resolves the ViewModel via DI,
+    /// hooks up entry events, and handles page lifecycle.
+    /// </summary>
     public partial class SubmitPage : ContentPage
     {
         public SubmitPage()
         {
-            InitializeComponent();
+            InitializeComponent(); // Load XAML UI
 
-            // resolve your VM via DI
-            BindingContext = Application
-                .Current
+            // Resolve and set the SubmitViewModel from MAUI DI container
+            BindingContext = Application.Current
                 .Handler
                 .MauiContext
                 .Services
@@ -21,33 +25,31 @@ namespace PCBTracker.UI.Views
         }
 
         /// <summary>
-        /// Fires when the user (or barcode scanner) presses Enter in the SN Entry.
-        /// We call SubmitAsync directly—skipping the Command’s CanExecute—so auto-submits work.
+        /// Called when the user finishes entry in the SerialNumber field
+        /// (e.g. presses Enter or scans a barcode). Invokes Submit and re-focuses.
         /// </summary>
-        private async void OnSerialNumberEntryCompleted(object sender, EventArgs e)
+        private void OnSerialNumberEntryCompleted(object sender, EventArgs e)
         {
-            if (BindingContext is SubmitViewModel vm)
-            {
-                // 1) Directly invoke the VM’s async submit method
-                await vm.SubmitAsync();
+            if (BindingContext is SubmitViewModel vm && vm.SubmitCommand.CanExecute(null))
+                vm.SubmitCommand.Execute(null);
 
-                // 2) Clear SerialNumber (your VM already does this) and re-focus
-                SerialNumberEntry.Focus();
-            }
+            SerialNumberEntry.Focus(); // Ready for next scan
         }
 
         /// <summary>
-        /// Fires when the Submit button is clicked manually.
-        /// We still focus the Serial box after a manual click.
+        /// Handler for a manual Submit button click. Executes SubmitCommand then refocuses.
         /// </summary>
         private void OnSubmitClicked(object sender, EventArgs e)
         {
-            Dispatcher.Dispatch(() =>
-            {
-                SerialNumberEntry.Focus();
-            });
+            if (BindingContext is SubmitViewModel vm && vm.SubmitCommand.CanExecute(null))
+                vm.SubmitCommand.Execute(null);
+
+            SerialNumberEntry.Focus();
         }
 
+        /// <summary>
+        /// Fires every time the page appears. Loads lookups and sets initial focus.
+        /// </summary>
         protected override async void OnAppearing()
         {
             base.OnAppearing();
@@ -55,7 +57,6 @@ namespace PCBTracker.UI.Views
             if (BindingContext is SubmitViewModel vm)
                 await vm.LoadAsync();
 
-            // initial focus for the first scan
             SerialNumberEntry.Focus();
         }
     }

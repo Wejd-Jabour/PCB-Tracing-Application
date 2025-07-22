@@ -1,103 +1,112 @@
-﻿// PCBTracker.UI/ViewModels/SubmitViewModel.cs
-using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Controls;
 using PCBTracker.Domain.DTOs;
 using PCBTracker.Domain.Entities;
 using PCBTracker.Services.Interfaces;
+using System;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace PCBTracker.UI.ViewModels
 {
+    /// <summary>
+    /// ViewModel for SubmitPage. Manages form state, lookup loading, validation,
+    /// and submission of new boards via the IBoardService.
+    /// </summary>
     public partial class SubmitViewModel : ObservableObject
     {
         private readonly IBoardService _boardService;
 
+        /// <summary>
+        /// IBoardService is injected to handle business logic and EF Core operations.
+        /// </summary>
         public SubmitViewModel(IBoardService boardService)
         {
             _boardService = boardService;
-            BoardTypes = new ObservableCollection<string>();
-            Skids = new ObservableCollection<Skid>();
-            PrepDate = DateTime.Today;
+            PrepDate = DateTime.Today;  // Default PrepDate to today
         }
 
-        // lookup collections
-        public ObservableCollection<string> BoardTypes { get; }
-        public ObservableCollection<Skid> Skids { get; }
+        // Collections bound to Picker controls in XAML:
+        [ObservableProperty]
+        private ObservableCollection<string> boardTypes = new();
 
-        // form fields
+        [ObservableProperty]
+        private ObservableCollection<Skid> skids = new();
+
+        // Form fields bound to various Entry/Picker/DatePicker/Switch controls:
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
-        string serialNumber;
-
-        [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
-        string partNumber;
-
-        [ObservableProperty]
-        DateTime prepDate;
+        private string serialNumber = string.Empty;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
-        string selectedBoardType;
+        private string partNumber = string.Empty;
 
         [ObservableProperty]
-        bool isShipped;
-
-        // this partial method auto-runs when IsShipped changes:
-        partial void OnIsShippedChanged(bool value)
-            => ShipDate = value ? PrepDate : (DateTime?)null;
+        [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
+        private string selectedBoardType;
 
         [ObservableProperty]
-        DateTime? shipDate;
+        private DateTime prepDate;
 
-        // manually-implemented SelectedSkid so we can trigger CanExecute
-        Skid _selectedSkid;
-        public Skid SelectedSkid
-        {
-            get => _selectedSkid;
-            set
-            {
-                SetProperty(ref _selectedSkid, value);
-                SubmitCommand.NotifyCanExecuteChanged();
-            }
-        }
+        [ObservableProperty]
+        private bool isShipped;
 
+        [ObservableProperty]
+        private DateTime? shipDate;
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
+        private Skid selectedSkid;
+
+        /// <summary>
+        /// Loads board types and skids each time the page appears.
+        /// Ensures at least one Skid exists and selects the latest one.
+        /// </summary>
         [RelayCommand]
         public async Task LoadAsync()
         {
-            // load board types
+            // Fetch and populate board types for the Picker
             var types = await _boardService.GetBoardTypesAsync();
             BoardTypes.Clear();
             foreach (var t in types)
                 BoardTypes.Add(t);
 
-            // load existing skids
-            var skids = await _boardService.GetSkidsAsync();
+            // Fetch existing skids or create one if none exist
+            var existing = await _boardService.GetSkidsAsync();
             Skids.Clear();
-            foreach (var s in skids)
+            foreach (var s in existing)
                 Skids.Add(s);
 
-            // ensure at least one skid exists
-            if (!Skids.Any())
-                Skids.Add(await _boardService.CreateNewSkidAsync());
+            if (Skids.Count == 0)
+            {
+                var newSkid = await _boardService.CreateNewSkidAsync();
+                Skids.Add(newSkid);
+            }
 
-            // select the latest
-            SelectedSkid = Skids.Last();
+            // Default to the most recently created skid
+            SelectedSkid = Skids[^1];
+
+            // If already marked shipped, ensure ShipDate is initialized
+            if (IsShipped && ShipDate == null)
+                ShipDate = PrepDate;
         }
 
-        // command can only run when this is true
-        public bool CanSubmit()
+        /// <summary>
+        /// Enables the Submit button only when required fields are filled.
+        /// </summary>
+        private bool CanSubmit()
             => !string.IsNullOrWhiteSpace(SerialNumber)
                && !string.IsNullOrWhiteSpace(PartNumber)
                && !string.IsNullOrWhiteSpace(SelectedBoardType)
                && SelectedSkid != null;
 
+        /// <summary>
+        /// Gathers form data into a BoardDto and sends it to the service.
+        /// Shows a success alert and clears the serial field for the next scan.
+        /// </summary>
         [RelayCommand(CanExecute = nameof(CanSubmit))]
-        public async Task SubmitAsync()
+        private async Task SubmitAsync()
         {
             var dto = new BoardDto
             {
@@ -106,17 +115,34 @@ namespace PCBTracker.UI.ViewModels
                 BoardType = SelectedBoardType,
                 PrepDate = PrepDate,
                 IsShipped = IsShipped,
-                ShipDate = ShipDate,
+                ShipDate = IsShipped ? ShipDate : null,
                 SkidID = SelectedSkid.SkidID
             };
 
             await _boardService.CreateBoardAsync(dto);
 
-            await Application.Current.MainPage
-                .DisplayAlert("Success", "Board recorded!", "OK");
+            await App.Current.MainPage.DisplayAlert("Success", "Board submitted.", "OK");
 
-            // clear just the SN so scanner can fire again
+            // Clear only the serial number for the next scan:
             SerialNumber = string.Empty;
         }
+
+        /// <summary>
+        /// Cycle to the next Skid by creating a new one and selecting it.
+        /// Bound to the “Cycle Skid” button in the UI.
+        /// </summary>
+        [RelayCommand]
+        private async Task ChangeSkidAsync()
+        {
+            // Create a brand-new skid in the DB
+            var newSkid = await _boardService.CreateNewSkidAsync();
+
+            // Add it to the collection so the Picker updates...
+            Skids.Add(newSkid);
+
+            // ...and select it immediately
+            SelectedSkid = newSkid;
+        }
+
     }
 }
