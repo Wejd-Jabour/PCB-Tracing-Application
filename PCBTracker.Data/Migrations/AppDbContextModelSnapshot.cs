@@ -57,6 +57,198 @@ namespace PCBTracker.Data.Migrations
                     b.ToTable("Boards");
                 });
 
+            modelBuilder.Entity("PCBTracker.Domain.Entities.LE", b =>
+                {
+                    b.Property<string>("SerialNumber")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("BoardType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsShipped")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PartNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PrepDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ShipDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SkidID")
+                        .HasColumnType("int");
+
+                    b.HasKey("SerialNumber");
+
+                    b.HasIndex("SkidID");
+
+                    b.ToTable("LE");
+                });
+
+            modelBuilder.Entity("PCBTracker.Domain.Entities.LE_Upgrade", b =>
+                {
+                    b.Property<string>("SerialNumber")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("BoardType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsShipped")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PartNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PrepDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ShipDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SkidID")
+                        .HasColumnType("int");
+
+                    b.HasKey("SerialNumber");
+
+                    b.HasIndex("SkidID");
+
+                    b.ToTable("LE_Upgrade");
+                });
+
+            modelBuilder.Entity("PCBTracker.Domain.Entities.SAD", b =>
+                {
+                    b.Property<string>("SerialNumber")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("BoardType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsShipped")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PartNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PrepDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ShipDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SkidID")
+                        .HasColumnType("int");
+
+                    b.HasKey("SerialNumber");
+
+                    b.HasIndex("SkidID");
+
+                    b.ToTable("SAD");
+                });
+
+            modelBuilder.Entity("PCBTracker.Domain.Entities.SAD_Upgrade", b =>
+                {
+                    b.Property<string>("SerialNumber")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("BoardType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsShipped")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PartNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PrepDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ShipDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SkidID")
+                        .HasColumnType("int");
+
+                    b.HasKey("SerialNumber");
+
+                    b.HasIndex("SkidID");
+
+                    b.ToTable("SAD_Upgrade");
+                });
+
+            modelBuilder.Entity("PCBTracker.Domain.Entities.SAT", b =>
+                {
+                    b.Property<string>("SerialNumber")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("BoardType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsShipped")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PartNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PrepDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ShipDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SkidID")
+                        .HasColumnType("int");
+
+                    b.HasKey("SerialNumber");
+
+                    b.HasIndex("SkidID");
+
+                    b.ToTable("SAT");
+                });
+
+            modelBuilder.Entity("PCBTracker.Domain.Entities.SAT_Upgrade", b =>
+                {
+                    b.Property<string>("SerialNumber")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("BoardType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsShipped")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PartNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PrepDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ShipDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SkidID")
+                        .HasColumnType("int");
+
+                    b.HasKey("SerialNumber");
+
+                    b.HasIndex("SkidID");
+
+                    b.ToTable("SAT_Upgrade");
+                });
+
             modelBuilder.Entity("PCBTracker.Domain.Entities.Skid", b =>
                 {
                     b.Property<int>("SkidID")
@@ -66,6 +258,10 @@ namespace PCBTracker.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SkidID"));
 
                     b.Property<string>("SkidName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("designatedType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -103,6 +299,72 @@ namespace PCBTracker.Data.Migrations
                 {
                     b.HasOne("PCBTracker.Domain.Entities.Skid", "Skid")
                         .WithMany("Boards")
+                        .HasForeignKey("SkidID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Skid");
+                });
+
+            modelBuilder.Entity("PCBTracker.Domain.Entities.LE", b =>
+                {
+                    b.HasOne("PCBTracker.Domain.Entities.Skid", "Skid")
+                        .WithMany()
+                        .HasForeignKey("SkidID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Skid");
+                });
+
+            modelBuilder.Entity("PCBTracker.Domain.Entities.LE_Upgrade", b =>
+                {
+                    b.HasOne("PCBTracker.Domain.Entities.Skid", "Skid")
+                        .WithMany()
+                        .HasForeignKey("SkidID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Skid");
+                });
+
+            modelBuilder.Entity("PCBTracker.Domain.Entities.SAD", b =>
+                {
+                    b.HasOne("PCBTracker.Domain.Entities.Skid", "Skid")
+                        .WithMany()
+                        .HasForeignKey("SkidID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Skid");
+                });
+
+            modelBuilder.Entity("PCBTracker.Domain.Entities.SAD_Upgrade", b =>
+                {
+                    b.HasOne("PCBTracker.Domain.Entities.Skid", "Skid")
+                        .WithMany()
+                        .HasForeignKey("SkidID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Skid");
+                });
+
+            modelBuilder.Entity("PCBTracker.Domain.Entities.SAT", b =>
+                {
+                    b.HasOne("PCBTracker.Domain.Entities.Skid", "Skid")
+                        .WithMany()
+                        .HasForeignKey("SkidID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Skid");
+                });
+
+            modelBuilder.Entity("PCBTracker.Domain.Entities.SAT_Upgrade", b =>
+                {
+                    b.HasOne("PCBTracker.Domain.Entities.Skid", "Skid")
+                        .WithMany()
                         .HasForeignKey("SkidID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

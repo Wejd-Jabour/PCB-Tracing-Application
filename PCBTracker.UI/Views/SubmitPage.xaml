@@ -10,17 +10,19 @@
             <Label Text="Submit Board" FontSize="24" HorizontalOptions="Center" />
 
             <Picker
+                x:Name="BoardTypePicker"
                 Title="Board Type"
                 ItemsSource="{Binding BoardTypes}"
                 SelectedItem="{Binding SelectedBoardType}" />
-
+    
 			<Entry
-              x:Name="SerialNumberEntry"
-              Placeholder="Serial Number"
-              Text="{Binding SerialNumber}"
-              Completed="OnSerialNumberEntryCompleted" />
+                x:Name="SerialNumberEntry"
+                Placeholder="Serial Number"
+                Text="{Binding SerialNumber}"
+                Completed="OnSerialNumberEntryCompleted" />
 
             <Entry
+                x:Name="PartNumberEntry"
                 Placeholder="Part Number"
                 Text="{Binding PartNumber}" />
 

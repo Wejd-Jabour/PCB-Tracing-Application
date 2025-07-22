@@ -20,6 +20,12 @@ public class AppDbContext : DbContext
     public DbSet<Board> Boards { get; set; } = null!;  // Boards table
     public DbSet<Skid> Skids { get; set; } = null!;    // Skids table
     public DbSet<User> Users { get; set; } = null!;    // Users table for authentication
+    public DbSet<LE> LE {  get; set; } = null!;
+    public DbSet<LE_Upgrade> LE_Upgrade { get; set; } = null!;
+    public DbSet<SAD> SAD { get; set; } = null!; 
+    public DbSet<SAD_Upgrade> SAD_Upgrade { get; set; } = null!;
+    public DbSet<SAT> SAT { get; set; } = null!;
+    public DbSet<SAT_Upgrade> SAT_Upgrade { get; set; } = null!;
 
     /// <summary>
     /// Configure model rules: indexes, relationships, and optional seed data.

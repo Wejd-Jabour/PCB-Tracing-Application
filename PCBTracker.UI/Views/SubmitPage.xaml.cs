@@ -12,6 +12,18 @@ namespace PCBTracker.UI.Views
     /// </summary>
     public partial class SubmitPage : ContentPage
     {
+
+        static readonly IReadOnlyDictionary<string, string> _partNumberMap = new Dictionary<string, string>
+        {
+            ["LE"] = "ASY-G8GMLESBH-P-ATLR07MR1",
+            ["LE Upgrade"] = "Unknown",
+            ["SAD"] = "ASY-G8GMSADSBH-P-ATLR03MR1",
+            ["SAD Upgrade"] = "ASY-GSGMSADB-UG-KIT-P-ATLR05MR2",
+            ["SAT"] = "ASY-G8GMSATSBH-P-ATLR02MR1",
+            ["SAT Upgrade"] = "ASY-G8GMSATB-UG-KIT-P-ATLR03MR1",
+        };
+
+
         public SubmitPage()
         {
             InitializeComponent(); // Load XAML UI
@@ -56,8 +68,11 @@ namespace PCBTracker.UI.Views
 
             if (BindingContext is SubmitViewModel vm)
                 await vm.LoadAsync();
-
+                
             SerialNumberEntry.Focus();
         }
+
+
+        
     }
 }
