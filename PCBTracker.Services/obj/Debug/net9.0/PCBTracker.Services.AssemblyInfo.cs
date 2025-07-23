@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PCBTracker.Services")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b271db1a4e398576e7b5c8c0e2dba9283b752191")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4e05ee11ce38f105e75ed56daf5f66b46d497d99")]
 [assembly: System.Reflection.AssemblyProductAttribute("PCBTracker.Services")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PCBTracker.Services")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -257,6 +257,44 @@ namespace PCBTracker.Services
             return recent.OrderBy(s => s.SkidID);
         }
 
+
+        public async Task<IEnumerable<BoardDto>> GetBoardsAsync(BoardFilterDto filter)
+        {
+            var query = _db.Boards.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter.SerialNumber))
+                query = query.Where(b => b.SerialNumber.Contains(filter.SerialNumber));
+
+            if (!string.IsNullOrWhiteSpace(filter.BoardType))
+                query = query.Where(b => b.BoardType == filter.BoardType);
+
+            if (filter.PrepDateFrom.HasValue)
+                query = query.Where(b => b.PrepDate >= filter.PrepDateFrom.Value);
+
+            if (filter.PrepDateTo.HasValue)
+                query = query.Where(b => b.PrepDate <= filter.PrepDateTo.Value);
+
+            if (filter.ShipDateFrom.HasValue)
+                query = query.Where(b => b.ShipDate >= filter.ShipDateFrom.Value);
+
+            if (filter.ShipDateTo.HasValue)
+                query = query.Where(b => b.ShipDate <= filter.ShipDateTo.Value);
+
+            return await query
+                .Select(b => new BoardDto
+                {
+                    SerialNumber = b.SerialNumber,
+                    PartNumber = b.PartNumber,
+                    BoardType = b.BoardType,
+                    PrepDate = b.PrepDate,
+                    ShipDate = b.ShipDate,
+                    IsShipped = b.IsShipped,
+                    SkidID = b.SkidID
+                })
+                .ToListAsync();
+        }
+
+
     }
 
 }

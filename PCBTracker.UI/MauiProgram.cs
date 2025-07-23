@@ -6,6 +6,7 @@ using PCBTracker.Domain.Entities;              // Domain entity classes (e.g. Us
 using PCBTracker.Services;                     // Concrete implementations of your business services
 using PCBTracker.Services.Interfaces;          // Interfaces like IUserService and IBoardService
 using PCBTracker.UI.ViewModels;                // ViewModel classes for your XAML pages
+using PCBTracker.UI.Views;
 
 namespace PCBTracker.UI;
 
@@ -54,6 +55,9 @@ public static class MauiProgram
         // This works well for ViewModels because each page gets its own fresh ViewModel.
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<SubmitViewModel>();
+        builder.Services.AddTransient<DataExtractViewModel>();
+        builder.Services.AddTransient<DataExtractPage>();
+
 
         // Build the configured MAUI application
         var app = builder.Build();

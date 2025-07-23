@@ -3,32 +3,40 @@
   "WorkspaceRootPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.ui\\views\\dataextractpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|solutionrelative:pcbtracker.ui\\views\\dataextractpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.ui\\viewmodels\\dataextractviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|solutionrelative:pcbtracker.ui\\viewmodels\\dataextractviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.ui\\views\\dataextractpage.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|solutionrelative:pcbtracker.ui\\views\\dataextractpage.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.ui\\views\\loginpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|solutionrelative:pcbtracker.ui\\views\\loginpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.ui\\mauiprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|solutionrelative:pcbtracker.ui\\mauiprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.ui\\appshell.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|solutionrelative:pcbtracker.ui\\appshell.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A88A29FB-F90B-4F90-BD21-E773547372EF}|PCBTracker.Services\\PCBTracker.Services.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.services\\boardservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A88A29FB-F90B-4F90-BD21-E773547372EF}|PCBTracker.Services\\PCBTracker.Services.csproj|solutionrelative:pcbtracker.services\\boardservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.ui\\viewmodels\\submitviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|solutionrelative:pcbtracker.ui\\viewmodels\\submitviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0F6B3EF1-96E9-4551-80BF-B457A1865929}|PCBTracker.Data\\PCBTracker.Data.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.data\\context\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0F6B3EF1-96E9-4551-80BF-B457A1865929}|PCBTracker.Data\\PCBTracker.Data.csproj|solutionrelative:pcbtracker.data\\context\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.ui\\views\\submitpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|solutionrelative:pcbtracker.ui\\views\\submitpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.ui\\views\\submitpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|solutionrelative:pcbtracker.ui\\views\\submitpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2106FC62-70FD-4A79-90E5-8ACB6CE0105B}|PCBTracker.Domain\\PCBTracker.Domain.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.domain\\dtos\\boarddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2106FC62-70FD-4A79-90E5-8ACB6CE0105B}|PCBTracker.Domain\\PCBTracker.Domain.csproj|solutionrelative:pcbtracker.domain\\dtos\\boarddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A88A29FB-F90B-4F90-BD21-E773547372EF}|PCBTracker.Services\\PCBTracker.Services.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.services\\interfaces\\iboardservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A88A29FB-F90B-4F90-BD21-E773547372EF}|PCBTracker.Services\\PCBTracker.Services.csproj|solutionrelative:pcbtracker.services\\interfaces\\iboardservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2106FC62-70FD-4A79-90E5-8ACB6CE0105B}|PCBTracker.Domain\\PCBTracker.Domain.csproj|c:\\users\\wejdj\\onedrive\\desktop\\trace application\\pcbtracker.domain\\dtos\\boardfilterdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2106FC62-70FD-4A79-90E5-8ACB6CE0105B}|PCBTracker.Domain\\PCBTracker.Domain.csproj|solutionrelative:pcbtracker.domain\\dtos\\boardfilterdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,98 +46,119 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DataExtractPage.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\Views\\DataExtractPage.xaml.cs",
+              "RelativeDocumentMoniker": "PCBTracker.UI\\Views\\DataExtractPage.xaml.cs",
+              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\Views\\DataExtractPage.xaml.cs",
+              "RelativeToolTip": "PCBTracker.UI\\Views\\DataExtractPage.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-23T14:56:34.852Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "AppDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Data\\Context\\AppDbContext.cs",
-              "RelativeDocumentMoniker": "PCBTracker.Data\\Context\\AppDbContext.cs",
-              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Data\\Context\\AppDbContext.cs",
-              "RelativeToolTip": "PCBTracker.Data\\Context\\AppDbContext.cs",
-              "ViewState": "AgIAACAAAAAAAAAAAAA/wC4AAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-23T12:53:50.082Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "BoardDto.cs",
-              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Domain\\DTOs\\BoardDto.cs",
-              "RelativeDocumentMoniker": "PCBTracker.Domain\\DTOs\\BoardDto.cs",
-              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Domain\\DTOs\\BoardDto.cs",
-              "RelativeToolTip": "PCBTracker.Domain\\DTOs\\BoardDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-23T12:42:10.022Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "SubmitPage.xaml",
-              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\Views\\SubmitPage.xaml",
-              "RelativeDocumentMoniker": "PCBTracker.UI\\Views\\SubmitPage.xaml",
-              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\Views\\SubmitPage.xaml",
-              "RelativeToolTip": "PCBTracker.UI\\Views\\SubmitPage.xaml",
-              "ViewState": "AgIAAB8AAAAAAAAAAADwvzwAAAA5AAAAAAAAAA==",
+              "Title": "DataExtractPage.xaml",
+              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\Views\\DataExtractPage.xaml",
+              "RelativeDocumentMoniker": "PCBTracker.UI\\Views\\DataExtractPage.xaml",
+              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\Views\\DataExtractPage.xaml",
+              "RelativeToolTip": "PCBTracker.UI\\Views\\DataExtractPage.xaml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAABQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-07-22T15:32:44.921Z",
+              "WhenOpened": "2025-07-23T14:55:51.769Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "SubmitPage.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\Views\\SubmitPage.xaml.cs",
-              "RelativeDocumentMoniker": "PCBTracker.UI\\Views\\SubmitPage.xaml.cs",
-              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\Views\\SubmitPage.xaml.cs",
-              "RelativeToolTip": "PCBTracker.UI\\Views\\SubmitPage.xaml.cs",
-              "ViewState": "AgIAACMAAAAAAAAAAAAIwEAAAAAjAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-22T15:32:23.75Z",
+              "Title": "LoginPage.xaml",
+              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\Views\\LoginPage.xaml",
+              "RelativeDocumentMoniker": "PCBTracker.UI\\Views\\LoginPage.xaml",
+              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\Views\\LoginPage.xaml",
+              "RelativeToolTip": "PCBTracker.UI\\Views\\LoginPage.xaml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-07-23T14:54:42.995Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "SubmitViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\ViewModels\\SubmitViewModel.cs",
-              "RelativeDocumentMoniker": "PCBTracker.UI\\ViewModels\\SubmitViewModel.cs",
-              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\ViewModels\\SubmitViewModel.cs",
-              "RelativeToolTip": "PCBTracker.UI\\ViewModels\\SubmitViewModel.cs",
-              "ViewState": "AgIAAJAAAAAAAAAAAAAowJAAAABAAAAAAAAAAA==",
+              "DocumentIndex": 4,
+              "Title": "MauiProgram.cs",
+              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\MauiProgram.cs",
+              "RelativeDocumentMoniker": "PCBTracker.UI\\MauiProgram.cs",
+              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\MauiProgram.cs",
+              "RelativeToolTip": "PCBTracker.UI\\MauiProgram.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAAQwAgAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-22T15:30:53.541Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-23T14:49:11.266Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 6,
               "Title": "BoardService.cs",
               "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Services\\BoardService.cs",
               "RelativeDocumentMoniker": "PCBTracker.Services\\BoardService.cs",
               "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Services\\BoardService.cs",
               "RelativeToolTip": "PCBTracker.Services\\BoardService.cs",
-              "ViewState": "AgIAAEsAAAAAAAAAAAAiwEQAAAA3AAAAAAAAAA==",
+              "ViewState": "AgIAAAABAAAAAAAAAAAiwCcBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-22T15:24:45.982Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-23T14:48:46.267Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "IBoardService.cs",
               "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Services\\Interfaces\\IBoardService.cs",
               "RelativeDocumentMoniker": "PCBTracker.Services\\Interfaces\\IBoardService.cs",
               "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Services\\Interfaces\\IBoardService.cs",
               "RelativeToolTip": "PCBTracker.Services\\Interfaces\\IBoardService.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAAAqwDAAAAANAAAAAAAAAA==",
+              "ViewState": "AgIAACIAAAAAAAAAAAAiwDgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-22T15:24:17.917Z",
+              "WhenOpened": "2025-07-23T14:48:34.221Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "BoardFilterDto.cs",
+              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Domain\\DTOs\\BoardFilterDto.cs",
+              "RelativeDocumentMoniker": "PCBTracker.Domain\\DTOs\\BoardFilterDto.cs",
+              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.Domain\\DTOs\\BoardFilterDto.cs",
+              "RelativeToolTip": "PCBTracker.Domain\\DTOs\\BoardFilterDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-23T14:47:57.905Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DataExtractViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\ViewModels\\DataExtractViewModel.cs",
+              "RelativeDocumentMoniker": "PCBTracker.UI\\ViewModels\\DataExtractViewModel.cs",
+              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\ViewModels\\DataExtractViewModel.cs",
+              "RelativeToolTip": "PCBTracker.UI\\ViewModels\\DataExtractViewModel.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAAAwC0AAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-23T14:42:32.142Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AppShell.xaml",
+              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\AppShell.xaml",
+              "RelativeDocumentMoniker": "PCBTracker.UI\\AppShell.xaml",
+              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Trace Application\\PCBTracker.UI\\AppShell.xaml",
+              "RelativeToolTip": "PCBTracker.UI\\AppShell.xaml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-07-23T14:40:10.292Z"
             }
           ]
         }

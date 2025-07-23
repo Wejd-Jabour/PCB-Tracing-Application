@@ -16,4 +16,9 @@
         Title="Submit"
         ContentTemplate="{DataTemplate views:SubmitPage}" />
 
+    <ShellContent
+    Title="Extract"
+    ContentTemplate="{DataTemplate views:DataExtractPage}"
+    Route="DataExtractPage" />
+
 </Shell>

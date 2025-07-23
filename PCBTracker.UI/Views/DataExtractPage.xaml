@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+  xmlns:vm="clr-namespace:PCBTracker.UI.ViewModels"
+  xmlns:dto="clr-namespace:PCBTracker.Domain.DTOs;assembly=PCBTracker.Domain"
+  x:Class="PCBTracker.UI.Views.DataExtractPage"
+  x:DataType="vm:DataExtractViewModel"
+  Title="Extract Boards">
+
+
+    <VerticalStackLayout Padding="10" Spacing="8">
+        <!-- Filters -->
+        <HorizontalStackLayout Spacing="6">
+            <Entry Placeholder="Serial #" Text="{Binding SerialNumberFilter}" WidthRequest="120"/>
+            <Picker Title="Type" ItemsSource="{Binding BoardTypes}"
+              SelectedItem="{Binding SelectedBoardTypeFilter}" WidthRequest="120"/>
+            <DatePicker Date="{Binding PrepDateFrom}" />
+            <DatePicker Date="{Binding PrepDateTo}" />
+            <DatePicker Date="{Binding ShipDateFrom}" />
+            <DatePicker Date="{Binding ShipDateTo}" />
+            <Button Text="Search" Command="{Binding SearchCommand}" />
+            <Button Text="Export CSV" Command="{Binding ExportCsvCommand}" />
+        </HorizontalStackLayout>
+
+        <!-- Results -->
+		<CollectionView ItemsSource="{Binding Boards}" SelectionMode="None">
+			<CollectionView.ItemTemplate>
+				<DataTemplate x:DataType="dto:BoardDto">
+					<Grid ColumnDefinitions="2*,2*,*,*,*,*">
+						<Label Text="{Binding SerialNumber}" Grid.Column="0"/>
+						<Label Text="{Binding PartNumber}"   Grid.Column="1"/>
+						<Label Text="{Binding BoardType}"    Grid.Column="2"/>
+						<Label Text="{Binding PrepDate, StringFormat='d'}" Grid.Column="3"/>
+						<Label Text="{Binding ShipDate, StringFormat='d'}" Grid.Column="4"/>
+						<Label Text="{Binding IsShipped}"     Grid.Column="5"/>
+					</Grid>
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+		</CollectionView>
+
+	</VerticalStackLayout>
+</ContentPage>

@@ -51,5 +51,9 @@ namespace PCBTracker.Services.Interfaces
         /// Returns the most recently‐created skids, up to the specified count.
         /// </summary>
         Task<IEnumerable<Skid>> GetRecentSkidsAsync(int count);
+
+
+        Task<IEnumerable<BoardDto>> GetBoardsAsync(BoardFilterDto filter);
+
     }
 }

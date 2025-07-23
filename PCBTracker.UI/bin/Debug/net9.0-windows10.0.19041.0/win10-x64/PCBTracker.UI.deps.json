@@ -15,6 +15,7 @@
           "Microsoft.Extensions.Logging.Debug": "9.0.0",
           "Microsoft.Maui.Controls": "9.0.51",
           "PCBTracker.Data": "1.0.0",
+          "PCBTracker.Domain": "1.0.0",
           "PCBTracker.Services": "1.0.0",
           "Microsoft.Web.WebView2.Core.Projection": "1.0.2903.40",
           "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.57"

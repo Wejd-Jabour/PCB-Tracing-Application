@@ -60,6 +60,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\PCBTracker.Domain\PCBTracker.Domain.csproj" />
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.7">
@@ -76,6 +77,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\DataExtractPage.xaml.cs">
+	    <DependentUpon>DataExtractPage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Views\DataExtractPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\LoginPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

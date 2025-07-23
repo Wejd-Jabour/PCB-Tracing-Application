@@ -65,6 +65,12 @@ build_metadata.AdditionalFiles.ManifestResourceName = PCBTracker.UI.Resources.St
 build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Styles.xaml
 build_metadata.AdditionalFiles.RelativePath = Resources\Styles\Styles.xaml
 
+[C:/Users/wejdj/OneDrive/Desktop/Trace Application/PCBTracker.UI/Views/DataExtractPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = PCBTracker.UI.Views.DataExtractPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\DataExtractPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\DataExtractPage.xaml
+
 [C:/Users/wejdj/OneDrive/Desktop/Trace Application/PCBTracker.UI/Views/LoginPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = PCBTracker.UI.Views.LoginPage.xaml
