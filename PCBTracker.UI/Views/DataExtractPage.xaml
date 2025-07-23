@@ -54,23 +54,45 @@
 			<Button Text="Export CSV" Command="{Binding ExportCsvCommand}" />
 		</HorizontalStackLayout>
 
-		<CollectionView ItemsSource="{Binding Boards}">
-			<CollectionView.ItemTemplate>
-				<DataTemplate x:DataType="dto:BoardDto">
-					<Frame Margin="4" Padding="8" HasShadow="True">
-						<VerticalStackLayout Spacing="4">
-							<Label Text="{Binding SerialNumber, StringFormat='Serial: {0}'}" FontAttributes="Bold"/>
-							<Label Text="{Binding PartNumber,   StringFormat='Part #: {0}'}"/>
-							<Label Text="{Binding BoardType,    StringFormat='Type: {0}'}"/>
-							<Label Text="{Binding PrepDate,     StringFormat='Prep Date: {0:d}'}"/>
-							<Label Text="{Binding ShipDate,     StringFormat='Ship Date: {0:d}'}"/>
-							<Label Text="{Binding IsShipped,    StringFormat='Shipped: {0}'}"/>
-							<Label Text="{Binding SkidID,       StringFormat='Skid: {0}'}"/>
-						</VerticalStackLayout>
-					</Frame>
-				</DataTemplate>
-			</CollectionView.ItemTemplate>
-		</CollectionView>
+		<!-- ─── Header (no change) ─── -->
+		<ScrollView Orientation="Horizontal" HeightRequest="40">
+			<Grid ColumnDefinitions="2*,2*,*,*,*,*,*" BackgroundColor="LightGray" Padding="8">
+				<Label Text="Serial"    Grid.Column="0" FontAttributes="Bold"/>
+				<Label Text="Part #"    Grid.Column="1" FontAttributes="Bold"/>
+				<Label Text="Type"      Grid.Column="2" FontAttributes="Bold"/>
+				<Label Text="Prep Date" Grid.Column="3" FontAttributes="Bold"/>
+				<Label Text="Ship Date" Grid.Column="4" FontAttributes="Bold"/>
+				<Label Text="Shipped"   Grid.Column="5" FontAttributes="Bold"/>
+				<Label Text="Skid"      Grid.Column="6" FontAttributes="Bold"/>
+			</Grid>
+		</ScrollView>
+
+		<!-- ─── Data Rows ─── -->
+		<ScrollView Orientation="Vertical" VerticalOptions="FillAndExpand">
+			<ScrollView Orientation="Horizontal">
+				<CollectionView ItemsSource="{Binding Boards}">
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="dto:BoardDto">
+							<!-- Use a Frame for border -->
+							<Frame
+							  Margin="0" Padding="8"
+							  BorderColor="#DDD" HasShadow="False"
+							  BackgroundColor="White">
+								<Grid ColumnDefinitions="2*,2*,*,*,*,*,*">
+									<Label Text="{Binding SerialNumber}"       Grid.Column="0"/>
+									<Label Text="{Binding PartNumber}"         Grid.Column="1"/>
+									<Label Text="{Binding BoardType}"          Grid.Column="2"/>
+									<Label Text="{Binding PrepDate, StringFormat='{}{0:d}'}" Grid.Column="3"/>
+									<Label Text="{Binding ShipDate, StringFormat='{}{0:d}'}" Grid.Column="4"/>
+									<Label Text="{Binding IsShipped}"          Grid.Column="5"/>
+									<Label Text="{Binding SkidID}"             Grid.Column="6"/>
+								</Grid>
+							</Frame>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+			</ScrollView>
+		</ScrollView>
 
 	</VerticalStackLayout>
 </ContentPage>
