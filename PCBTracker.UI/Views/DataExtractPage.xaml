@@ -4,24 +4,28 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
   xmlns:vm="clr-namespace:PCBTracker.UI.ViewModels"
   xmlns:dto="clr-namespace:PCBTracker.Domain.DTOs;assembly=PCBTracker.Domain"
+  xmlns:sys="clr-namespace:System;assembly=netstandard"
   x:Class="PCBTracker.UI.Views.DataExtractPage"
   x:DataType="vm:DataExtractViewModel"
   Title="Extract Boards">
 
-
-    <VerticalStackLayout Padding="10" Spacing="8">
-        <!-- Filters -->
-        <HorizontalStackLayout Spacing="6">
-            <Entry Placeholder="Serial #" Text="{Binding SerialNumberFilter}" WidthRequest="120"/>
-            <Picker Title="Type" ItemsSource="{Binding BoardTypes}"
-              SelectedItem="{Binding SelectedBoardTypeFilter}" WidthRequest="120"/>
-            <DatePicker Date="{Binding PrepDateFrom}" />
-            <DatePicker Date="{Binding PrepDateTo}" />
-            <DatePicker Date="{Binding ShipDateFrom}" />
-            <DatePicker Date="{Binding ShipDateTo}" />
-            <Button Text="Search" Command="{Binding SearchCommand}" />
-            <Button Text="Export CSV" Command="{Binding ExportCsvCommand}" />
-        </HorizontalStackLayout>
+	<VerticalStackLayout Padding="10" Spacing="8">
+		<HorizontalStackLayout Spacing="6">
+			<Entry Placeholder="Serial #" Text="{Binding SerialNumberFilter}" WidthRequest="120"/>
+			<Picker Title="Type" ItemsSource="{Binding BoardTypes}"
+					SelectedItem="{Binding SelectedBoardTypeFilter}" WidthRequest="120"/>
+			<DatePicker Date="{Binding PrepDateFrom}" />
+			<DatePicker Date="{Binding PrepDateTo}" />
+			<!-- these two now fall back to Today when your VM has null -->
+			<DatePicker
+			  Date="{Binding ShipDateFrom,
+               TargetNullValue={x:Static sys:DateTime.Today}}" />
+			<DatePicker
+			  Date="{Binding ShipDateTo,
+               TargetNullValue={x:Static sys:DateTime.Today}}" />
+			<Button Text="Search" Command="{Binding SearchCommand}" />
+			<Button Text="Export CSV" Command="{Binding ExportCsvCommand}" />
+		</HorizontalStackLayout>
 
         <!-- Results -->
 		<CollectionView ItemsSource="{Binding Boards}" SelectionMode="None">
