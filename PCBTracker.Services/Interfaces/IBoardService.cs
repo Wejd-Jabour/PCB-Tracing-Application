@@ -47,5 +47,9 @@ namespace PCBTracker.Services.Interfaces
         /// 
         /// </summary>
         Task CreateBoardAndClaimSkidAsync(BoardDto boardDto);
+
+        /// Returns the most recently‐created skids, up to the specified count.
+        /// </summary>
+        Task<IEnumerable<Skid>> GetRecentSkidsAsync(int count);
     }
 }

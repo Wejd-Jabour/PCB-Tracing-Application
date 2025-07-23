@@ -37,20 +37,62 @@
 				  IsToggled="{Binding IsShipped}" />
 			</HorizontalStackLayout>
 
-			<Label Text="Skid #" VerticalOptions="Center"/>
-			<Label Text="{Binding SelectedSkid.SkidName}" VerticalOptions="Center"/>
-			<Button
-			  Text="Change Skid"
-			  Command="{Binding ChangeSkidCommand}"
-			  VerticalOptions="Center"
-			  HorizontalOptions="Center"/>
 
-			<Button
+            <VerticalStackLayout
+                Spacing="10"
+                Padding="20"
+                VerticalOptions="Center"
+                HorizontalOptions="Start">
+
+                <!-- Top row: arrows + picker, left-aligned -->
+                <HorizontalStackLayout
+                  Spacing="10"
+                  HorizontalOptions="Start">
+                                <Button
+                  Text="‹"
+                  Command="{Binding PageBackwardCommand}"
+                  WidthRequest="50"
+                  HeightRequest="50" />
+
+                                <Picker
+                  Title="Skid"
+                  ItemsSource="{Binding Skids}"
+                  SelectedItem="{Binding SelectedSkid}"
+                  ItemDisplayBinding="{Binding SkidName}"
+                  WidthRequest="200" />
+
+                                <Button
+                  Text="›"
+                  Command="{Binding PageForwardCommand}"
+                  WidthRequest="50"
+                  HeightRequest="50" />
+                </HorizontalStackLayout>
+
+                <Label Text="This skid is for:" VerticalOptions="Center" HorizontalOptions="Center"/>
+                <Label Text="{Binding CurrentSkidType}" 
+                     FontAttributes="Bold" 
+                     VerticalOptions="Center"
+                     HorizontalOptions='Center'/>
+
+                <!-- Change Skid button, below and left-aligned -->
+                            <Button
+                Text="Start New Skid"
+                Command="{Binding ChangeSkidCommand}"
+                WidthRequest="200"
+                HeightRequest="50"
+                 />
+
+            </VerticalStackLayout>
+
+
+
+            <Button
                 x:Name="SubmitButton"
                 Text="Submit"
                 Command="{Binding SubmitCommand}"
-                Clicked="OnSubmitClicked"
-                HorizontalOptions="Center" />
+                Padding="20"
+                Margin="30"
+                Clicked="OnSubmitClicked" />
 			
 			
         </VerticalStackLayout>

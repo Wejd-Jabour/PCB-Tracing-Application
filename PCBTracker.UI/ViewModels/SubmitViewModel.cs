@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using PCBTracker.Domain.DTOs;
 using PCBTracker.Domain.Entities;
 using PCBTracker.Services.Interfaces;
@@ -70,6 +72,8 @@ namespace PCBTracker.UI.ViewModels
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
+        [NotifyCanExecuteChangedFor(nameof(PageBackwardCommand))]
+        [NotifyCanExecuteChangedFor(nameof(PageForwardCommand))]
         private Skid selectedSkid;
 
         /// <summary>
@@ -85,11 +89,19 @@ namespace PCBTracker.UI.ViewModels
             foreach (var t in types)
                 BoardTypes.Add(t);
 
-            // Fetch existing skids or create one if none exist
-            var existing = await _boardService.GetSkidsAsync();
+            //// Fetch existing skids or create one if none exist
+            //var existing = await _boardService.GetSkidsAsync();
+            //Skids.Clear();
+            //foreach (var s in existing)
+            //    Skids.Add(s);
+
+            var recent = await _boardService.GetRecentSkidsAsync(10);
             Skids.Clear();
-            foreach (var s in existing)
+            foreach (var s in recent)
                 Skids.Add(s);
+
+            // pick the most‐recent one by default
+            SelectedSkid = Skids.LastOrDefault();
 
             if (Skids.Count == 0)
             {
@@ -122,23 +134,54 @@ namespace PCBTracker.UI.ViewModels
         [RelayCommand(CanExecute = nameof(CanSubmit))]
         private async Task SubmitAsync()
         {
-            var dto = new BoardDto
+            try
             {
-                SerialNumber = SerialNumber,
-                PartNumber = PartNumber,
-                BoardType = SelectedBoardType,
-                PrepDate = PrepDate,
-                IsShipped = IsShipped,
-                ShipDate = IsShipped ? ShipDate : null,
-                SkidID = SelectedSkid.SkidID
-            };
+                var dto = new BoardDto
+                {
+                    SerialNumber = SerialNumber,
+                    PartNumber = PartNumber,
+                    BoardType = SelectedBoardType,
+                    PrepDate = PrepDate,
+                    IsShipped = IsShipped,
+                    ShipDate = IsShipped ? ShipDate : null,
+                    SkidID = SelectedSkid.SkidID
+                };
 
-            await _boardService.CreateBoardAndClaimSkidAsync(dto);
+                await _boardService.CreateBoardAndClaimSkidAsync(dto);
 
-            await App.Current.MainPage.DisplayAlert("Success", "Board submitted.", "OK");
+                await App.Current.MainPage.DisplayAlert("Success", "Board submitted.", "OK");
 
-            // Clear only the serial number for the next scan:
-            SerialNumber = string.Empty;
+                // Clear only the serial number for the next scan:
+                SerialNumber = string.Empty;
+            }
+            catch (DbUpdateException dbEx) when (dbEx.InnerException is SqlException sqlEx
+                && sqlEx.Message.Contains("cannot be tracked"))
+            {
+                // Duplicate‐key/tracking conflict
+                await App.Current.MainPage.DisplayAlert(
+                    "Duplicate Board",
+                    "A board with that serial number already exists in this session. " +
+                    "Please check your Serial Number and try again, or edit the existing record.",
+                    "OK");
+            }
+            catch (DbUpdateException dbEx) when (dbEx.InnerException is SqlException sqlEx
+                && sqlEx.Number == 2627 /* SQL PK/Unique violation */)
+            {
+                // Unique‐constraint violation
+                await App.Current.MainPage.DisplayAlert(
+                    "Serial Number Taken",
+                    "That serial number is already in use. Each board must have a unique Serial Number.",
+                    "OK");
+            }
+            catch (Exception ex)
+            {
+                // Fallback for anything else
+                await App.Current.MainPage.DisplayAlert(
+                    "Error",
+                    "An unexpected error occurred while saving. Please try again or contact support if it persists.",
+                    "OK");
+            }
+
         }
 
         /// <summary>
@@ -201,5 +244,46 @@ namespace PCBTracker.UI.ViewModels
             }
         }
 
+
+        [RelayCommand(CanExecute = nameof(CanPageBackward))]
+        public void PageBackward()
+        {
+            var idx = Skids.IndexOf(SelectedSkid);
+            if (idx > 0)
+                SelectedSkid = Skids[idx - 1];
+        }
+
+        private bool CanPageBackward()
+            => SelectedSkid != null && Skids.IndexOf(SelectedSkid) > 0;
+
+        [RelayCommand(CanExecute = nameof(CanPageForward))]
+        public void PageForward()
+        {
+            var idx = Skids.IndexOf(SelectedSkid);
+            if (idx < Skids.Count - 1)
+                SelectedSkid = Skids[idx + 1];
+        }
+
+        private bool CanPageForward()
+            => SelectedSkid != null && Skids.IndexOf(SelectedSkid) < Skids.Count - 1;
+
+
+        /// <summary>
+        /// Exposes the type this skid is designated for, or “(unassigned)” if null.
+        /// </summary>
+        public string CurrentSkidType
+            => SelectedSkid?.designatedType
+               ?? "(unassigned)";
+
+        // This partial method is called by the generated SelectedSkid setter
+        partial void OnSelectedSkidChanged(Skid oldValue, Skid newValue)
+        {
+            // Notify that CurrentSkidType has changed
+            OnPropertyChanged(nameof(CurrentSkidType));
+        }
+
+
     }
+
+
 }

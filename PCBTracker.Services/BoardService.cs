@@ -101,20 +101,47 @@ namespace PCBTracker.Services
             await _db.SaveChangesAsync();
         }
 
+        //public async Task CreateBoardAndClaimSkidAsync(BoardDto dto)
+        //{
+        //    // 1) Load the selected skid
+        //    var skid = await _db.Skids.FindAsync(dto.SkidID);
+
+        //    // 2) Claim it if unassigned
+        //    if (skid != null && skid.designatedType is null)
+        //    {
+        //        skid.designatedType = dto.BoardType;
+        //        _db.Skids.Update(skid);
+        //    }
+
+        //    // 3) Create the board
+        //    var entity = new Board
+        //    {
+        //        SerialNumber = dto.SerialNumber,
+        //        PartNumber = dto.PartNumber,
+        //        BoardType = dto.BoardType,
+        //        PrepDate = dto.PrepDate,
+        //        IsShipped = dto.IsShipped,
+        //        ShipDate = dto.IsShipped ? dto.ShipDate : null,
+        //        SkidID = dto.SkidID
+        //    };
+        //    _db.Boards.Add(entity);
+
+        //    // 4) Commit both changes atomically
+        //    await _db.SaveChangesAsync();
+        //}
+
         public async Task CreateBoardAndClaimSkidAsync(BoardDto dto)
         {
-            // 1) Load the selected skid
+            // 1) Load & (maybe) claim the skid
             var skid = await _db.Skids.FindAsync(dto.SkidID);
-
-            // 2) Claim it if unassigned
-            if (skid != null && skid.designatedType is null)
+            if (skid != null && skid.designatedType == null)
             {
                 skid.designatedType = dto.BoardType;
-                _db.Skids.Update(skid);
+                // no need to call _db.Skids.Update(skid); FindAsync gives you a tracked entity
             }
 
-            // 3) Create the board
-            var entity = new Board
+            // 2) Create the new Board entity
+            var board = new Board
             {
                 SerialNumber = dto.SerialNumber,
                 PartNumber = dto.PartNumber,
@@ -124,11 +151,39 @@ namespace PCBTracker.Services
                 ShipDate = dto.IsShipped ? dto.ShipDate : null,
                 SkidID = dto.SkidID
             };
-            _db.Boards.Add(entity);
+            _db.Boards.Add(board);
 
-            // 4) Commit both changes atomically
-            await _db.SaveChangesAsync();
+            // 3) Save inside a try/finally so we ALWAYS clear the tracker
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            finally
+            {
+                // EF Core 6+:
+                _db.ChangeTracker.Clear();
+                //
+                // If you’re on an earlier EF version, you can detach just the one entity instead:
+                // _db.Entry(board).State = EntityState.Detached;
+            }
         }
+
+
+
+
+
+        public async Task<IEnumerable<Skid>> GetRecentSkidsAsync(int count)
+        {
+            // 1) order by descending ID (newest first)
+            var recent = await _db.Skids
+                                  .OrderByDescending(s => s.SkidID)
+                                  .Take(count)
+                                  .ToListAsync();
+
+            // 2) flip to ascending if you want oldest‐of‐the‐last first
+            return recent.OrderBy(s => s.SkidID);
+        }
+
     }
 
 }
