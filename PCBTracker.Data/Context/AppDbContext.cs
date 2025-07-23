@@ -34,8 +34,32 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Enforce unique SerialNumber on the Boards table at the DB level.
+        // Enforce unique SerialNumber on all tables at the DB level.
         modelBuilder.Entity<Board>()
+            .HasIndex(b => b.SerialNumber)
+            .IsUnique();
+        
+        modelBuilder.Entity<LE>()
+            .HasIndex(b => b.SerialNumber)
+            .IsUnique();
+        
+        modelBuilder.Entity<LE_Upgrade>()
+            .HasIndex(b => b.SerialNumber)
+            .IsUnique();
+        
+        modelBuilder.Entity<SAD>()
+            .HasIndex(b => b.SerialNumber)
+            .IsUnique();
+        
+        modelBuilder.Entity<SAD_Upgrade>()
+            .HasIndex(b => b.SerialNumber)
+            .IsUnique();
+        
+        modelBuilder.Entity<SAT>()
+            .HasIndex(b => b.SerialNumber)
+            .IsUnique();
+        
+        modelBuilder.Entity<SAT_Upgrade>()
             .HasIndex(b => b.SerialNumber)
             .IsUnique();
 

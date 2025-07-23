@@ -101,34 +101,6 @@ namespace PCBTracker.Services
             await _db.SaveChangesAsync();
         }
 
-        //public async Task CreateBoardAndClaimSkidAsync(BoardDto dto)
-        //{
-        //    // 1) Load the selected skid
-        //    var skid = await _db.Skids.FindAsync(dto.SkidID);
-
-        //    // 2) Claim it if unassigned
-        //    if (skid != null && skid.designatedType is null)
-        //    {
-        //        skid.designatedType = dto.BoardType;
-        //        _db.Skids.Update(skid);
-        //    }
-
-        //    // 3) Create the board
-        //    var entity = new Board
-        //    {
-        //        SerialNumber = dto.SerialNumber,
-        //        PartNumber = dto.PartNumber,
-        //        BoardType = dto.BoardType,
-        //        PrepDate = dto.PrepDate,
-        //        IsShipped = dto.IsShipped,
-        //        ShipDate = dto.IsShipped ? dto.ShipDate : null,
-        //        SkidID = dto.SkidID
-        //    };
-        //    _db.Boards.Add(entity);
-
-        //    // 4) Commit both changes atomically
-        //    await _db.SaveChangesAsync();
-        //}
 
         public async Task CreateBoardAndClaimSkidAsync(BoardDto dto)
         {
@@ -148,12 +120,115 @@ namespace PCBTracker.Services
                 BoardType = dto.BoardType,
                 PrepDate = dto.PrepDate,
                 IsShipped = dto.IsShipped,
-                ShipDate = dto.IsShipped ? dto.ShipDate : null,
+                ShipDate = dto.IsShipped
+                                 ? dto.ShipDate ?? dto.PrepDate
+                                 : null,
                 SkidID = dto.SkidID
             };
             _db.Boards.Add(board);
 
-            // 3) Save inside a try/finally so we ALWAYS clear the tracker
+
+            // 3) Upload it also to its respective table based on the board type
+            switch(dto.BoardType)
+            {
+                case "LE":
+                    _db.LE.Add( new LE
+                    {
+                        SerialNumber = dto.SerialNumber,
+                        PartNumber = dto.PartNumber,
+                        BoardType = dto.BoardType,
+                        PrepDate = dto.PrepDate,
+                        IsShipped = dto.IsShipped,
+                        ShipDate = dto.IsShipped
+                                 ? dto.ShipDate ?? dto.PrepDate
+                                 : null,
+                        SkidID = dto.SkidID
+                    });
+                    break;
+                
+                case "LE Upgrade":
+                    _db.LE_Upgrade.Add(new LE_Upgrade
+                    {
+                        SerialNumber = dto.SerialNumber,
+                        PartNumber = dto.PartNumber,
+                        BoardType = dto.BoardType,
+                        PrepDate = dto.PrepDate,
+                        IsShipped = dto.IsShipped,
+                        ShipDate = dto.IsShipped
+                                 ? dto.ShipDate ?? dto.PrepDate
+                                 : null,
+                        SkidID = dto.SkidID
+                    });
+                    break;
+                
+                case "SAD":
+                    _db.SAD.Add( new SAD
+                    {
+                        SerialNumber = dto.SerialNumber,
+                        PartNumber = dto.PartNumber,
+                        BoardType = dto.BoardType,
+                        PrepDate = dto.PrepDate,
+                        IsShipped = dto.IsShipped,
+                        ShipDate = dto.IsShipped
+                                 ? dto.ShipDate ?? dto.PrepDate
+                                 : null,
+                        SkidID = dto.SkidID
+                    });
+                    break;
+                
+                case "SAD Upgrade":
+                    _db.SAD_Upgrade.Add( new SAD_Upgrade
+                    {
+                        SerialNumber = dto.SerialNumber,
+                        PartNumber = dto.PartNumber,
+                        BoardType = dto.BoardType,
+                        PrepDate = dto.PrepDate,
+                        IsShipped = dto.IsShipped,
+                        ShipDate = dto.IsShipped
+                                 ? dto.ShipDate ?? dto.PrepDate
+                                 : null,
+                        SkidID = dto.SkidID
+                    });
+                    break;
+                
+                case "SAT":
+                    _db.SAT.Add( new SAT
+                    {
+                        SerialNumber = dto.SerialNumber,
+                        PartNumber = dto.PartNumber,
+                        BoardType = dto.BoardType,
+                        PrepDate = dto.PrepDate,
+                        IsShipped = dto.IsShipped,
+                        ShipDate = dto.IsShipped
+                                 ? dto.ShipDate ?? dto.PrepDate
+                                 : null,
+                        SkidID = dto.SkidID
+                    });
+                    break;
+                
+                case "SAT Upgrade":
+                    _db.SAT_Upgrade.Add( new SAT_Upgrade
+                    {
+                        SerialNumber = dto.SerialNumber,
+                        PartNumber = dto.PartNumber,
+                        BoardType = dto.BoardType,
+                        PrepDate = dto.PrepDate,
+                        IsShipped = dto.IsShipped,
+                        ShipDate = dto.IsShipped
+                                 ? dto.ShipDate ?? dto.PrepDate
+                                 : null,
+                        SkidID = dto.SkidID
+                    });
+                    break;
+
+                default:
+                    throw new InvalidOperationException($"Unknown board type: {dto.BoardType}");
+            }
+                
+
+
+
+            // 4) Save inside a try/finally so we ALWAYS clear the tracker
             try
             {
                 await _db.SaveChangesAsync();
@@ -162,9 +237,7 @@ namespace PCBTracker.Services
             {
                 // EF Core 6+:
                 _db.ChangeTracker.Clear();
-                //
-                // If you’re on an earlier EF version, you can detach just the one entity instead:
-                // _db.Entry(board).State = EntityState.Detached;
+                
             }
         }
 

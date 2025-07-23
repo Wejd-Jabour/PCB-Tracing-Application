@@ -90,11 +90,6 @@ namespace PCBTracker.UI.ViewModels
                 BoardTypes.Add(t);
 
             //// Fetch existing skids or create one if none exist
-            //var existing = await _boardService.GetSkidsAsync();
-            //Skids.Clear();
-            //foreach (var s in existing)
-            //    Skids.Add(s);
-
             var recent = await _boardService.GetRecentSkidsAsync(10);
             Skids.Clear();
             foreach (var s in recent)
@@ -153,6 +148,8 @@ namespace PCBTracker.UI.ViewModels
 
                 // Clear only the serial number for the next scan:
                 SerialNumber = string.Empty;
+
+                OnPropertyChanged(nameof(CurrentSkidType));
             }
             catch (DbUpdateException dbEx) when (dbEx.InnerException is SqlException sqlEx
                 && sqlEx.Message.Contains("cannot be tracked"))
