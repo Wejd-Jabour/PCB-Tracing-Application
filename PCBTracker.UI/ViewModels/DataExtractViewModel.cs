@@ -1,9 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PCBTracker.Domain.DTOs;
-using PCBTracker.Domain.Entities;
 using PCBTracker.Services.Interfaces;
+using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace PCBTracker.UI.ViewModels
 {
@@ -12,45 +13,62 @@ namespace PCBTracker.UI.ViewModels
         private readonly IBoardService _boardService;
 
         [ObservableProperty]
-        private ObservableCollection<BoardDto> boards = new();
+        ObservableCollection<BoardDto> boards = new();
 
         [ObservableProperty]
-        private ObservableCollection<string> boardTypes = new();
+        ObservableCollection<string> boardTypes = new();
 
         [ObservableProperty]
-        private string serialNumberFilter = string.Empty;
+        ObservableCollection<SkidDto> skids = new();
 
         [ObservableProperty]
-        private string selectedBoardTypeFilter = string.Empty;
+        string serialNumberFilter = string.Empty;
 
         [ObservableProperty]
-        private DateTime prepDateFrom = DateTime.Today.AddMonths(-1);
+        string selectedBoardTypeFilter = string.Empty;
 
         [ObservableProperty]
-        private DateTime prepDateTo = DateTime.Today;
+        SkidDto? selectedSkidFilter = null;
 
         [ObservableProperty]
-        private DateTime? shipDateFrom = null;
+        DateTime dateFrom = DateTime.Today.AddMonths(-1);
 
         [ObservableProperty]
-        private DateTime? shipDateTo = null;
+        DateTime dateTo = DateTime.Today;
+
+        [ObservableProperty]
+        bool useShipDate = false;
+
+        public string DateModeLabel => useShipDate ? "Filtering by Ship Date" : "Filtering by Prep Date";
+        public string DateModeButtonText => useShipDate ? "Switch to Prep Date" : "Switch to Ship Date";
 
         public DataExtractViewModel(IBoardService boardService)
-        {
-            _boardService = boardService;
-        }
+            => _boardService = boardService;
 
         [RelayCommand]
         public async Task LoadAsync()
         {
-            // load types for filter
+            // Load Board Types
             var types = await _boardService.GetBoardTypesAsync();
             BoardTypes.Clear();
-            BoardTypes.Add(string.Empty); // “All”
+            BoardTypes.Add(string.Empty);
             foreach (var t in types) BoardTypes.Add(t);
 
-            // initial load
+            // Load Skids via the new DTO method
+            var allSkids = await _boardService.ExtractSkidsAsync();
+            Skids.Clear();
+            Skids.Add(new SkidDto { SkidID = 0, SkidName = "<All Skids>" });
+            foreach (var s in allSkids) Skids.Add(s);
+
             await SearchAsync();
+        }
+
+        [RelayCommand]
+        public void ToggleDateMode()
+        {
+            UseShipDate = !UseShipDate;
+            OnPropertyChanged(nameof(DateModeLabel));
+            OnPropertyChanged(nameof(DateModeButtonText));
         }
 
         [RelayCommand]
@@ -60,38 +78,38 @@ namespace PCBTracker.UI.ViewModels
             {
                 SerialNumber = SerialNumberFilter,
                 BoardType = SelectedBoardTypeFilter,
-                PrepDateFrom = PrepDateFrom,
-                PrepDateTo = PrepDateTo,
-                ShipDateFrom = ShipDateFrom,
-                ShipDateTo = ShipDateTo
+                SkidId = SelectedSkidFilter?.SkidID > 0 ? SelectedSkidFilter.SkidID : null
             };
+
+            if (UseShipDate)
+            {
+                filter.ShipDateFrom = DateFrom;
+                filter.ShipDateTo = DateTo;
+            }
+            else
+            {
+                filter.PrepDateFrom = DateFrom;
+                filter.PrepDateTo = DateTo;
+            }
 
             Boards.Clear();
             var results = await _boardService.GetBoardsAsync(filter);
-            foreach (var b in results) Boards.Add(b);
+            foreach (var b in results)
+                Boards.Add(b);
         }
 
         [RelayCommand]
         public async Task ExportCsvAsync()
         {
-            // simple CSV export to cache + share
             var sb = new System.Text.StringBuilder();
             sb.AppendLine("SerialNumber,PartNumber,BoardType,PrepDate,ShipDate,IsShipped,SkidID");
             foreach (var b in Boards)
-            {
                 sb.AppendLine($"{b.SerialNumber},{b.PartNumber},{b.BoardType},{b.PrepDate:yyyy-MM-dd},{b.ShipDate:yyyy-MM-dd},{b.IsShipped},{b.SkidID}");
-            }
 
-            var file = System.IO.Path.Combine(
-                FileSystem.CacheDirectory,
-                $"Boards_{DateTime.Now:yyyyMMddHHmmss}.csv");
+            var file = System.IO.Path.Combine(FileSystem.CacheDirectory, $"Boards_{DateTime.Now:yyyyMMddHHmmss}.csv");
             System.IO.File.WriteAllText(file, sb.ToString());
 
-            await Share.RequestAsync(new ShareFileRequest
-            {
-                Title = "Exported Boards",
-                File = new ShareFile(file)
-            });
+            await Share.RequestAsync(new ShareFileRequest("Exported Boards", new ShareFile(file)));
         }
     }
 }

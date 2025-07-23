@@ -8,5 +8,6 @@
         public DateTime? PrepDateTo { get; set; }
         public DateTime? ShipDateFrom { get; set; }
         public DateTime? ShipDateTo { get; set; }
+        public int? SkidId { get; set; }
     }
 }

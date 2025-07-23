@@ -9,12 +9,11 @@ namespace PCBTracker.UI.Views
         public DataExtractPage()
         {
             InitializeComponent();
-            BindingContext = Application
-                .Current
-                .Handler
-                .MauiContext
-                .Services
-                .GetRequiredService<DataExtractViewModel>();
+            BindingContext = Application.Current
+                             .Handler
+                             .MauiContext
+                             .Services
+                             .GetRequiredService<DataExtractViewModel>();
         }
 
         protected override async void OnAppearing()
@@ -24,5 +23,4 @@ namespace PCBTracker.UI.Views
                 await vm.LoadAsync();
         }
     }
-
 }

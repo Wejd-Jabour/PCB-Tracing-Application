@@ -9,36 +9,65 @@
   x:DataType="vm:DataExtractViewModel"
   Title="Extract Boards">
 
-	<VerticalStackLayout Padding="10" Spacing="8">
-		<HorizontalStackLayout Spacing="6">
-			<Entry Placeholder="Serial #" Text="{Binding SerialNumberFilter}" WidthRequest="120"/>
-			<Picker Title="Type" ItemsSource="{Binding BoardTypes}"
-					SelectedItem="{Binding SelectedBoardTypeFilter}" WidthRequest="120"/>
-			<DatePicker Date="{Binding PrepDateFrom}" />
-			<DatePicker Date="{Binding PrepDateTo}" />
-			<!-- these two now fall back to Today when your VM has null -->
-			<DatePicker
-			  Date="{Binding ShipDateFrom,
-               TargetNullValue={x:Static sys:DateTime.Today}}" />
-			<DatePicker
-			  Date="{Binding ShipDateTo,
-               TargetNullValue={x:Static sys:DateTime.Today}}" />
-			<Button Text="Search" Command="{Binding SearchCommand}" />
+	<VerticalStackLayout Padding="10" Spacing="12">
+
+		<Label Text="Filters" FontAttributes="Bold" FontSize="Medium"/>
+
+		<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
+			<!-- labels -->
+			<Label Text="Serial #"     Grid.Row="0" Grid.Column="0"/>
+			<Label Text="Board Type"  Grid.Row="0" Grid.Column="1"/>
+			<Label Text="Date From"   Grid.Row="0" Grid.Column="2"/>
+			<Label Text="Date To"     Grid.Row="0" Grid.Column="3"/>
+			<Label Text="Skid"        Grid.Row="0" Grid.Column="4"/>
+
+			<!-- controls -->
+			<Entry    Grid.Row="1" Grid.Column="0" WidthRequest="120"
+					  Placeholder="Serial" Text="{Binding SerialNumberFilter}" />
+
+			<Picker   Grid.Row="1" Grid.Column="1" WidthRequest="140"
+					  ItemsSource="{Binding BoardTypes}"
+					  SelectedItem="{Binding SelectedBoardTypeFilter}" />
+
+			<DatePicker Grid.Row="1" Grid.Column="2"
+						Date="{Binding DateFrom}" />
+
+			<DatePicker Grid.Row="1" Grid.Column="3"
+						Date="{Binding DateTo}" />
+
+			<Picker   Grid.Row="1" Grid.Column="4" WidthRequest="120"
+					  ItemsSource="{Binding Skids}"
+					  ItemDisplayBinding="{Binding SkidName}"
+					  SelectedItem="{Binding SelectedSkidFilter}" />
+
+			<Button   Grid.Row="1" Grid.Column="5"
+					  Text="{Binding DateModeButtonText}"
+					  Command="{Binding ToggleDateModeCommand}" />
+		</Grid>
+
+		<Label Text="{Binding DateModeLabel}"
+			   FontAttributes="Italic"
+			   HorizontalOptions="Center" />
+
+		<HorizontalStackLayout Spacing="10">
+			<Button Text="Search"    Command="{Binding SearchCommand}" />
 			<Button Text="Export CSV" Command="{Binding ExportCsvCommand}" />
 		</HorizontalStackLayout>
 
-        <!-- Results -->
-		<CollectionView ItemsSource="{Binding Boards}" SelectionMode="None">
+		<CollectionView ItemsSource="{Binding Boards}">
 			<CollectionView.ItemTemplate>
 				<DataTemplate x:DataType="dto:BoardDto">
-					<Grid ColumnDefinitions="2*,2*,*,*,*,*">
-						<Label Text="{Binding SerialNumber}" Grid.Column="0"/>
-						<Label Text="{Binding PartNumber}"   Grid.Column="1"/>
-						<Label Text="{Binding BoardType}"    Grid.Column="2"/>
-						<Label Text="{Binding PrepDate, StringFormat='d'}" Grid.Column="3"/>
-						<Label Text="{Binding ShipDate, StringFormat='d'}" Grid.Column="4"/>
-						<Label Text="{Binding IsShipped}"     Grid.Column="5"/>
-					</Grid>
+					<Frame Margin="4" Padding="8" HasShadow="True">
+						<VerticalStackLayout Spacing="4">
+							<Label Text="{Binding SerialNumber, StringFormat='Serial: {0}'}" FontAttributes="Bold"/>
+							<Label Text="{Binding PartNumber,   StringFormat='Part #: {0}'}"/>
+							<Label Text="{Binding BoardType,    StringFormat='Type: {0}'}"/>
+							<Label Text="{Binding PrepDate,     StringFormat='Prep Date: {0:d}'}"/>
+							<Label Text="{Binding ShipDate,     StringFormat='Ship Date: {0:d}'}"/>
+							<Label Text="{Binding IsShipped,    StringFormat='Shipped: {0}'}"/>
+							<Label Text="{Binding SkidID,       StringFormat='Skid: {0}'}"/>
+						</VerticalStackLayout>
+					</Frame>
 				</DataTemplate>
 			</CollectionView.ItemTemplate>
 		</CollectionView>
