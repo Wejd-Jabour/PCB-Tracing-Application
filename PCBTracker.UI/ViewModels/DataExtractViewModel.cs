@@ -81,34 +81,6 @@ namespace PCBTracker.UI.ViewModels
             OnPropertyChanged(nameof(DateModeButtonText));
         }
 
-        [RelayCommand]
-        public async Task SearchAsync()
-        {
-            var filter = new BoardFilterDto
-            {
-                SerialNumber = SerialNumberFilter,
-                BoardType = SelectedBoardTypeFilter,
-                SkidId = SelectedSkidFilter?.SkidID > 0 ? SelectedSkidFilter.SkidID : null,
-                PageNumber = PageNumber,
-                PageSize = PageSize
-            };
-
-            if (UseShipDate)
-            {
-                filter.ShipDateFrom = DateFrom;
-                filter.ShipDateTo = DateTo;
-            }
-            else
-            {
-                filter.PrepDateFrom = DateFrom;
-                filter.PrepDateTo = DateTo;
-            }
-
-            Boards.Clear();
-            var results = await _boardService.GetBoardsAsync(filter);
-            foreach (var b in results)
-                Boards.Add(b);
-        }
 
         [RelayCommand]
         public async Task ExportCsvAsync()
@@ -125,45 +97,60 @@ namespace PCBTracker.UI.ViewModels
         }
 
         [RelayCommand]
-        private async Task NextPageAsync()
+        public async Task SearchAsync()
         {
-            int nextPage = PageNumber + 1;
+            PageNumber = 1;
+            await LoadPageAsync(PageNumber);
+        }
 
+        [RelayCommand]
+        private async Task LoadPageAsync(int page)
+        {
             var filter = new BoardFilterDto
             {
                 SerialNumber = SerialNumberFilter,
                 BoardType = SelectedBoardTypeFilter,
                 SkidId = SelectedSkidFilter?.SkidID > 0 ? SelectedSkidFilter.SkidID : null,
-                PageNumber = nextPage,
-                PageSize = PageSize
+                PageNumber = page,
+                PageSize = PageSize,
+                PrepDateFrom = UseShipDate ? null : DateFrom,
+                PrepDateTo = UseShipDate ? null : DateTo,
+                ShipDateFrom = UseShipDate ? DateFrom : null,
+                ShipDateTo = UseShipDate ? DateTo : null
             };
 
-            if (UseShipDate)
-            {
-                filter.ShipDateFrom = DateFrom;
-                filter.ShipDateTo = DateTo;
-            }
-            else
-            {
-                filter.PrepDateFrom = DateFrom;
-                filter.PrepDateTo = DateTo;
-            }
+            var results = (await _boardService.GetBoardsAsync(filter)).ToList();
 
-            var nextPageResults = (await _boardService.GetBoardsAsync(filter)).ToList();
+            Boards.Clear();
+            foreach (var b in results)
+                Boards.Add(b);
 
-            if (nextPageResults.Any())
+            // Update HasNextPage
+            var nextPageFilter = new BoardFilterDto
             {
-                PageNumber = nextPage;
-                Boards.Clear();
-                foreach (var b in nextPageResults)
-                    Boards.Add(b);
-            }
-            else
-            {
-                await App.Current.MainPage.DisplayAlert("End of Pages", "No more boards to show.", "OK");
-            }
+                SerialNumber = SerialNumberFilter,
+                BoardType = SelectedBoardTypeFilter,
+                SkidId = SelectedSkidFilter?.SkidID > 0 ? SelectedSkidFilter.SkidID : null,
+                PageNumber = page + 1,
+                PageSize = PageSize,
+                PrepDateFrom = UseShipDate ? null : DateFrom,
+                PrepDateTo = UseShipDate ? null : DateTo,
+                ShipDateFrom = UseShipDate ? DateFrom : null,
+                ShipDateTo = UseShipDate ? DateTo : null
+            };
+
+            var nextPageResults = await _boardService.GetBoardsAsync(nextPageFilter);
+            HasNextPage = nextPageResults.Any();
         }
 
+        [RelayCommand]
+        private async Task NextPageAsync()
+        {
+            if (!HasNextPage) return;
+
+            PageNumber++;
+            await LoadPageAsync(PageNumber);
+        }
 
         [RelayCommand]
         private async Task PreviousPageAsync()
@@ -171,9 +158,10 @@ namespace PCBTracker.UI.ViewModels
             if (PageNumber > 1)
             {
                 PageNumber--;
-                await SearchAsync();
+                await LoadPageAsync(PageNumber);
             }
         }
+
 
     }
 }

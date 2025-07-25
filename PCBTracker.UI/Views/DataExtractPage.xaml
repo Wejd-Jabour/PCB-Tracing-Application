@@ -96,7 +96,10 @@
 
             <Label Text="{Binding PageNumber}" FontAttributes="Bold" />
 
-            <Button Text="Next Page" Command="{Binding NextPageCommand}" />
+            <Button Text="Next Page"
+                Command="{Binding NextPageCommand}"
+                IsEnabled="{Binding HasNextPage}" />
+
         </HorizontalStackLayout>
 
     </Grid>
