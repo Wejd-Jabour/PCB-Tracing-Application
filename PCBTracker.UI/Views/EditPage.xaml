@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dto="clr-namespace:PCBTracker.Domain.DTOs;assembly=PCBTracker.Domain"
+             x:Class="PCBTracker.UI.Views.EditPage"
+             Title="EditBoards">
+
+    <ScrollView>
+        <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="10" RowSpacing="10">
+
+            <!-- FILTERS + ACTIONS -->
+            <VerticalStackLayout Grid.Row="0" Spacing="12">
+                <Label Text="Filters" FontAttributes="Bold" FontSize="Medium"/>
+
+                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
+                    <!-- Labels -->
+                    <Label Text="Serial #"     Grid.Row="0" Grid.Column="0"/>
+                    <Label Text="Board Type"   Grid.Row="0" Grid.Column="1"/>
+                    <Label Text="Date From"    Grid.Row="0" Grid.Column="2"/>
+                    <Label Text="Date To"      Grid.Row="0" Grid.Column="3"/>
+                    <Label Text="Skid"         Grid.Row="0" Grid.Column="4"/>
+
+                    <!-- Controls -->
+                    <Entry Grid.Row="1" Grid.Column="0" WidthRequest="120"
+                           Placeholder="Serial" Text="{Binding SerialNumberFilter}" />
+
+                    <Picker Grid.Row="1" Grid.Column="1" WidthRequest="140"
+                            ItemsSource="{Binding BoardTypes}"
+                            SelectedItem="{Binding SelectedBoardTypeFilter}" />
+
+                    <DatePicker Grid.Row="1" Grid.Column="2" Date="{Binding DateFrom}" />
+                    <DatePicker Grid.Row="1" Grid.Column="3" Date="{Binding DateTo}" />
+
+                    <Picker Grid.Row="1" Grid.Column="4" WidthRequest="120"
+                            ItemsSource="{Binding Skids}"
+                            ItemDisplayBinding="{Binding SkidName}"
+                            SelectedItem="{Binding SelectedSkidFilter}" />
+
+                    <Button Grid.Row="1" Grid.Column="5"
+                            Text="{Binding DateModeButtonText}"
+                            Command="{Binding ToggleDateModeCommand}" />
+                </Grid>
+
+                <Label Text="{Binding DateModeLabel}" FontAttributes="Italic" HorizontalOptions="Center" />
+
+                <HorizontalStackLayout Spacing="10">
+                    <Button Text="Search" Command="{Binding SearchCommand}" />
+                    <Button Text="Export CSV" Command="{Binding ExportCsvCommand}" />
+                </HorizontalStackLayout>
+
+                <BoxView HeightRequest="2" Color="Gray" />
+
+                <!-- ACTIONS -->
+                <Label Text="Actions" FontAttributes="Bold" FontSize="18" />
+
+                <Label Text="Remove Board by Serial Number" />
+                <Entry Placeholder="Serial Number to Remove" Text="{Binding RemoveSerialNumber}" />
+                <Button Text="Remove Board" Command="{Binding RemoveBoardCommand}" />
+
+                <Label Text="Apply Ship Date to Skid" />
+                <Picker Title="Skid"
+                        ItemsSource="{Binding Skids}"
+                        SelectedItem="{Binding ApplyShipDateSkid}"
+                        ItemDisplayBinding="{Binding SkidName}" />
+                <DatePicker Date="{Binding NewShipDate}" />
+                <Button Text="Apply Ship Date" Command="{Binding ApplyShipDateToSkidCommand}" />
+            </VerticalStackLayout>
+
+            <!-- COLUMN HEADERS -->
+            <ScrollView Grid.Row="1" Orientation="Horizontal" HeightRequest="40">
+                <Grid ColumnDefinitions="2*,2*,*,*,*,*,*" BackgroundColor="LightGray" Padding="8">
+                    <Label Text="Serial"    Grid.Column="0" FontAttributes="Bold"/>
+                    <Label Text="Part #"    Grid.Column="1" FontAttributes="Bold"/>
+                    <Label Text="Type"      Grid.Column="2" FontAttributes="Bold"/>
+                    <Label Text="Prep Date" Grid.Column="3" FontAttributes="Bold"/>
+                    <Label Text="Ship Date" Grid.Column="4" FontAttributes="Bold"/>
+                    <Label Text="Shipped"   Grid.Column="5" FontAttributes="Bold"/>
+                    <Label Text="Skid"      Grid.Column="6" FontAttributes="Bold"/>
+                </Grid>
+            </ScrollView>
+
+            <!-- BOARD RESULTS -->
+            <CollectionView Grid.Row="2"
+                            ItemsSource="{Binding Boards}"
+                            VerticalOptions="FillAndExpand">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" />
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="dto:BoardDto">
+                        <Frame Padding="6" Margin="2" BorderColor="#ccc">
+                            <Grid ColumnDefinitions="1.2*,1.8*,*,*,*,*,*">
+                                <Label Text="{Binding SerialNumber}" Grid.Column="0"/>
+                                <Label Text="{Binding PartNumber}" Grid.Column="1"/>
+                                <Label Text="{Binding BoardType}" Grid.Column="2"/>
+                                <Label Text="{Binding PrepDate, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="3"/>
+                                <Label Text="{Binding ShipDate, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="4"/>
+                                <Label Text="{Binding IsShipped}" Grid.Column="5"/>
+                                <Label Text="{Binding SkidID}" Grid.Column="6"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- PAGINATION -->
+            <HorizontalStackLayout Grid.Row="3" HorizontalOptions="Center" Spacing="20">
+                <Button Text="Previous Page"
+                        Command="{Binding PreviousPageCommand}" />
+
+                <Label Text="{Binding PageNumber}" FontAttributes="Bold" />
+
+                <Button Text="Next Page"
+                        Command="{Binding NextPageCommand}"
+                        IsEnabled="{Binding HasNextPage}" />
+            </HorizontalStackLayout>
+
+        </Grid>
+    </ScrollView>
+
+</ContentPage>

@@ -28,5 +28,8 @@ namespace PCBTracker.Services.Interfaces
         Task CreateBoardAndClaimSkidAsync(BoardDto boardDto);
         Task<IEnumerable<Skid>> GetRecentSkidsAsync(int count);
         Task<IEnumerable<BoardDto>> GetBoardsAsync(BoardFilterDto filter);
+
+        Task DeleteBoardBySerialAsync(string serialNumber);
+        Task UpdateShipDateForSkidAsync(int skidId, DateTime shipDate);
     }
 }

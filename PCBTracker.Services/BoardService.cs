@@ -240,5 +240,32 @@ namespace PCBTracker.Services
                                   .ToListAsync();
             return recent.OrderBy(s => s.SkidID);
         }
+
+        public async Task DeleteBoardBySerialAsync(string serialNumber)
+        {
+            var all = await _db.Boards.Where(b => b.SerialNumber == serialNumber).ToListAsync();
+            if (!all.Any()) return;
+            _db.Boards.RemoveRange(all);
+
+            _db.LE.RemoveRange(_db.LE.Where(b => b.SerialNumber == serialNumber));
+            _db.LE_Upgrade.RemoveRange(_db.LE_Upgrade.Where(b => b.SerialNumber == serialNumber));
+            _db.SAD.RemoveRange(_db.SAD.Where(b => b.SerialNumber == serialNumber));
+            _db.SAD_Upgrade.RemoveRange(_db.SAD_Upgrade.Where(b => b.SerialNumber == serialNumber));
+            _db.SAT.RemoveRange(_db.SAT.Where(b => b.SerialNumber == serialNumber));
+            _db.SAT_Upgrade.RemoveRange(_db.SAT_Upgrade.Where(b => b.SerialNumber == serialNumber));
+
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task UpdateShipDateForSkidAsync(int skidId, DateTime shipDate)
+        {
+            var boards = await _db.Boards.Where(b => b.SkidID == skidId).ToListAsync();
+            foreach (var b in boards)
+            {
+                b.ShipDate = shipDate;
+                b.IsShipped = true;
+            }
+            await _db.SaveChangesAsync();
+        }
     }
 }

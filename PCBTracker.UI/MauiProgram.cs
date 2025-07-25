@@ -57,6 +57,8 @@ public static class MauiProgram
         builder.Services.AddTransient<SubmitViewModel>();
         builder.Services.AddTransient<DataExtractViewModel>();
         builder.Services.AddTransient<DataExtractPage>();
+        builder.Services.AddTransient<EditViewModel>();
+
 
 
         // Build the configured MAUI application

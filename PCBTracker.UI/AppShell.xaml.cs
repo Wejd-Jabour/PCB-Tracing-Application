@@ -23,7 +23,9 @@ public partial class AppShell : Shell
     private void RegisterRoutes()
     {
         Routing.RegisterRoute("SubmitPage", typeof(SubmitPage));
-        Routing.RegisterRoute("DataExtract", typeof(DataExtractPage)); 
+        Routing.RegisterRoute("DataExtract", typeof(DataExtractPage));
+        Routing.RegisterRoute("EditPage", typeof(EditPage));
+
     }
     public void LoadAuthenticatedPages()
     {
@@ -53,6 +55,19 @@ public partial class AppShell : Shell
             {
                 ContentTemplate = new DataTemplate(typeof(DataExtractPage)),
                 Route = "DataExtract"
+            }
+        }
+        });
+        Items.Add(new FlyoutItem
+        {
+            Title = "Edit",
+            Route = "EditPage",
+            Items =
+        {
+            new ShellContent
+            {
+                ContentTemplate = new DataTemplate(typeof(EditPage)),
+                Route = "EditPage"
             }
         }
         });
