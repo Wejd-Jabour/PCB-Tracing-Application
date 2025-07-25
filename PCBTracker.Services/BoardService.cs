@@ -79,8 +79,10 @@ namespace PCBTracker.Services
                 PrepDate = dto.PrepDate,
                 ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null,
                 IsShipped = dto.IsShipped,
-                SkidID = dto.SkidID
+                SkidID = dto.SkidID,
+                CreatedAt = DateTime.Now
             };
+
             _db.Boards.Add(board);
             switch (dto.BoardType)
             {
@@ -212,15 +214,9 @@ namespace PCBTracker.Services
             if (filter.ShipDateTo.HasValue)
                 query = query.Where(b => b.ShipDate <= filter.ShipDateTo.Value);
 
+            query = query.OrderByDescending(b => b.CreatedAt);
 
-            if (filter.PageNumber.HasValue && filter.PageSize.HasValue)
-            {
-                query = query
-                    .Skip((filter.PageNumber.Value - 1) * filter.PageSize.Value)
-                    .Take(filter.PageSize.Value);
-            }
-
-
+            // Project to DTO
             return await query
                 .Select(b => new BoardDto
                 {
@@ -234,6 +230,7 @@ namespace PCBTracker.Services
                 })
                 .ToListAsync();
         }
+
 
         public async Task<IEnumerable<Skid>> GetRecentSkidsAsync(int count)
         {

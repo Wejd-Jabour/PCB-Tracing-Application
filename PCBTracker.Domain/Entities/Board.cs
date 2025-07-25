@@ -19,7 +19,8 @@ namespace PCBTracker.Domain.Entities
         public DateTime? ShipDate { get; set; }
         public bool IsShipped { get; set; }
 
-        // navigation
         public Skid? Skid { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

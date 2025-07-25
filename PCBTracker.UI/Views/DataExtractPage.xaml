@@ -74,7 +74,7 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="dto:BoardDto">
                     <Frame Padding="6" Margin="2" BorderColor="#ccc">
-                        <Grid ColumnDefinitions="2*,2*,*,*,*,*,*">
+                        <Grid ColumnDefinitions="1.2*,1.8*,*,*,*,*,*">
                             <Label Text="{Binding SerialNumber}"       Grid.Column="0"/>
                             <Label Text="{Binding PartNumber}"         Grid.Column="1"/>
                             <Label Text="{Binding BoardType}"          Grid.Column="2"/>

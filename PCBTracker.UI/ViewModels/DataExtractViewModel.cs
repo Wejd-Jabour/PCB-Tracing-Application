@@ -85,16 +85,46 @@ namespace PCBTracker.UI.ViewModels
         [RelayCommand]
         public async Task ExportCsvAsync()
         {
+            bool confirm = await App.Current.MainPage.DisplayAlert(
+                "Ready to Convert?",
+                "Would you like to export this data to CSV?",
+                "Yes",
+                "No");
+
+            if (!confirm) 
+                return;
+
             var sb = new System.Text.StringBuilder();
-            sb.AppendLine("SerialNumber,PartNumber,BoardType,PrepDate,ShipDate,IsShipped,SkidID");
+            sb.AppendLine("SerialNumber,PartNumber,ShipDate");
+
             foreach (var b in Boards)
-                sb.AppendLine($"{b.SerialNumber},{b.PartNumber},{b.BoardType},{b.PrepDate:yyyy-MM-dd},{b.ShipDate:yyyy-MM-dd},{b.IsShipped},{b.SkidID}");
+            {
+                var shipDate = b.ShipDate?.ToString("yyyy-MM-dd") ?? "";
+                sb.AppendLine($"{b.SerialNumber},{b.PartNumber},{shipDate}");
+            }
 
-            var file = System.IO.Path.Combine(FileSystem.CacheDirectory, $"Boards_{DateTime.Now:yyyyMMddHHmmss}.csv");
-            System.IO.File.WriteAllText(file, sb.ToString());
+            var fileName = $"Boards_{DateTime.Now:yyyyMMddHHmmss}.csv";
+            string folderPath;
 
-            await Share.RequestAsync(new ShareFileRequest("Exported Boards", new ShareFile(file)));
+#if WINDOWS
+            folderPath = System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "Downloads");
+#elif MACCATALYST
+    folderPath = System.IO.Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+        "Downloads");
+#else
+    // Mobile fallback
+    folderPath = FileSystem.CacheDirectory;
+#endif
+
+            var filePath = System.IO.Path.Combine(folderPath, fileName);
+            System.IO.File.WriteAllText(filePath, sb.ToString());
+
+            await App.Current.MainPage.DisplayAlert("Export Complete", $"File saved to:\n{filePath}", "OK");
         }
+
 
         [RelayCommand]
         public async Task SearchAsync()
