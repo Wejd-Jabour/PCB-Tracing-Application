@@ -82,9 +82,115 @@ namespace PCBTracker.Services
                 SkidID = dto.SkidID
             };
             _db.Boards.Add(board);
+            switch (dto.BoardType)
+            {
+                case "LE":
+                    _db.LE.Add(new LE
+                    {
+                        SerialNumber = dto.SerialNumber,
+                        PartNumber = dto.PartNumber,
+                        BoardType = dto.BoardType,
+                        PrepDate = dto.PrepDate,
+                        IsShipped = dto.IsShipped,
+                        ShipDate = dto.IsShipped
+                                 ? dto.ShipDate ?? dto.PrepDate
+                                 : null,
+                        SkidID = dto.SkidID
+                    });
+                    break;
 
-            await _db.SaveChangesAsync();
-            _db.ChangeTracker.Clear();
+                case "LE Upgrade":
+                    _db.LE_Upgrade.Add(new LE_Upgrade
+                    {
+                        SerialNumber = dto.SerialNumber,
+                        PartNumber = dto.PartNumber,
+                        BoardType = dto.BoardType,
+                        PrepDate = dto.PrepDate,
+                        IsShipped = dto.IsShipped,
+                        ShipDate = dto.IsShipped
+                                 ? dto.ShipDate ?? dto.PrepDate
+                                 : null,
+                        SkidID = dto.SkidID
+                    });
+                    break;
+
+                case "SAD":
+                    _db.SAD.Add(new SAD
+                    {
+                        SerialNumber = dto.SerialNumber,
+                        PartNumber = dto.PartNumber,
+                        BoardType = dto.BoardType,
+                        PrepDate = dto.PrepDate,
+                        IsShipped = dto.IsShipped,
+                        ShipDate = dto.IsShipped
+                                 ? dto.ShipDate ?? dto.PrepDate
+                                 : null,
+                        SkidID = dto.SkidID
+                    });
+                    break;
+
+                case "SAD Upgrade":
+                    _db.SAD_Upgrade.Add(new SAD_Upgrade
+                    {
+                        SerialNumber = dto.SerialNumber,
+                        PartNumber = dto.PartNumber,
+                        BoardType = dto.BoardType,
+                        PrepDate = dto.PrepDate,
+                        IsShipped = dto.IsShipped,
+                        ShipDate = dto.IsShipped
+                                 ? dto.ShipDate ?? dto.PrepDate
+                                 : null,
+                        SkidID = dto.SkidID
+                    });
+                    break;
+
+                case "SAT":
+                    _db.SAT.Add(new SAT
+                    {
+                        SerialNumber = dto.SerialNumber,
+                        PartNumber = dto.PartNumber,
+                        BoardType = dto.BoardType,
+                        PrepDate = dto.PrepDate,
+                        IsShipped = dto.IsShipped,
+                        ShipDate = dto.IsShipped
+                                 ? dto.ShipDate ?? dto.PrepDate
+                                 : null,
+                        SkidID = dto.SkidID
+                    });
+                    break;
+
+                case "SAT Upgrade":
+                    _db.SAT_Upgrade.Add(new SAT_Upgrade
+                    {
+                        SerialNumber = dto.SerialNumber,
+                        PartNumber = dto.PartNumber,
+                        BoardType = dto.BoardType,
+                        PrepDate = dto.PrepDate,
+                        IsShipped = dto.IsShipped,
+                        ShipDate = dto.IsShipped
+                                 ? dto.ShipDate ?? dto.PrepDate
+                                 : null,
+                        SkidID = dto.SkidID
+                    });
+                    break;
+
+                default:
+                    throw new InvalidOperationException($"Unknown board type: {dto.BoardType}");
+            }
+
+
+
+
+            // 4) Save inside a try/finally so we ALWAYS clear the tracker
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            finally
+            {
+                // EF Core 6+:
+                _db.ChangeTracker.Clear();
+            }
         }
 
         public async Task<IEnumerable<BoardDto>> GetBoardsAsync(BoardFilterDto filter)
