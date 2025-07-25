@@ -131,6 +131,10 @@ namespace PCBTracker.UI.ViewModels
         {
             try
             {
+                if (SerialNumber.Length != 16)
+                {
+                    throw new Exception("Invalid Serial Number Length");
+                }
                 var dto = new BoardDto
                 {
                     SerialNumber = SerialNumber,
@@ -172,10 +176,13 @@ namespace PCBTracker.UI.ViewModels
             }
             catch (Exception ex)
             {
+                string message = !string.IsNullOrWhiteSpace(ex.Message) ?
+                    ex.Message
+                    : "An unexpected error occurred while saving. Please try again or contact support if it persists.";
                 // Fallback for anything else
                 await App.Current.MainPage.DisplayAlert(
                     "Error",
-                    "An unexpected error occurred while saving. Please try again or contact support if it persists.",
+                    message,
                     "OK");
             }
 
