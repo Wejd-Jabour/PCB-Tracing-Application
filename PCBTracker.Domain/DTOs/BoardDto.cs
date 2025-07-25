@@ -3,36 +3,53 @@
 namespace PCBTracker.Domain.DTOs
 {
     /// <summary>
-    /// Data Transfer Object for creating a new Board.
+    /// Represents a data transfer object (DTO) for board submission and transport.
+    /// This object is used to encapsulate board-related data across layers
+    /// without directly exposing the underlying database entity.
     /// </summary>
     public class BoardDto
     {
-        // The unique serial number scanned or entered for this board.
-        // Required and validated by the service layer to ensure uniqueness.
+        /// <summary>
+        /// The unique 16-character serial number assigned to the board.
+        /// This value is entered or scanned by the user and used as a primary identifier.
+        /// The service layer enforces uniqueness before persisting to the database.
+        /// </summary>
         public string SerialNumber { get; set; } = default!;
 
-        // The manufacturer or internal part number associated with this board.
-        // Helps identify the board's variant or revision.
+        /// <summary>
+        /// The part number that identifies the board's model, revision, or specification.
+        /// This is often mapped from the selected board type.
+        /// </summary>
         public string PartNumber { get; set; } = default!;
 
-        // The type/category of the board (e.g., "LE", "SAD", "SAT Upgrade").
-        // Populated from a lookup in the SubmitViewModel via IBoardService.
+        /// <summary>
+        /// The type of the board, such as "LE", "SAD", "SAT Upgrade".
+        /// Used to determine the appropriate destination table and processing rules.
+        /// </summary>
         public string BoardType { get; set; } = default!;
 
-        // The date the board was prepared or scanned into the system.
-        // Bound to a DatePicker in the Submit page.
+        /// <summary>
+        /// The date on which the board was prepared.
+        /// Used for filtering and reporting; this field is required.
+        /// </summary>
         public DateTime PrepDate { get; set; }
 
-        // Flag indicating whether the board has been marked as shipped.
-        // If true, ShipDate must be populated (defaults to PrepDate if left blank).
+        /// <summary>
+        /// Indicates whether the board has been marked as shipped.
+        /// If true, a corresponding ShipDate value may be required.
+        /// </summary>
         public bool IsShipped { get; set; }
 
-        // Optional date the board was or will be shipped.
-        // Only has a value when IsShipped is true.
+        /// <summary>
+        /// The date the board was shipped, if applicable.
+        /// Only populated when IsShipped is true. May default to PrepDate if not explicitly set.
+        /// </summary>
         public DateTime? ShipDate { get; set; }
 
-        // Foreign key linking to the Skid on which this board is placed.
-        // Determined by the SubmitViewModel, which picks or creates the next skid.
+        /// <summary>
+        /// The ID of the Skid (container) this board is assigned to.
+        /// This value links the board to a grouping unit in the system.
+        /// </summary>
         public int SkidID { get; set; }
     }
 }

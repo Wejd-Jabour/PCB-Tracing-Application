@@ -6,57 +6,71 @@ using System.Threading.Tasks;
 namespace PCBTracker.UI.ViewModels
 {
     /// <summary>
-    /// ViewModel for LoginPage. Exposes Username/Password properties,
-    /// and a LoginCommand that handles authentication and navigation.
+    /// ViewModel for the login page. Exposes bindable username and password fields,
+    /// and a command to perform login logic through the IUserService.
+    /// Implements INotifyPropertyChanged via ObservableObject.
     /// </summary>
     public partial class LoginViewModel : ObservableObject
     {
         private readonly IUserService _userService;
 
         /// <summary>
-        /// IUserService is injected via DI to perform the actual auth logic.
+        /// Constructor that receives a reference to the user service for authentication logic.
+        /// This service is injected through the dependency injection system.
         /// </summary>
         public LoginViewModel(IUserService userService)
         {
             _userService = userService;
         }
 
-        // The entered username, bound two-way to an Entry.Text in XAML.
+        /// <summary>
+        /// Backing property for the entered username.
+        /// The [ObservableProperty] attribute generates a public Username property
+        /// with automatic INotifyPropertyChanged support.
+        /// This is bound two-way in XAML to the username input field.
+        /// </summary>
         [ObservableProperty]
         private string _username;
 
-        // The entered password, bound to an Entry with IsPassword=true.
+        /// <summary>
+        /// Backing property for the entered password.
+        /// The [ObservableProperty] attribute generates a public Password property.
+        /// This is typically bound to a password Entry in XAML with IsPassword=true.
+        /// </summary>
         [ObservableProperty]
         private string _password;
 
         /// <summary>
-        /// This method is converted by [RelayCommand] into an ICommand named LoginCommand.
-        /// It runs when the user taps the “Login” button or presses Enter.
+        /// Asynchronous login method converted into a command named LoginCommand via [RelayCommand].
+        /// When invoked, attempts to authenticate the user and navigate to the next screen.
         /// </summary>
         [RelayCommand]
         private async Task LoginAsync()
         {
-            // Attempt to authenticate; returns User or null.
+            // Call the IUserService.Authenticate method with current input values.
+            // This returns a User object if credentials match, or null if invalid.
             var user = _userService.Authenticate(Username, Password);
 
+            // If authentication fails, show an alert dialog to the user.
             if (user is null)
             {
-                // Show an alert if credentials are invalid.
                 await App.Current.MainPage.DisplayAlert(
-                    "Login Failed",
-                    "Invalid username or password.",
-                    "OK");
+                    "Login Failed",                  // Title
+                    "Invalid username or password.", // Message
+                    "OK");                           // Button text
             }
             else
             {
-                App.CurrentUser = user; // Store user
+                // Store the authenticated user in a static application-level property.
+                App.CurrentUser = user;
 
-                if(Shell.Current is AppShell shell)
+                // If the current navigation shell is AppShell, load any restricted pages.
+                if (Shell.Current is AppShell shell)
                 {
                     shell.LoadAuthenticatedPages();
                 }
 
-                // On success, navigate to the SubmitPage (shell route).
+                // Navigate to the root-level SubmitPage using the shell routing system.
                 await Shell.Current.GoToAsync("///SubmitPage");
             }
         }

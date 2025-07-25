@@ -12,13 +12,18 @@ using System.Threading.Tasks;
 namespace PCBTracker.UI.ViewModels
 {
     /// <summary>
-    /// ViewModel for SubmitPage. Manages form state, lookup loading, validation,
-    /// and submission of new boards via the IBoardService.
+    /// ViewModel for SubmitPage.
+    /// Manages form state, validation, list loading, and board submission logic.
+    /// Implements INotifyPropertyChanged via ObservableObject.
     /// </summary>
     public partial class SubmitViewModel : ObservableObject
     {
         private readonly IBoardService _boardService;
 
+        /// <summary>
+        /// Static map between board types and their corresponding part numbers.
+        /// Used to auto-fill the PartNumber field when a board type is selected.
+        /// </summary>
         private static readonly IReadOnlyDictionary<string, string> _partNumberMap =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -31,25 +36,30 @@ namespace PCBTracker.UI.ViewModels
             };
 
         /// <summary>
-        /// IBoardService is injected to handle business logic and EF Core operations.
+        /// Constructor receives IBoardService dependency for data operations.
+        /// Initializes default prep date to today.
         /// </summary>
         public SubmitViewModel(IBoardService boardService)
         {
             _boardService = boardService;
-            PrepDate = DateTime.Today;  // Default PrepDate to today
+            PrepDate = DateTime.Today;
         }
 
-        // Collections bound to Picker controls in XAML:
+        // ------------------------------
+        // Bindable Properties
+        // ------------------------------
+
         [ObservableProperty]
         private ObservableCollection<string> boardTypes = new();
 
         [ObservableProperty]
         private ObservableCollection<Skid> skids = new();
 
-        // Form fields bound to various Entry/Picker/DatePicker/Switch controls:
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
         private string serialNumber = string.Empty;
+
+        // Automatically triggers auto-submit debounce on value change
         partial void OnSerialNumberChanged(string oldValue, string newValue)
             => DebounceAutoSubmit();
 
@@ -76,26 +86,27 @@ namespace PCBTracker.UI.ViewModels
         [NotifyCanExecuteChangedFor(nameof(PageForwardCommand))]
         private Skid selectedSkid;
 
+        // ------------------------------
+        // Lifecycle Command
+        // ------------------------------
+
         /// <summary>
-        /// Loads board types and skids each time the page appears.
-        /// Ensures at least one Skid exists and selects the latest one.
+        /// Loads list values on page entry.
+        /// Populates board types and skids; creates skid if none exist.
         /// </summary>
         [RelayCommand]
         public async Task LoadAsync()
         {
-            // Fetch and populate board types for the Picker
             var types = await _boardService.GetBoardTypesAsync();
             BoardTypes.Clear();
             foreach (var t in types)
                 BoardTypes.Add(t);
 
-            //// Fetch existing skids or create one if none exist
             var recent = await _boardService.GetRecentSkidsAsync(10);
             Skids.Clear();
             foreach (var s in recent)
                 Skids.Add(s);
 
-            // pick the most‐recent one by default
             SelectedSkid = Skids.LastOrDefault();
 
             if (Skids.Count == 0)
@@ -104,27 +115,34 @@ namespace PCBTracker.UI.ViewModels
                 Skids.Add(newSkid);
             }
 
-            // Default to the most recently created skid
             SelectedSkid = Skids[^1];
 
-            // If already marked shipped, ensure ShipDate is initialized
             if (IsShipped && ShipDate == null)
                 ShipDate = PrepDate;
         }
 
+        // ------------------------------
+        // Submit Validation
+        // ------------------------------
+
         /// <summary>
-        /// Enables the Submit button only when required fields are filled.
+        /// Determines whether the Submit button is enabled.
+        /// All required fields must be filled and the selected skid must match the type (if constrained).
         /// </summary>
         private bool CanSubmit()
             => !string.IsNullOrWhiteSpace(SerialNumber)
-               && !string.IsNullOrWhiteSpace(PartNumber)
-               && !string.IsNullOrWhiteSpace(SelectedBoardType)
-               && SelectedSkid != null
+            && !string.IsNullOrWhiteSpace(PartNumber)
+            && !string.IsNullOrWhiteSpace(SelectedBoardType)
+            && SelectedSkid != null
             && (SelectedSkid.designatedType == null || SelectedSkid.designatedType == SelectedBoardType);
 
+        // ------------------------------
+        // Submit Command
+        // ------------------------------
+
         /// <summary>
-        /// Gathers form data into a BoardDto and sends it to the service.
-        /// Shows a success alert and clears the serial field for the next scan.
+        /// Constructs a BoardDto and submits it to the service.
+        /// Handles validation errors, uniqueness conflicts, and shows result dialogs.
         /// </summary>
         [RelayCommand(CanExecute = nameof(CanSubmit))]
         private async Task SubmitAsync()
@@ -132,9 +150,8 @@ namespace PCBTracker.UI.ViewModels
             try
             {
                 if (SerialNumber.Length != 16)
-                {
                     throw new Exception("Invalid Serial Number Length");
-                }
+
                 var dto = new BoardDto
                 {
                     SerialNumber = SerialNumber,
@@ -150,25 +167,21 @@ namespace PCBTracker.UI.ViewModels
 
                 await App.Current.MainPage.DisplayAlert("Success", "Board submitted.", "OK");
 
-                // Clear only the serial number for the next scan:
                 SerialNumber = string.Empty;
 
                 OnPropertyChanged(nameof(CurrentSkidType));
             }
             catch (DbUpdateException dbEx) when (dbEx.InnerException is SqlException sqlEx
-                && sqlEx.Message.Contains("cannot be tracked"))
+                                                 && sqlEx.Message.Contains("cannot be tracked"))
             {
-                // Duplicate‐key/tracking conflict
                 await App.Current.MainPage.DisplayAlert(
                     "Duplicate Board",
-                    "A board with that serial number already exists in this session. " +
-                    "Please check your Serial Number and try again, or edit the existing record.",
+                    "A board with that serial number already exists in this session. Please check your Serial Number and try again, or edit the existing record.",
                     "OK");
             }
             catch (DbUpdateException dbEx) when (dbEx.InnerException is SqlException sqlEx
-                && sqlEx.Number == 2627 /* SQL PK/Unique violation */)
+                                                 && sqlEx.Number == 2627)
             {
-                // Unique‐constraint violation
                 await App.Current.MainPage.DisplayAlert(
                     "Serial Number Taken",
                     "That serial number is already in use. Each board must have a unique Serial Number.",
@@ -176,65 +189,62 @@ namespace PCBTracker.UI.ViewModels
             }
             catch (Exception ex)
             {
-                string message = !string.IsNullOrWhiteSpace(ex.Message) ?
-                    ex.Message
+                string message = !string.IsNullOrWhiteSpace(ex.Message)
+                    ? ex.Message
                     : "An unexpected error occurred while saving. Please try again or contact support if it persists.";
-                // Fallback for anything else
+
                 await App.Current.MainPage.DisplayAlert(
                     "Error",
                     message,
                     "OK");
             }
-
         }
 
+        // ------------------------------
+        // Change Skid Command
+        // ------------------------------
+
         /// <summary>
-        /// Cycle to the next Skid by creating a new one and selecting it.
-        /// Bound to the “Cycle Skid” button in the UI.
+        /// Creates a new skid and sets it as the selected one.
         /// </summary>
         [RelayCommand]
         private async Task ChangeSkidAsync()
         {
-            // Create a brand-new skid in the DB
             var newSkid = await _boardService.CreateNewSkidAsync();
-
-            // Add it to the collection so the Picker updates...
             Skids.Add(newSkid);
-
-            // ...and select it immediately
             SelectedSkid = newSkid;
         }
 
+        // ------------------------------
+        // Debounced Auto Submit
+        // ------------------------------
 
         private CancellationTokenSource _autoSubmitCts;
 
         private void DebounceAutoSubmit()
         {
-            // cancel any pending run
             _autoSubmitCts?.Cancel();
             _autoSubmitCts = new CancellationTokenSource();
             var token = _autoSubmitCts.Token;
 
-            // fire-and-forget background task
             _ = Task.Run(async () =>
             {
                 try
                 {
-                    // wait 1 second (1000 ms)
                     await Task.Delay(1000, token);
-
-                    // if not cancelled and can submit, trigger the command on the UI thread
                     if (!token.IsCancellationRequested && CanSubmit())
                     {
                         MainThread.BeginInvokeOnMainThread(() =>
-                            SubmitCommand.Execute(null)
-                        );
+                            SubmitCommand.Execute(null));
                     }
                 }
-                catch (TaskCanceledException) { /* noop */ }
+                catch (TaskCanceledException) { }
             });
         }
 
+        /// <summary>
+        /// When board type changes, automatically set PartNumber from lookup table.
+        /// </summary>
         partial void OnSelectedBoardTypeChanged(string oldValue, string newValue)
         {
             if (!string.IsNullOrWhiteSpace(newValue)
@@ -248,6 +258,9 @@ namespace PCBTracker.UI.ViewModels
             }
         }
 
+        // ------------------------------
+        // Skid Paging Commands
+        // ------------------------------
 
         [RelayCommand(CanExecute = nameof(CanPageBackward))]
         public void PageBackward()
@@ -271,23 +284,22 @@ namespace PCBTracker.UI.ViewModels
         private bool CanPageForward()
             => SelectedSkid != null && Skids.IndexOf(SelectedSkid) < Skids.Count - 1;
 
+        // ------------------------------
+        // Skid Type Display
+        // ------------------------------
 
         /// <summary>
-        /// Exposes the type this skid is designated for, or “(unassigned)” if null.
+        /// Returns the designated type of the currently selected skid or a fallback if unassigned.
         /// </summary>
         public string CurrentSkidType
-            => SelectedSkid?.designatedType
-               ?? "(unassigned)";
+            => SelectedSkid?.designatedType ?? "(unassigned)";
 
-        // This partial method is called by the generated SelectedSkid setter
+        /// <summary>
+        /// Updates the display when the selected skid changes.
+        /// </summary>
         partial void OnSelectedSkidChanged(Skid oldValue, Skid newValue)
         {
-            // Notify that CurrentSkidType has changed
             OnPropertyChanged(nameof(CurrentSkidType));
         }
-
-
     }
-
-
 }

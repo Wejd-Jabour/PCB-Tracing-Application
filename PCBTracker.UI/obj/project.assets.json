@@ -9117,7 +9117,6 @@
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "net9.0-windows10.0.19041.0",
         "net9.0-windows10.0.19041.0"
       ],
       "sources": {

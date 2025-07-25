@@ -7,12 +7,17 @@ using PCBTracker.UI.ViewModels;
 namespace PCBTracker.UI.Views
 {
     /// <summary>
-    /// Code-behind for SubmitPage. Resolves the ViewModel via DI,
-    /// hooks up entry events, and handles page lifecycle.
+    /// Code-behind for the SubmitPage view.
+    /// Responsible for initializing the page, resolving the ViewModel, 
+    /// wiring up event handlers, and handling lifecycle events.
     /// </summary>
     public partial class SubmitPage : ContentPage
     {
-
+        /// <summary>
+        /// Static dictionary mapping board type strings to their part numbers.
+        /// Used to validate or display expected mappings between type and SKU in ViewModel.
+        /// Not directly used in this code-behind file, but possibly referenced in XAML binding context.
+        /// </summary>
         static readonly IReadOnlyDictionary<string, string> _partNumberMap = new Dictionary<string, string>
         {
             ["LE"] = "ASY-G8GMLESBH-P-ATLR07MR1",
@@ -23,12 +28,17 @@ namespace PCBTracker.UI.Views
             ["SAT Upgrade"] = "ASY-G8GMSATB-UG-KIT-P-ATLR03MR1",
         };
 
-
+        /// <summary>
+        /// Constructor for the SubmitPage.
+        /// Initializes components and sets the data context by resolving the ViewModel via DI.
+        /// </summary>
         public SubmitPage()
         {
-            InitializeComponent(); // Load XAML UI
+            // Builds visual tree from SubmitPage.xaml and wires up named controls.
+            InitializeComponent();
 
-            // Resolve and set the SubmitViewModel from MAUI DI container
+            // Resolve an instance of SubmitViewModel using MAUI's DI container.
+            // Uses the IServiceProvider exposed by the current application's MauiContext.
             BindingContext = Application.Current
                 .Handler
                 .MauiContext
@@ -37,42 +47,43 @@ namespace PCBTracker.UI.Views
         }
 
         /// <summary>
-        /// Called when the user finishes entry in the SerialNumber field
-        /// (e.g. presses Enter or scans a barcode). Invokes Submit and re-focuses.
+        /// Event handler for the 'Completed' event of the SerialNumber entry control.
+        /// This is typically triggered by pressing Enter or scanning a barcode.
+        /// Triggers the SubmitCommand and sets focus back to the field for rapid entry.
         /// </summary>
         private void OnSerialNumberEntryCompleted(object sender, EventArgs e)
         {
             if (BindingContext is SubmitViewModel vm && vm.SubmitCommand.CanExecute(null))
-                vm.SubmitCommand.Execute(null);
+                vm.SubmitCommand.Execute(null); // Submit the current form.
 
-            SerialNumberEntry.Focus(); // Ready for next scan
+            SerialNumberEntry.Focus(); // Return focus to allow fast repeat input.
         }
 
         /// <summary>
-        /// Handler for a manual Submit button click. Executes SubmitCommand then refocuses.
+        /// Event handler for a Submit button click.
+        /// Executes the SubmitCommand and refocuses the serial number field.
         /// </summary>
         private void OnSubmitClicked(object sender, EventArgs e)
         {
             if (BindingContext is SubmitViewModel vm && vm.SubmitCommand.CanExecute(null))
-                vm.SubmitCommand.Execute(null);
+                vm.SubmitCommand.Execute(null); // Submit on button press.
 
-            SerialNumberEntry.Focus();
+            SerialNumberEntry.Focus(); // Prepare UI for next serial scan or input.
         }
 
         /// <summary>
-        /// Fires every time the page appears. Loads lookups and sets initial focus.
+        /// Overrides the OnAppearing lifecycle event.
+        /// Called every time the SubmitPage is navigated to or appears on screen.
+        /// Triggers ViewModel.LoadAsync() to refresh lookup data and sets input focus.
         /// </summary>
         protected override async void OnAppearing()
         {
             base.OnAppearing();
 
             if (BindingContext is SubmitViewModel vm)
-                await vm.LoadAsync();
-                
-            SerialNumberEntry.Focus();
+                await vm.LoadAsync(); // Reload board types and skids.
+
+            SerialNumberEntry.Focus(); // Auto-focus for immediate barcode entry.
         }
-
-
-        
     }
 }
