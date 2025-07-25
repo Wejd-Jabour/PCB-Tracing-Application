@@ -10,6 +10,7 @@ namespace PCBTracker.UI.Views
     /// </summary>
     public partial class LoginPage : ContentPage
     {
+        private bool _isPasswordHidden = true;
         public LoginPage()
         {
             InitializeComponent(); // Loads the XAML UI defined in LoginPage.xaml
@@ -26,6 +27,25 @@ namespace PCBTracker.UI.Views
 
             // Set the BindingContext so that data bindings in XAML connect to the ViewModel properties and commands.
             BindingContext = vm;
+
+            PasswordEntry.IsPassword = _isPasswordHidden;
+        }
+        private void AttemptLogin(object sender, EventArgs e)
+        {
+            if (BindingContext is LoginViewModel vm && vm.LoginCommand.CanExecute(null))
+                vm.LoginCommand.Execute(null);
+
+        }
+
+
+        private void OnTogglePasswordVisibility(object sender, EventArgs e)
+        {
+            _isPasswordHidden = !_isPasswordHidden;
+            PasswordEntry.IsPassword = _isPasswordHidden;
+
+            var button = (ImageButton)sender;
+            button.Source = _isPasswordHidden ? "hide_password.jpg" : "show_password.jpg";
         }
     }
+
 }

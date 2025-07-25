@@ -619,3 +619,7 @@ C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.UI\bin\Debug\net9.0
 C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.UI\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.UI\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.UI\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.UI\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\hide_password.scale-100.jpg
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.UI\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\show_password.scale-100.jpg
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.UI\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\hide_password.scale-100.jpg
+C:\Users\wejdj\OneDrive\Desktop\Trace Application\PCBTracker.UI\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\show_password.scale-100.jpg

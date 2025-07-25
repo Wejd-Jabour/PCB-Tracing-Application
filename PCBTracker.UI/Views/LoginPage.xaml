@@ -18,13 +18,31 @@
         <Entry
             Placeholder="Username"
             Text="{Binding Username}"
-            Keyboard="Default" />
+            Keyboard="Default" 
+            Completed="AttemptLogin"/>
 
-        <Entry
-            Placeholder="Password"
-            Text="{Binding Password}"
-            IsPassword="True" />
 
+        <Grid>
+            
+            <Entry
+                x:Name="PasswordEntry"
+                Placeholder="Password"
+                IsPassword="{Binding IsPasswordHidden}"
+                Text="{Binding Password}"
+                Completed="AttemptLogin"/>
+
+            <ImageButton
+                Source="hide_password.jpg"
+                BackgroundColor="Transparent"
+                WidthRequest="24"
+                HeightRequest="24"
+                HorizontalOptions="End"
+                VerticalOptions="Center"
+                Margin="5"
+                Clicked="OnTogglePasswordVisibility"/>
+
+        </Grid>
+            
         <Button
             Text="Login"
             Command="{Binding LoginCommand}" />
