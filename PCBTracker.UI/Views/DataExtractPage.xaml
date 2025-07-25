@@ -1,98 +1,103 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-  xmlns:vm="clr-namespace:PCBTracker.UI.ViewModels"
-  xmlns:dto="clr-namespace:PCBTracker.Domain.DTOs;assembly=PCBTracker.Domain"
-  xmlns:sys="clr-namespace:System;assembly=netstandard"
-  x:Class="PCBTracker.UI.Views.DataExtractPage"
-  x:DataType="vm:DataExtractViewModel"
-  Title="Extract Data">
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:PCBTracker.UI.ViewModels"
+    xmlns:dto="clr-namespace:PCBTracker.Domain.DTOs;assembly=PCBTracker.Domain"
+    x:Class="PCBTracker.UI.Views.DataExtractPage"
+    x:DataType="vm:DataExtractViewModel"
+    Title="Extract Data">
 
-	<VerticalStackLayout Padding="10" Spacing="12">
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="10" RowSpacing="10">
 
-		<Label Text="Filters" FontAttributes="Bold" FontSize="Medium"/>
+        <!-- Filters and Search -->
+        <VerticalStackLayout Grid.Row="0" Spacing="12">
+            <Label Text="Filters" FontAttributes="Bold" FontSize="Medium"/>
 
-		<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
-			<!-- labels -->
-			<Label Text="Serial #"     Grid.Row="0" Grid.Column="0"/>
-			<Label Text="Board Type"  Grid.Row="0" Grid.Column="1"/>
-			<Label Text="Date From"   Grid.Row="0" Grid.Column="2"/>
-			<Label Text="Date To"     Grid.Row="0" Grid.Column="3"/>
-			<Label Text="Skid"        Grid.Row="0" Grid.Column="4"/>
+            <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
+                <!-- Labels -->
+                <Label Text="Serial #"     Grid.Row="0" Grid.Column="0"/>
+                <Label Text="Board Type"   Grid.Row="0" Grid.Column="1"/>
+                <Label Text="Date From"    Grid.Row="0" Grid.Column="2"/>
+                <Label Text="Date To"      Grid.Row="0" Grid.Column="3"/>
+                <Label Text="Skid"         Grid.Row="0" Grid.Column="4"/>
 
-			<!-- controls -->
-			<Entry    Grid.Row="1" Grid.Column="0" WidthRequest="120"
-					  Placeholder="Serial" Text="{Binding SerialNumberFilter}" />
+                <!-- Controls -->
+                <Entry Grid.Row="1" Grid.Column="0" WidthRequest="120"
+                       Placeholder="Serial" Text="{Binding SerialNumberFilter}" />
 
-			<Picker   Grid.Row="1" Grid.Column="1" WidthRequest="140"
-					  ItemsSource="{Binding BoardTypes}"
-					  SelectedItem="{Binding SelectedBoardTypeFilter}" />
+                <Picker Grid.Row="1" Grid.Column="1" WidthRequest="140"
+                        ItemsSource="{Binding BoardTypes}"
+                        SelectedItem="{Binding SelectedBoardTypeFilter}" />
 
-			<DatePicker Grid.Row="1" Grid.Column="2"
-						Date="{Binding DateFrom}" />
+                <DatePicker Grid.Row="1" Grid.Column="2" Date="{Binding DateFrom}" />
+                <DatePicker Grid.Row="1" Grid.Column="3" Date="{Binding DateTo}" />
 
-			<DatePicker Grid.Row="1" Grid.Column="3"
-						Date="{Binding DateTo}" />
+                <Picker Grid.Row="1" Grid.Column="4" WidthRequest="120"
+                        ItemsSource="{Binding Skids}"
+                        ItemDisplayBinding="{Binding SkidName}"
+                        SelectedItem="{Binding SelectedSkidFilter}" />
 
-			<Picker   Grid.Row="1" Grid.Column="4" WidthRequest="120"
-					  ItemsSource="{Binding Skids}"
-					  ItemDisplayBinding="{Binding SkidName}"
-					  SelectedItem="{Binding SelectedSkidFilter}" />
+                <Button Grid.Row="1" Grid.Column="5"
+                        Text="{Binding DateModeButtonText}"
+                        Command="{Binding ToggleDateModeCommand}" />
+            </Grid>
 
-			<Button   Grid.Row="1" Grid.Column="5"
-					  Text="{Binding DateModeButtonText}"
-					  Command="{Binding ToggleDateModeCommand}" />
-		</Grid>
+            <Label Text="{Binding DateModeLabel}" FontAttributes="Italic" HorizontalOptions="Center" />
 
-		<Label Text="{Binding DateModeLabel}"
-			   FontAttributes="Italic"
-			   HorizontalOptions="Center" />
+            <HorizontalStackLayout Spacing="10">
+                <Button Text="Search" Command="{Binding SearchCommand}" />
+                <Button Text="Export CSV" Command="{Binding ExportCsvCommand}" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
 
-		<HorizontalStackLayout Spacing="10">
-			<Button Text="Search"    Command="{Binding SearchCommand}" />
-			<Button Text="Export CSV" Command="{Binding ExportCsvCommand}" />
-		</HorizontalStackLayout>
+        <!-- Column Headers -->
+        <ScrollView Grid.Row="1" Orientation="Horizontal" HeightRequest="40">
+            <Grid ColumnDefinitions="2*,2*,*,*,*,*,*" BackgroundColor="LightGray" Padding="8">
+                <Label Text="Serial"    Grid.Column="0" FontAttributes="Bold"/>
+                <Label Text="Part #"    Grid.Column="1" FontAttributes="Bold"/>
+                <Label Text="Type"      Grid.Column="2" FontAttributes="Bold"/>
+                <Label Text="Prep Date" Grid.Column="3" FontAttributes="Bold"/>
+                <Label Text="Ship Date" Grid.Column="4" FontAttributes="Bold"/>
+                <Label Text="Shipped"   Grid.Column="5" FontAttributes="Bold"/>
+                <Label Text="Skid"      Grid.Column="6" FontAttributes="Bold"/>
+            </Grid>
+        </ScrollView>
 
-		<!-- ─── Header (no change) ─── -->
-		<ScrollView Orientation="Horizontal" HeightRequest="40">
-			<Grid ColumnDefinitions="2*,2*,*,*,*,*,*" BackgroundColor="LightGray" Padding="8">
-				<Label Text="Serial"    Grid.Column="0" FontAttributes="Bold"/>
-				<Label Text="Part #"    Grid.Column="1" FontAttributes="Bold"/>
-				<Label Text="Type"      Grid.Column="2" FontAttributes="Bold"/>
-				<Label Text="Prep Date" Grid.Column="3" FontAttributes="Bold"/>
-				<Label Text="Ship Date" Grid.Column="4" FontAttributes="Bold"/>
-				<Label Text="Shipped"   Grid.Column="5" FontAttributes="Bold"/>
-				<Label Text="Skid"      Grid.Column="6" FontAttributes="Bold"/>
-			</Grid>
-		</ScrollView>
+        <!-- Board Results -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Boards}"
+                        VerticalOptions="FillAndExpand">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" />
+            </CollectionView.ItemsLayout>
 
-		<!-- ─── Data Rows ─── -->
-		<ScrollView Orientation="Vertical" VerticalOptions="FillAndExpand">
-			<ScrollView Orientation="Horizontal">
-				<CollectionView ItemsSource="{Binding Boards}">
-					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="dto:BoardDto">
-							<!-- Use a Frame for border -->
-							<Frame
-							  Margin="0" Padding="8"
-							  BorderColor="#DDD" HasShadow="False"
-							  BackgroundColor="White">
-								<Grid ColumnDefinitions="2*,2*,*,*,*,*,*">
-									<Label Text="{Binding SerialNumber}"       Grid.Column="0"/>
-									<Label Text="{Binding PartNumber}"         Grid.Column="1"/>
-									<Label Text="{Binding BoardType}"          Grid.Column="2"/>
-									<Label Text="{Binding PrepDate, StringFormat='{}{0:d}'}" Grid.Column="3"/>
-									<Label Text="{Binding ShipDate, StringFormat='{}{0:d}'}" Grid.Column="4"/>
-									<Label Text="{Binding IsShipped}"          Grid.Column="5"/>
-									<Label Text="{Binding SkidID}"             Grid.Column="6"/>
-								</Grid>
-							</Frame>
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
-			</ScrollView>
-		</ScrollView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="dto:BoardDto">
+                    <Frame Padding="6" Margin="2" BorderColor="#ccc">
+                        <Grid ColumnDefinitions="2*,2*,*,*,*,*,*">
+                            <Label Text="{Binding SerialNumber}"       Grid.Column="0"/>
+                            <Label Text="{Binding PartNumber}"         Grid.Column="1"/>
+                            <Label Text="{Binding BoardType}"          Grid.Column="2"/>
+                            <Label Text="{Binding PrepDate, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="3"/>
+                            <Label Text="{Binding ShipDate, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="4"/>
+                            <Label Text="{Binding IsShipped}"          Grid.Column="5"/>
+                            <Label Text="{Binding SkidID}"             Grid.Column="6"/>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
-	</VerticalStackLayout>
+        <!-- Pagination -->
+        <HorizontalStackLayout Grid.Row="3" HorizontalOptions="Center" Spacing="20">
+            <Button Text="Previous Page"
+                    Command="{Binding PreviousPageCommand}"
+                    IsEnabled="{Binding PageNumber, Converter={StaticResource GreaterThanOneConverter}}" />
+
+            <Label Text="{Binding PageNumber}" FontAttributes="Bold" />
+
+            <Button Text="Next Page" Command="{Binding NextPageCommand}" />
+        </HorizontalStackLayout>
+
+    </Grid>
 </ContentPage>

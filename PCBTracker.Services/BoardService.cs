@@ -212,6 +212,15 @@ namespace PCBTracker.Services
             if (filter.ShipDateTo.HasValue)
                 query = query.Where(b => b.ShipDate <= filter.ShipDateTo.Value);
 
+
+            if (filter.PageNumber.HasValue && filter.PageSize.HasValue)
+            {
+                query = query
+                    .Skip((filter.PageNumber.Value - 1) * filter.PageSize.Value)
+                    .Take(filter.PageSize.Value);
+            }
+
+
             return await query
                 .Select(b => new BoardDto
                 {

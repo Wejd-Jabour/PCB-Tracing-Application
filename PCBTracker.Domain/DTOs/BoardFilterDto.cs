@@ -9,5 +9,8 @@
         public DateTime? ShipDateFrom { get; set; }
         public DateTime? ShipDateTo { get; set; }
         public int? SkidId { get; set; }
+        public int? PageNumber { get; set; }
+        public int? PageSize { get; set; }
+
     }
 }

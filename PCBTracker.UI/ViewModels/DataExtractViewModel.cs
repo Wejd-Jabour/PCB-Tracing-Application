@@ -39,6 +39,16 @@ namespace PCBTracker.UI.ViewModels
         [ObservableProperty]
         bool useShipDate = false;
 
+        [ObservableProperty]
+        private int pageNumber = 1;
+
+        [ObservableProperty]
+        private int pageSize = 50;
+
+        [ObservableProperty]
+        private bool hasNextPage;
+
+
         public string DateModeLabel => useShipDate ? "Filtering by Ship Date" : "Filtering by Prep Date";
         public string DateModeButtonText => useShipDate ? "Switch to Prep Date" : "Switch to Ship Date";
 
@@ -78,7 +88,9 @@ namespace PCBTracker.UI.ViewModels
             {
                 SerialNumber = SerialNumberFilter,
                 BoardType = SelectedBoardTypeFilter,
-                SkidId = SelectedSkidFilter?.SkidID > 0 ? SelectedSkidFilter.SkidID : null
+                SkidId = SelectedSkidFilter?.SkidID > 0 ? SelectedSkidFilter.SkidID : null,
+                PageNumber = PageNumber,
+                PageSize = PageSize
             };
 
             if (UseShipDate)
@@ -111,5 +123,57 @@ namespace PCBTracker.UI.ViewModels
 
             await Share.RequestAsync(new ShareFileRequest("Exported Boards", new ShareFile(file)));
         }
+
+        [RelayCommand]
+        private async Task NextPageAsync()
+        {
+            int nextPage = PageNumber + 1;
+
+            var filter = new BoardFilterDto
+            {
+                SerialNumber = SerialNumberFilter,
+                BoardType = SelectedBoardTypeFilter,
+                SkidId = SelectedSkidFilter?.SkidID > 0 ? SelectedSkidFilter.SkidID : null,
+                PageNumber = nextPage,
+                PageSize = PageSize
+            };
+
+            if (UseShipDate)
+            {
+                filter.ShipDateFrom = DateFrom;
+                filter.ShipDateTo = DateTo;
+            }
+            else
+            {
+                filter.PrepDateFrom = DateFrom;
+                filter.PrepDateTo = DateTo;
+            }
+
+            var nextPageResults = (await _boardService.GetBoardsAsync(filter)).ToList();
+
+            if (nextPageResults.Any())
+            {
+                PageNumber = nextPage;
+                Boards.Clear();
+                foreach (var b in nextPageResults)
+                    Boards.Add(b);
+            }
+            else
+            {
+                await App.Current.MainPage.DisplayAlert("End of Pages", "No more boards to show.", "OK");
+            }
+        }
+
+
+        [RelayCommand]
+        private async Task PreviousPageAsync()
+        {
+            if (PageNumber > 1)
+            {
+                PageNumber--;
+                await SearchAsync();
+            }
+        }
+
     }
 }
