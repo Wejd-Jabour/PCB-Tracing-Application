@@ -49,6 +49,13 @@ namespace PCBTracker.UI.ViewModels
             }
             else
             {
+                App.CurrentUser = user; // Store user
+
+                if(Shell.Current is AppShell shell)
+                {
+                    shell.LoadAuthenticatedPages();
+                }
+
                 // On success, navigate to the SubmitPage (shell route).
                 await Shell.Current.GoToAsync("///SubmitPage");
             }
