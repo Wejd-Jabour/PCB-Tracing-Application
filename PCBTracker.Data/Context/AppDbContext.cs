@@ -40,6 +40,8 @@ public class AppDbContext : DbContext
     public DbSet<SAT> SAT { get; set; } = null!;
     public DbSet<SAT_Upgrade> SAT_Upgrade { get; set; } = null!;
 
+    public DbSet<Inspection> Inspections { get; set; }
+
     /// <summary>
     /// Configures entity-level database rules using the Fluent API.
     /// </summary>

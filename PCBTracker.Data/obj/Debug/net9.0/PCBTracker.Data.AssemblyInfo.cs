@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PCBTracker.Data")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+449ce5bab9d9a53a69e4398478a09a079f35ffcc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1016500a0ed8e02944ad9696edd4afb80be23c61")]
 [assembly: System.Reflection.AssemblyProductAttribute("PCBTracker.Data")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PCBTracker.Data")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -44,6 +44,11 @@ public static class MauiProgram
             // Use the SQL Server provider with the given connection string
             options.UseSqlServer(connStr));
 
+
+
+        builder.Services.AddSingleton<IInspectionService, InspectionService>();
+        
+        
         // === Register application services for Dependency Injection ===
         // AddScoped means one instance per MAUI page/request scope,
         // ensuring DbContext and services share the same scope when injected.
@@ -58,6 +63,11 @@ public static class MauiProgram
         builder.Services.AddTransient<DataExtractViewModel>();
         builder.Services.AddTransient<DataExtractPage>();
         builder.Services.AddTransient<EditViewModel>();
+        builder.Services.AddTransient<InspectionSubmitViewModel>();
+        builder.Services.AddTransient<InspectionExtractViewModel>();
+
+        builder.Services.AddTransient<InspectionSubmitPage>();
+        builder.Services.AddTransient<InspectionExtractPage>();
 
 
 

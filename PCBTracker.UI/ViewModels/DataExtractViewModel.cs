@@ -65,6 +65,14 @@ namespace PCBTracker.UI.ViewModels
         [ObservableProperty]
         DateTime dateFrom = DateTime.Today.AddMonths(-1);
 
+        [ObservableProperty]
+        bool isShipped = false;
+
+        [ObservableProperty]
+        private string selectedIsShippedOption = "Both";
+        public List<string> IsShippedOptions { get; } = new() { "Both", "Shipped", "Not Shipped" };
+
+
         /// <summary>
         /// End date of the filter range.
         /// Interpreted as PrepDateTo or ShipDateTo depending on UseShipDate.
@@ -225,7 +233,14 @@ namespace PCBTracker.UI.ViewModels
                 PrepDateFrom = UseShipDate ? null : DateFrom,
                 PrepDateTo = UseShipDate ? null : DateTo,
                 ShipDateFrom = UseShipDate ? DateFrom : null,
-                ShipDateTo = UseShipDate ? DateTo : null
+                ShipDateTo = UseShipDate ? DateTo : null,
+                IsShipped = SelectedIsShippedOption switch
+                {
+                    "Shipped" => true,
+                    "Not Shipped" => false,
+                    _ => (bool?)null // "Both"
+                }
+
             };
 
             var results = (await _boardService.GetBoardsAsync(filter)).ToList();
@@ -245,7 +260,14 @@ namespace PCBTracker.UI.ViewModels
                 PrepDateFrom = UseShipDate ? null : DateFrom,
                 PrepDateTo = UseShipDate ? null : DateTo,
                 ShipDateFrom = UseShipDate ? DateFrom : null,
-                ShipDateTo = UseShipDate ? DateTo : null
+                ShipDateTo = UseShipDate ? DateTo : null,
+                IsShipped = SelectedIsShippedOption switch
+                {
+                    "Shipped" => true,
+                    "Not Shipped" => false,
+                    _ => (bool?)null // "Both"
+                }
+
             };
 
             var nextPageResults = await _boardService.GetBoardsAsync(nextPageFilter);

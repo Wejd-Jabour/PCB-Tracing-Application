@@ -59,5 +59,12 @@
         /// Used in conjunction with PageNumber.
         /// </summary>
         public int? PageSize { get; set; }
+
+        /// <summary>
+        /// Indicates whether the board has been marked as shipped.
+        /// If true, a corresponding ShipDate value may be required.
+        /// </summary>
+        public bool? IsShipped { get; set; }
+
     }
 }

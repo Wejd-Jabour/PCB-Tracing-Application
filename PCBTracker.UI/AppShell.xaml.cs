@@ -71,6 +71,34 @@ public partial class AppShell : Shell
             }
         }
         });
+
+        Items.Add(new FlyoutItem
+        {
+            Title = "Inspection Submit",
+            Route = "InspectionSubmitPage",
+            Items =
+                {
+                    new ShellContent
+                    {
+                        ContentTemplate = new DataTemplate(typeof(InspectionSubmitPage)),
+                        Route = "InspectionSubmitPage"
+                    }
+                }
+        });
+
+        Items.Add(new FlyoutItem
+        {
+            Title = "Inspection Extract",
+            Route = "InspectionExtractPage",
+            Items =
+                {
+                    new ShellContent
+                    {
+                        ContentTemplate = new DataTemplate(typeof(InspectionExtractPage)),
+                        Route = "InspectionExtractPage"
+                    }
+                }
+        });
     }
     private void AppShell_Navigating(object sender, ShellNavigatingEventArgs e)
     {

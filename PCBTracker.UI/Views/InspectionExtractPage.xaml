@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="PCBTracker.UI.Views.InspectionExtractPage"
+    Title="Inspection Records">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="10">
+
+            <!-- Filters -->
+            <Label Text="Serial Number" />
+            <Entry Text="{Binding SerialNumberFilter}" Placeholder="Partial match" />
+
+            <Label Text="Product Type" />
+            <Picker ItemsSource="{Binding ProductTypes}" SelectedItem="{Binding SelectedProductType}" />
+
+            <Label Text="Severity Level" />
+            <Picker ItemsSource="{Binding SeverityLevels}" SelectedItem="{Binding SelectedSeverity}" />
+
+            <HorizontalStackLayout Spacing="10">
+                <VerticalStackLayout>
+                    <Label Text="From Date" />
+                    <DatePicker Date="{Binding DateFrom}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout>
+                    <Label Text="To Date" />
+                    <DatePicker Date="{Binding DateTo}" />
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
+
+            <Button Text="Search" Command="{Binding SearchCommand}" />
+
+            <!-- Results -->
+            <CollectionView ItemsSource="{Binding Inspections}" Margin="0,10,0,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BorderColor="LightGray" Padding="10">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Date, StringFormat='Date: {0:yyyy-MM-dd}'}" />
+                                <Label Text="{Binding ProductType, StringFormat='Product: {0}'}" />
+                                <Label Text="{Binding SerialNumber, StringFormat='SN: {0}'}" />
+                                <Label Text="{Binding SeverityLevel, StringFormat='Severity: {0}'}" />
+                                <Label Text="{Binding IssueDescription, StringFormat='Issue: {0}'}" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Pagination -->
+            <HorizontalStackLayout Spacing="10" Margin="0,10,0,0">
+                <Button Text="Previous" Command="{Binding PreviousPageCommand}" />
+                <Button Text="Next" Command="{Binding NextPageCommand}" IsEnabled="{Binding HasNextPage}" />
+            </HorizontalStackLayout>
+
+            <!-- Export -->
+            <Button Text="Export to CSV" Command="{Binding ExportCsvCommand}" Margin="0,20,0,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

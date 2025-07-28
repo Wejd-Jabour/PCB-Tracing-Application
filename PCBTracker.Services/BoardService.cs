@@ -240,7 +240,18 @@ namespace PCBTracker.Services
             if (filter.ShipDateTo.HasValue)
                 query = query.Where(b => b.ShipDate <= filter.ShipDateTo.Value);
 
+            if (filter.IsShipped.HasValue)
+                query = query.Where(b => b.IsShipped == filter.IsShipped.Value);
+
+
             query = query.OrderByDescending(b => b.CreatedAt);
+
+            // Apply pagination
+            if (filter.PageNumber.HasValue && filter.PageSize.HasValue)
+            {
+                int skip = (filter.PageNumber.Value - 1) * filter.PageSize.Value;
+                query = query.Skip(skip).Take(filter.PageSize.Value);
+            }
 
             return await query.Select(b => new BoardDto
             {
@@ -252,6 +263,7 @@ namespace PCBTracker.Services
                 IsShipped = b.IsShipped,
                 SkidID = b.SkidID
             }).ToListAsync();
+
         }
 
         /// <summary>

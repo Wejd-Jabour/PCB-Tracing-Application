@@ -165,7 +165,7 @@ namespace PCBTracker.UI.ViewModels
 
                 await _boardService.CreateBoardAndClaimSkidAsync(dto);
 
-                await App.Current.MainPage.DisplayAlert("Success", "Board submitted.", "OK");
+                //await App.Current.MainPage.DisplayAlert("Success", "Board submitted.", "OK");
 
                 SerialNumber = string.Empty;
 

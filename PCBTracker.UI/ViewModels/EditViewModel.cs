@@ -53,6 +53,13 @@ namespace PCBTracker.UI.ViewModels
         [ObservableProperty]
         private bool useShipDate = false; // Whether to filter on ShipDate or PrepDate.
 
+        [ObservableProperty]
+        bool isShipped = false;
+
+        [ObservableProperty]
+        private string selectedIsShippedOption = "Both";
+        public List<string> IsShippedOptions { get; } = new() { "Both", "Shipped", "Not Shipped" };
+
         // -----------------------------
         // Edit Operations
         // -----------------------------
@@ -268,6 +275,12 @@ namespace PCBTracker.UI.ViewModels
                 PrepDateTo = UseShipDate ? null : DateTo,
                 ShipDateFrom = UseShipDate ? DateFrom : null,
                 ShipDateTo = UseShipDate ? DateTo : null,
+                IsShipped = SelectedIsShippedOption switch
+                {
+                    "Shipped" => true,
+                    "Not Shipped" => false,
+                    _ => (bool?)null // "Both"
+                },
                 PageNumber = page,
                 PageSize = 50
             };
@@ -289,6 +302,12 @@ namespace PCBTracker.UI.ViewModels
                 PrepDateTo = filter.PrepDateTo,
                 ShipDateFrom = filter.ShipDateFrom,
                 ShipDateTo = filter.ShipDateTo,
+                IsShipped = SelectedIsShippedOption switch
+                {
+                    "Shipped" => true,
+                    "Not Shipped" => false,
+                    _ => (bool?)null // "Both"
+                },
                 PageNumber = page + 1,
                 PageSize = filter.PageSize
             };
