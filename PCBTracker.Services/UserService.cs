@@ -49,7 +49,7 @@ namespace PCBTracker.Services
         /// Creates and persists a new user account with hashed password and role.
         /// Throws an exception if the username is already in use.
         /// </summary>
-        public void CreateUser(string username, string password, string role)
+        public void CreateUser(string username, string password, bool admin, bool scan, bool edit, bool inspection)
         {
             // Check for username duplication before proceeding.
             if (_dbContext.Users.Any(u => u.Username == username))
@@ -63,7 +63,10 @@ namespace PCBTracker.Services
             {
                 Username = username,
                 PasswordHash = hash,
-                Role = role
+                Admin = admin,
+                Scan = scan,
+                Edit= edit,
+                Inspection = inspection
             };
 
             // Add the user to the Users DbSet and persist it to the database.

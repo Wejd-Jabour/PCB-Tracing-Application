@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿// InspectionService.cs
+using Microsoft.EntityFrameworkCore;
 using PCBTracker.Data.Context;
 using PCBTracker.Domain.DTOs;
 using PCBTracker.Domain.Entities;
@@ -6,7 +7,6 @@ using PCBTracker.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PCBTracker.Services
@@ -22,7 +22,7 @@ namespace PCBTracker.Services
 
         public async Task SubmitInspectionAsync(InspectionDto dto)
         {
-            var inspection = new Inspection
+            var entity = new Inspection
             {
                 Date = dto.Date,
                 ProductType = dto.ProductType,
@@ -31,11 +31,10 @@ namespace PCBTracker.Services
                 SeverityLevel = dto.SeverityLevel,
                 ImmediateActionTaken = dto.ImmediateActionTaken,
                 AdditionalNotes = dto.AdditionalNotes,
-                AssembliesCompletedJson = JsonSerializer.Serialize(dto.AssembliesCompleted),
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.UtcNow
             };
 
-            _db.Inspections.Add(inspection);
+            _db.Inspections.Add(entity);
             await _db.SaveChangesAsync();
         }
 
@@ -43,22 +42,18 @@ namespace PCBTracker.Services
         {
             var query = _db.Inspections.AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(filter.SerialNumberContains))
-                query = query.Where(i => i.SerialNumber.Contains(filter.SerialNumberContains));
-
-            if (!string.IsNullOrWhiteSpace(filter.ProductType))
-                query = query.Where(i => i.ProductType == filter.ProductType);
-
-            if (!string.IsNullOrWhiteSpace(filter.SeverityLevel))
-                query = query.Where(i => i.SeverityLevel == filter.SeverityLevel);
-
             if (filter.DateFrom.HasValue)
-                query = query.Where(i => i.Date >= filter.DateFrom.Value);
-
+                query = query.Where(x => x.Date >= filter.DateFrom);
             if (filter.DateTo.HasValue)
-                query = query.Where(i => i.Date <= filter.DateTo.Value);
+                query = query.Where(x => x.Date <= filter.DateTo);
+            if (!string.IsNullOrEmpty(filter.ProductType))
+                query = query.Where(x => x.ProductType == filter.ProductType);
+            if (!string.IsNullOrEmpty(filter.SerialNumberContains))
+                query = query.Where(x => x.SerialNumber.Contains(filter.SerialNumberContains));
+            if (!string.IsNullOrEmpty(filter.SeverityLevel))
+                query = query.Where(x => x.SeverityLevel == filter.SeverityLevel);
 
-            query = query.OrderByDescending(i => i.Date);
+            query = query.OrderByDescending(x => x.Date);
 
             if (filter.PageNumber.HasValue && filter.PageSize.HasValue)
             {
@@ -66,23 +61,18 @@ namespace PCBTracker.Services
                 query = query.Skip(skip).Take(filter.PageSize.Value);
             }
 
-            var inspectionList = await query.ToListAsync();
-
-            return inspectionList.Select(i => new InspectionDto
-            {
-                Date = i.Date,
-                ProductType = i.ProductType,
-                SerialNumber = i.SerialNumber,
-                IssueDescription = i.IssueDescription,
-                SeverityLevel = i.SeverityLevel,
-                ImmediateActionTaken = i.ImmediateActionTaken,
-                AdditionalNotes = i.AdditionalNotes,
-                AssembliesCompleted = string.IsNullOrWhiteSpace(i.AssembliesCompletedJson)
-                    ? new Dictionary<string, int>()
-                    : JsonSerializer.Deserialize<Dictionary<string, int>>(i.AssembliesCompletedJson)
-            });
+            return await query
+                .Select(x => new InspectionDto
+                {
+                    Date = x.Date,
+                    ProductType = x.ProductType,
+                    SerialNumber = x.SerialNumber,
+                    IssueDescription = x.IssueDescription,
+                    SeverityLevel = x.SeverityLevel,
+                    ImmediateActionTaken = x.ImmediateActionTaken,
+                    AdditionalNotes = x.AdditionalNotes
+                })
+                .ToListAsync();
         }
-
     }
 }
-

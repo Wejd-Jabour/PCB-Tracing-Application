@@ -1,4 +1,5 @@
-﻿using System;
+﻿// InspectionFilterDto.cs
+using System;
 
 namespace PCBTracker.Domain.DTOs
 {
@@ -9,7 +10,6 @@ namespace PCBTracker.Domain.DTOs
         public string? ProductType { get; set; }
         public string? SerialNumberContains { get; set; }
         public string? SeverityLevel { get; set; }
-
         public int? PageNumber { get; set; }
         public int? PageSize { get; set; }
     }

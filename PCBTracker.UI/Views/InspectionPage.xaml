@@ -1,0 +1,84 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PCBTracker.UI.Views.InspectionPage"
+             Title="Submit Inspection">
+
+	<ScrollView>
+		<VerticalStackLayout Padding="20" Spacing="15">
+
+			<!-- Toggle Form Button -->
+			<Button Text="Add Inspection" Clicked="ToggleFormVisibility" />
+
+			<!-- Submit Form -->
+			<StackLayout x:Name="FormSection" IsVisible="False">
+
+				<Label Text="Date" />
+				<DatePicker Date="{Binding Date}" />
+
+				<Label Text="Product / SKU" />
+				<Picker ItemsSource="{Binding ProductTypes}" SelectedItem="{Binding ProductType}" />
+
+				<Label Text="Product ID / SN" />
+				<Entry Text="{Binding SerialNumber}" Placeholder="Scan or type barcode" />
+
+				<Label Text="Issue Description" />
+				<Editor Text="{Binding IssueDescription}" AutoSize="TextChanges" />
+
+				<Label Text="Severity Level" />
+				<Picker ItemsSource="{Binding SeverityLevels}" SelectedItem="{Binding SeverityLevel}" />
+
+				<Label Text="Immediate Action Taken" />
+				<Editor Text="{Binding ImmediateActionTaken}" AutoSize="TextChanges" />
+
+				<Label Text="Additional Notes" />
+				<Editor Text="{Binding AdditionalNotes}" AutoSize="TextChanges" />
+
+
+				<Button Text="Submit Inspection" Command="{Binding SubmitCommand}" />
+			</StackLayout>
+
+            <!-- Divider -->
+            <BoxView HeightRequest="1" BackgroundColor="Gray" Margin="0,20" />
+
+            <!-- Extract Section -->
+            <Label Text="Past Inspections" FontAttributes="Bold" FontSize="18" />
+
+            <!-- COLUMN HEADERS -->
+            <ScrollView Orientation="Horizontal" HeightRequest="40">
+                <Grid ColumnDefinitions="2*,2*,2*,2*,2*,3*" BackgroundColor="LightGray" Padding="8">
+                    <Label Text="Date" Grid.Column="0" FontAttributes="Bold"/>
+                    <Label Text="Product Type" Grid.Column="1" FontAttributes="Bold"/>
+                    <Label Text="Serial #" Grid.Column="2" FontAttributes="Bold"/>
+                    <Label Text="Severity" Grid.Column="3" FontAttributes="Bold"/>
+                    <Label Text="Issue" Grid.Column="4" FontAttributes="Bold"/>
+                    <Label Text="Action Taken" Grid.Column="5" FontAttributes="Bold"/>
+                </Grid>
+            </ScrollView>
+
+            <!-- INSPECTION RESULTS -->
+            <CollectionView ItemsSource="{Binding Inspections}" VerticalOptions="FillAndExpand">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" />
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="6" Margin="2" BorderColor="#ccc">
+                            <Grid ColumnDefinitions="2*,2*,2*,2*,2*,3*">
+                                <Label Text="{Binding Date, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="0"/>
+                                <Label Text="{Binding ProductType}" Grid.Column="1"/>
+                                <Label Text="{Binding SerialNumber}" Grid.Column="2"/>
+                                <Label Text="{Binding SeverityLevel}" Grid.Column="3"/>
+                                <Label Text="{Binding IssueDescription}" Grid.Column="4"/>
+                                <Label Text="{Binding ImmediateActionTaken}" Grid.Column="5"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button Text="Export CSV" Command="{Binding ExportCsvCommand}" Margin="0,10" />
+
+        </VerticalStackLayout>
+	</ScrollView>
+</ContentPage>

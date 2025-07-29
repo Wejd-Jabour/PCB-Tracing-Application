@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="PCBTracker.UI.Views.SettingPage"
+    Title="Settings">
+
+    <VerticalStackLayout Padding="10" Spacing="10">
+        <Button Text="Add Inspection" Clicked="ToggleUserCreateVisibility" />
+
+        <Grid x:Name="UserCreateSection" IsVisible="{Binding IsUserCreateSectionVisible}" RowDefinitions="Auto,Auto,*,Auto" Padding="10" RowSpacing="10">
+
+            <VerticalStackLayout Grid.Row="0" Spacing="12">
+                <Label Text="Filters" FontAttributes="Bold" FontSize="Medium"/>
+
+                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
+                    <!-- Row 0: Labels -->
+                    <Label Text="Username"         Grid.Row="0" Grid.Column="0"/>
+                    <Label Text="Password"       Grid.Row="0" Grid.Column="1"/>
+                    <Label Text="Admin"        Grid.Row="0" Grid.Column="2"/>
+                    <Label Text="Scan"          Grid.Row="0" Grid.Column="3"/>
+                    <Label Text="Edit"             Grid.Row="0" Grid.Column="4"/>
+                    <Label Text="Inspection"   Grid.Row="0" Grid.Column="5"/>
+
+                    <!-- Row 1: Inputs -->
+                    <Entry Grid.Row="1" Grid.Column="0" WidthRequest="120" HeightRequest="40" 
+					Placeholder="Username" Text="{Binding NewUsername}" />
+
+                    <Entry Grid.Row="1" Grid.Column="1" WidthRequest="120" HeightRequest="40"
+					Placeholder="Password" Text="{Binding NewPassword}" />
+
+                    <Switch  Grid.Row="1" Grid.Column="2" IsToggled="{Binding AdminPermission}"/>
+                    <Switch  Grid.Row="1" Grid.Column="3" IsToggled="{Binding ScanPermission}"/>
+                    <Switch  Grid.Row="1" Grid.Column="4" IsToggled="{Binding EditPermission}"/>
+                    <Switch  Grid.Row="1" Grid.Column="5" IsToggled="{Binding InspectionPermission}"/>
+                </Grid>
+
+                <HorizontalStackLayout Spacing="10">
+                    <Button Text="Create New User" Command="{Binding CreateNewUserCommand}" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+        </Grid>
+    </VerticalStackLayout>
+</ContentPage>

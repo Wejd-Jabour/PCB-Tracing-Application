@@ -39,7 +39,6 @@ public class AppDbContext : DbContext
     public DbSet<SAD_Upgrade> SAD_Upgrade { get; set; } = null!;
     public DbSet<SAT> SAT { get; set; } = null!;
     public DbSet<SAT_Upgrade> SAT_Upgrade { get; set; } = null!;
-
     public DbSet<Inspection> Inspections { get; set; }
 
     /// <summary>

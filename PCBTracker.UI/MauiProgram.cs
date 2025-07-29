@@ -44,32 +44,22 @@ public static class MauiProgram
             // Use the SQL Server provider with the given connection string
             options.UseSqlServer(connStr));
 
-
-
-        builder.Services.AddSingleton<IInspectionService, InspectionService>();
-        
-        
         // === Register application services for Dependency Injection ===
-        // AddScoped means one instance per MAUI page/request scope,
-        // ensuring DbContext and services share the same scope when injected.
+        builder.Services.AddSingleton<IInspectionService, InspectionService>();
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IBoardService, BoardService>();
 
-        // === Register ViewModels ===
-        // AddTransient creates a new instance each time it's requested.
-        // This works well for ViewModels because each page gets its own fresh ViewModel.
+        // === Register ViewModels and Pages ===
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<SubmitViewModel>();
         builder.Services.AddTransient<DataExtractViewModel>();
         builder.Services.AddTransient<DataExtractPage>();
         builder.Services.AddTransient<EditViewModel>();
-        builder.Services.AddTransient<InspectionSubmitViewModel>();
-        builder.Services.AddTransient<InspectionExtractViewModel>();
 
-        builder.Services.AddTransient<InspectionSubmitPage>();
-        builder.Services.AddTransient<InspectionExtractPage>();
+        builder.Services.AddTransient<InspectionViewModel>();
+        builder.Services.AddTransient<InspectionPage>();
 
-
+        builder.Services.AddTransient<SettingViewModel>();
 
         // Build the configured MAUI application
         var app = builder.Build();
@@ -91,7 +81,10 @@ public static class MauiProgram
                 {
                     Username = "admin",
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("password"), // always store hashed passwords!
-                    Role = "Admin"
+                    Admin = true,
+                    Edit = true,
+                    Scan = true,
+                    Inspection = true
                 };
                 db.Users.Add(admin);
                 db.SaveChanges();

@@ -74,31 +74,33 @@ public partial class AppShell : Shell
 
         Items.Add(new FlyoutItem
         {
-            Title = "Inspection Submit",
-            Route = "InspectionSubmitPage",
+            Title = "Inspection",
+            Route = "InspectionPage",
             Items =
                 {
                     new ShellContent
                     {
-                        ContentTemplate = new DataTemplate(typeof(InspectionSubmitPage)),
-                        Route = "InspectionSubmitPage"
+                        ContentTemplate = new DataTemplate(typeof(InspectionPage)),
+                        Route = "InspectionPage"
                     }
                 }
         });
 
         Items.Add(new FlyoutItem
         {
-            Title = "Inspection Extract",
-            Route = "InspectionExtractPage",
+            Title = "Settings",
+            Route = "SettingPage",
             Items =
                 {
                     new ShellContent
                     {
-                        ContentTemplate = new DataTemplate(typeof(InspectionExtractPage)),
-                        Route = "InspectionExtractPage"
+                        ContentTemplate = new DataTemplate(typeof(SettingPage)),
+                        Route = "SettingPage"
                     }
                 }
         });
+
+
     }
     private void AppShell_Navigating(object sender, ShellNavigatingEventArgs e)
     {

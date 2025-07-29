@@ -13,7 +13,5 @@ namespace PCBTracker.Domain.DTOs
         public string ImmediateActionTaken { get; set; } = string.Empty;
         public string AdditionalNotes { get; set; } = string.Empty;
 
-        // AssembliesCompleted is a dictionary of product to count.
-        public Dictionary<string, int> AssembliesCompleted { get; set; } = new();
     }
 }

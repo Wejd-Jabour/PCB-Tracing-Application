@@ -83,17 +83,23 @@ build_metadata.AdditionalFiles.ManifestResourceName = PCBTracker.UI.Views.Inspec
 build_metadata.AdditionalFiles.TargetPath = Views\InspectionExtractPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\InspectionExtractPage.xaml
 
-[C:/Users/wejdj/OneDrive/Desktop/Trace Application/PCBTracker.UI/Views/InspectionSubmitPage.xaml]
+[C:/Users/wejdj/OneDrive/Desktop/Trace Application/PCBTracker.UI/Views/InspectionPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
-build_metadata.AdditionalFiles.ManifestResourceName = PCBTracker.UI.Views.InspectionSubmitPage.xaml
-build_metadata.AdditionalFiles.TargetPath = Views\InspectionSubmitPage.xaml
-build_metadata.AdditionalFiles.RelativePath = Views\InspectionSubmitPage.xaml
+build_metadata.AdditionalFiles.ManifestResourceName = PCBTracker.UI.Views.InspectionPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\InspectionPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\InspectionPage.xaml
 
 [C:/Users/wejdj/OneDrive/Desktop/Trace Application/PCBTracker.UI/Views/LoginPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = PCBTracker.UI.Views.LoginPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\LoginPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\LoginPage.xaml
+
+[C:/Users/wejdj/OneDrive/Desktop/Trace Application/PCBTracker.UI/Views/SettingPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = PCBTracker.UI.Views.SettingPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\SettingPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\SettingPage.xaml
 
 [C:/Users/wejdj/OneDrive/Desktop/Trace Application/PCBTracker.UI/Views/SubmitPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
