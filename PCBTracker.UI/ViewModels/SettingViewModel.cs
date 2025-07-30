@@ -1,12 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using PCBTracker.Domain.DTOs;
-using PCBTracker.Services;
 using PCBTracker.Services.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PCBTracker.UI.ViewModels
@@ -15,48 +10,26 @@ namespace PCBTracker.UI.ViewModels
     {
         private readonly IUserService _userService;
 
-
         public SettingViewModel(IUserService userService)
         {
             _userService = userService;
         }
 
-        /// <summary>
-        /// Backing property for the entered username.
-        /// The [ObservableProperty] attribute generates a public Username property
-        /// with automatic INotifyPropertyChanged support.
-        /// This is bound two-way in XAML to the username input field.
-        /// </summary>
         [ObservableProperty]
-        private string newUsername;
+        private string newEmployeeIDText = string.Empty;
 
-        /// <summary>
-        /// Backing property for the entered password.
-        /// The [ObservableProperty] attribute generates a public Password property.
-        /// This is typically bound to a password Entry in XAML with IsPassword=true.
-        /// </summary>
-        [ObservableProperty]
-        private string newPassword;
+        [ObservableProperty] private string newUsername;
+        [ObservableProperty] private string newPassword;
+        [ObservableProperty] private string newFirstName;
+        [ObservableProperty] private string newLastName;
 
+        [ObservableProperty] bool adminPermission = false;
+        [ObservableProperty] bool scanPermission = false;
+        [ObservableProperty] bool editPermission = false;
+        [ObservableProperty] bool inspectionPermission = false;
+        [ObservableProperty] private bool isUserCreateSectionVisible = false;
 
-        //[ObservableProperty]
-        //private string _verify;
-
-
-        [ObservableProperty]
-        bool adminPermission = false;
-
-        [ObservableProperty]
-        bool scanPermission = false;
-
-        [ObservableProperty]
-        bool editPermission = false;
-
-        [ObservableProperty]
-        bool inspectionPermission = false;
-
-        [ObservableProperty]
-        private bool isUserCreateSectionVisible = false;
+        public int? ParsedEmployeeID => int.TryParse(NewEmployeeIDText, out var id) ? id : (int?)null;
 
         [RelayCommand]
         private async Task CreateNewUser()
@@ -70,17 +43,17 @@ namespace PCBTracker.UI.ViewModels
                     return;
                 }
 
+                if (ParsedEmployeeID == null)
+                {
+                    await App.Current.MainPage.DisplayAlert("Invalid Entry", "Employee ID must be a valid number.", "OK");
+                    return;
+                }
+
                 if (App.CurrentUser == null || string.IsNullOrEmpty(App.CurrentUser.PasswordHash))
                 {
                     await App.Current.MainPage.DisplayAlert("Error", "Current user session is invalid.", "OK");
                     return;
                 }
-
-                //if (!BCrypt.Net.BCrypt.Verify(_verify, App.CurrentUser.PasswordHash))
-                //{
-                //    await App.Current.MainPage.DisplayAlert("Incorrect Password", "The password entered does not match the user's.", "OK");
-                //    return;
-                //}
 
                 if (!App.CurrentUser.Admin)
                 {
@@ -88,14 +61,24 @@ namespace PCBTracker.UI.ViewModels
                     return;
                 }
 
-
-                _userService.CreateUser(newUsername, newPassword, adminPermission, scanPermission, editPermission, inspectionPermission);
+                _userService.CreateUser(
+                    ParsedEmployeeID.Value,
+                    newUsername,
+                    newFirstName,
+                    newLastName,
+                    newPassword,
+                    adminPermission,
+                    scanPermission,
+                    editPermission,
+                    inspectionPermission);
 
                 await App.Current.MainPage.DisplayAlert("Success", "User created successfully.", "OK");
 
+                NewEmployeeIDText = string.Empty;
                 NewUsername = string.Empty;
                 NewPassword = string.Empty;
-                //Verify = string.Empty;
+                NewFirstName = string.Empty;
+                NewLastName = string.Empty;
 
                 AdminPermission = false;
                 ScanPermission = false;
@@ -112,14 +95,6 @@ namespace PCBTracker.UI.ViewModels
 
                 await App.Current.MainPage.DisplayAlert("Error", message, "OK");
             }
-
-            
         }
-
-        private async Task ChangePermissions()
-        {
-
-        }
-
     }
 }

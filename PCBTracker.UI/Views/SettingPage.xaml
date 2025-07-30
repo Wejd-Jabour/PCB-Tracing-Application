@@ -13,26 +13,41 @@
             <VerticalStackLayout Grid.Row="0" Spacing="12">
                 <Label Text="Filters" FontAttributes="Bold" FontSize="Medium"/>
 
-                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
+                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,0.5*,0.5*, 0.5*, 0.5*" RowDefinitions="Auto,Auto">
                     <!-- Row 0: Labels -->
-                    <Label Text="Username"         Grid.Row="0" Grid.Column="0"/>
-                    <Label Text="Password"       Grid.Row="0" Grid.Column="1"/>
-                    <Label Text="Admin"        Grid.Row="0" Grid.Column="2"/>
-                    <Label Text="Scan"          Grid.Row="0" Grid.Column="3"/>
-                    <Label Text="Edit"             Grid.Row="0" Grid.Column="4"/>
-                    <Label Text="Inspection"   Grid.Row="0" Grid.Column="5"/>
+                    <Label Text="Employee ID"         Grid.Row="0" Grid.Column="0"/>
+                    <Label Text="Username"         Grid.Row="0" Grid.Column="1"/>
+                    <Label Text="Password"       Grid.Row="0" Grid.Column="2"/>
+                    <Label Text="First Name"        Grid.Row="0" Grid.Column="3"/>
+                    <Label Text="Last Name"          Grid.Row="0" Grid.Column="4"/>
+                    <Label Text="Admin"        Grid.Row="0" Grid.Column="5"/>
+                    <Label Text="Scan"          Grid.Row="0" Grid.Column="6"/>
+                    <Label Text="Edit"             Grid.Row="0" Grid.Column="7"/>
+                    <Label Text="Inspection"   Grid.Row="0" Grid.Column="8"/>
 
                     <!-- Row 1: Inputs -->
-                    <Entry Grid.Row="1" Grid.Column="0" WidthRequest="120" HeightRequest="40" 
+                    <Entry Grid.Row="1" Grid.Column="0"
+                       WidthRequest="120" HeightRequest="40"
+                       Placeholder="Employee ID"
+                       Keyboard="Numeric"
+                       Text="{Binding NewEmployeeIDText}" />
+
+                    <Entry Grid.Row="1" Grid.Column="1" WidthRequest="120" HeightRequest="40" 
 					Placeholder="Username" Text="{Binding NewUsername}" />
 
-                    <Entry Grid.Row="1" Grid.Column="1" WidthRequest="120" HeightRequest="40"
+                    <Entry Grid.Row="1" Grid.Column="2" WidthRequest="120" HeightRequest="40"
 					Placeholder="Password" Text="{Binding NewPassword}" />
 
-                    <Switch  Grid.Row="1" Grid.Column="2" IsToggled="{Binding AdminPermission}"/>
-                    <Switch  Grid.Row="1" Grid.Column="3" IsToggled="{Binding ScanPermission}"/>
-                    <Switch  Grid.Row="1" Grid.Column="4" IsToggled="{Binding EditPermission}"/>
-                    <Switch  Grid.Row="1" Grid.Column="5" IsToggled="{Binding InspectionPermission}"/>
+                    <Entry Grid.Row="1" Grid.Column="3" WidthRequest="120" HeightRequest="40" 
+					Placeholder="First Name" Text="{Binding NewFirstName}" />
+
+                    <Entry Grid.Row="1" Grid.Column="4" WidthRequest="120" HeightRequest="40" 
+					Placeholder="Last Name" Text="{Binding NewLastName}" />
+
+                    <Switch  Grid.Row="1" Grid.Column="5" IsToggled="{Binding AdminPermission}"/>
+                    <Switch  Grid.Row="1" Grid.Column="6" IsToggled="{Binding ScanPermission}"/>
+                    <Switch  Grid.Row="1" Grid.Column="7" IsToggled="{Binding EditPermission}"/>
+                    <Switch  Grid.Row="1" Grid.Column="8" IsToggled="{Binding InspectionPermission}"/>
                 </Grid>
 
                 <HorizontalStackLayout Spacing="10">

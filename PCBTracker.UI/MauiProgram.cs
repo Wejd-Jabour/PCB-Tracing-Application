@@ -79,8 +79,11 @@ public static class MauiProgram
             {
                 var admin = new User
                 {
+                    EmployeeID = 1,
                     Username = "admin",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("password"), // always store hashed passwords!
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("password"), 
+                    FirstName = "admin",
+                    LastName = "admin",
                     Admin = true,
                     Edit = true,
                     Scan = true,

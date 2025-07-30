@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PCBTracker.Data.Context;
 
@@ -11,9 +12,11 @@ using PCBTracker.Data.Context;
 namespace PCBTracker.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250730125818_UserAddedParams")]
+    partial class UserAddedParams
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -335,20 +338,17 @@ namespace PCBTracker.Data.Migrations
 
             modelBuilder.Entity("PCBTracker.Domain.Entities.User", b =>
                 {
-                    b.Property<int>("UserID")
+                    b.Property<int>("EmployeeID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeID"));
 
                     b.Property<bool>("Admin")
                         .HasColumnType("bit");
 
                     b.Property<bool>("Edit")
                         .HasColumnType("bit");
-
-                    b.Property<int>("EmployeeID")
-                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -372,7 +372,7 @@ namespace PCBTracker.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserID");
+                    b.HasKey("EmployeeID");
 
                     b.ToTable("Users");
                 });
