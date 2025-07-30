@@ -17,6 +17,7 @@ namespace PCBTracker.Domain.Entities
         public string LastName { get; set; } = default!;
         public bool Admin { get; set; } = false; //Full setting access
         public bool Scan { get; set; } = false; //Can submit boards
+        public bool Extract { get; set; } = false; //Can extract information
         public bool Edit { get; set; } = false; //Can delete/update boards
         public bool Inspection { get; set; } = false; //Can add board inspection
 

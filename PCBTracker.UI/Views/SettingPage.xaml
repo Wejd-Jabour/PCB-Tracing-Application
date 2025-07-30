@@ -14,7 +14,7 @@
                 <VerticalStackLayout Grid.Row="0" Spacing="12">
                     <Label Text="Filters" FontAttributes="Bold" FontSize="Medium"/>
 
-                    <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,0.5*,0.5*, 0.5*, 0.5*" RowDefinitions="Auto,Auto">
+                    <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,0.5*,0.5*, 0.5*, 0.5*, 0.5*" RowDefinitions="Auto,Auto">
                         <!-- Row 0: Labels -->
                         <Label Text="Employee ID"         Grid.Row="0" Grid.Column="0"/>
                         <Label Text="Username"         Grid.Row="0" Grid.Column="1"/>
@@ -23,8 +23,9 @@
                         <Label Text="Last Name"          Grid.Row="0" Grid.Column="4"/>
                         <Label Text="Admin"        Grid.Row="0" Grid.Column="5"/>
                         <Label Text="Scan"          Grid.Row="0" Grid.Column="6"/>
-                        <Label Text="Edit"             Grid.Row="0" Grid.Column="7"/>
-                        <Label Text="Inspection"   Grid.Row="0" Grid.Column="8"/>
+                        <Label Text="Extract"          Grid.Row="0" Grid.Column="7"/>
+                        <Label Text="Edit"             Grid.Row="0" Grid.Column="8"/>
+                        <Label Text="Inspection"   Grid.Row="0" Grid.Column="9"/>
 
                         <!-- Row 1: Inputs -->
                         <Entry Grid.Row="1" Grid.Column="0"
@@ -47,8 +48,9 @@
 
                         <Switch  Grid.Row="1" Grid.Column="5" IsToggled="{Binding AdminPermission}"/>
                         <Switch  Grid.Row="1" Grid.Column="6" IsToggled="{Binding ScanPermission}"/>
-                        <Switch  Grid.Row="1" Grid.Column="7" IsToggled="{Binding EditPermission}"/>
-                        <Switch  Grid.Row="1" Grid.Column="8" IsToggled="{Binding InspectionPermission}"/>
+                        <Switch  Grid.Row="1" Grid.Column="7" IsToggled="{Binding ExtractPermission}"/>
+                        <Switch  Grid.Row="1" Grid.Column="8" IsToggled="{Binding EditPermission}"/>
+                        <Switch  Grid.Row="1" Grid.Column="9" IsToggled="{Binding InspectionPermission}"/>
                     </Grid>
 
                     <HorizontalStackLayout Spacing="10">
@@ -69,6 +71,7 @@
               Padding="10">
 
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -97,17 +100,21 @@
                 <!-- Scan Permission -->
                 <Label Grid.Row="3" Grid.Column="0" Text="Scan Permission:" VerticalOptions="Center"/>
                 <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding UpdateScanPermission}" />
+                
+                <!-- Extract Permission -->
+                <Label Grid.Row="4" Grid.Column="0" Text="Extract Permission:" VerticalOptions="Center"/>
+                <CheckBox Grid.Row="4" Grid.Column="1" IsChecked="{Binding UpdateExtractPermission}" />
 
                 <!-- Edit Permission -->
-                <Label Grid.Row="4" Grid.Column="0" Text="Edit Permission:" VerticalOptions="Center"/>
-                <CheckBox Grid.Row="4" Grid.Column="1" IsChecked="{Binding UpdateEditPermission}" />
+                <Label Grid.Row="5" Grid.Column="0" Text="Edit Permission:" VerticalOptions="Center"/>
+                <CheckBox Grid.Row="5" Grid.Column="1" IsChecked="{Binding UpdateEditPermission}" />
 
                 <!-- Inspection Permission -->
-                <Label Grid.Row="5" Grid.Column="0" Text="Inspection Permission:" VerticalOptions="Center"/>
-                <CheckBox Grid.Row="5" Grid.Column="1" IsChecked="{Binding UpdateInspectionPermission}" />
+                <Label Grid.Row="6" Grid.Column="0" Text="Inspection Permission:" VerticalOptions="Center"/>
+                <CheckBox Grid.Row="6" Grid.Column="1" IsChecked="{Binding UpdateInspectionPermission}" />
 
                 <!-- Submit Button -->
-                <Button Grid.Row="6"
+                <Button Grid.Row="7"
                 Text="Save Changes"
                 Command="{Binding UpdateUserPermissionsCommand}"
                 Margin="0,10,0,0" />

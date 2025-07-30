@@ -25,6 +25,7 @@ namespace PCBTracker.UI.ViewModels
 
         [ObservableProperty] bool adminPermission = false;
         [ObservableProperty] bool scanPermission = false;
+        [ObservableProperty] bool extractPermission = false;
         [ObservableProperty] bool editPermission = false;
         [ObservableProperty] bool inspectionPermission = false;
         [ObservableProperty] private bool isUserCreateSectionVisible = false;
@@ -33,6 +34,7 @@ namespace PCBTracker.UI.ViewModels
         [ObservableProperty] private string updateUsername = string.Empty;
         [ObservableProperty] private bool updateAdminPermission = false;
         [ObservableProperty] private bool updateScanPermission = false;
+        [ObservableProperty] private bool updateExtractPermission = false;
         [ObservableProperty] private bool updateEditPermission = false;
         [ObservableProperty] private bool updateInspectionPermission = false;
         [ObservableProperty] private bool isPermissionUpdateSectionVisible = false;
@@ -85,6 +87,7 @@ namespace PCBTracker.UI.ViewModels
                     newPassword,
                     adminPermission,
                     scanPermission,
+                    extractPermission,
                     editPermission,
                     inspectionPermission);
 
@@ -98,6 +101,7 @@ namespace PCBTracker.UI.ViewModels
 
                 AdminPermission = false;
                 ScanPermission = false;
+                ExtractPermission = false;
                 EditPermission = false;
                 InspectionPermission = false;
 
@@ -142,6 +146,7 @@ namespace PCBTracker.UI.ViewModels
                     updateUsername,
                     updateAdminPermission,
                     updateScanPermission,
+                    updateExtractPermission,
                     updateEditPermission,
                     updateInspectionPermission
                 );
@@ -152,6 +157,7 @@ namespace PCBTracker.UI.ViewModels
                 UpdateUsername = string.Empty;
                 UpdateAdminPermission = false;
                 UpdateScanPermission = false;
+                UpdateExtractPermission = false;
                 UpdateEditPermission = false;
                 UpdateInspectionPermission = false;
                 IsPermissionUpdateSectionVisible = false;
