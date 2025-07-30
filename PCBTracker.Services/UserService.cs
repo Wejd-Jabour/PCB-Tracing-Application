@@ -1,8 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
 using PCBTracker.Data.Context;
 using PCBTracker.Domain.Entities;
 using PCBTracker.Services.Interfaces;
+using System;
+using System.Linq;
 
 namespace PCBTracker.Services
 {
@@ -28,22 +29,20 @@ namespace PCBTracker.Services
         /// Looks up the user by username, then verifies the password hash using BCrypt.
         /// Returns the authenticated User entity if valid; otherwise null.
         /// </summary>
-        public User? Authenticate(string username, string password)
+        public async Task<User?> AuthenticateAsync(string username, string password)
         {
-            // Look up a single User entity with the matching username.
-            var user = _dbContext.Users.SingleOrDefault(u => u.Username == username);
+            var user = await _dbContext.Users
+                .SingleOrDefaultAsync(u => u.Username == username);
 
-            // If no such user exists, authentication fails.
             if (user == null)
                 return null;
 
-            // Compare the supplied password with the stored BCrypt hash.
             if (BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
-                return user; // Credentials are valid — return user.
+                return user;
 
-            // Password does not match — authentication fails.
             return null;
         }
+
 
         /// <summary>
         /// Creates and persists a new user account with hashed password and role.

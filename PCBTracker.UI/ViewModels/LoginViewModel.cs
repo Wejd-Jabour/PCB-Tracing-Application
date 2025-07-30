@@ -58,9 +58,8 @@ namespace PCBTracker.UI.ViewModels
 
             try
             {
-                var user = _userService.Authenticate(Username, Password);
+                var user = await _userService.AuthenticateAsync(Username, Password);
 
-            // If authentication fails, show an alert dialog to the user.
                 if (user is null)
                 {
                     await App.Current.MainPage.DisplayAlert(
@@ -70,17 +69,32 @@ namespace PCBTracker.UI.ViewModels
                 }
                 else
                 {
-                // Store the authenticated user in a static application-level property.
                     App.CurrentUser = user;
 
-                // If the current navigation shell is AppShell, load any restricted pages.
                     if (Shell.Current is AppShell shell)
                     {
                         shell.LoadAuthenticatedPages();
                     }
 
-                // Navigate to the root-level SubmitPage using the shell routing system.
-                    await Shell.Current.GoToAsync("///SubmitPage");
+                    // ✅ Priority route selection
+                    string? targetRoute = user.Scan ? "SubmitPage"
+                                         : user.Extract ? "DataExtract"
+                                         : user.Edit ? "EditPage"
+                                         : user.Inspection ? "InspectionPage"
+                                         : user.Admin ? "SettingPage"
+                                         : null;
+
+                    if (targetRoute != null)
+                    {
+                        await Shell.Current.GoToAsync($"///{targetRoute}");
+                    }
+                    else
+                    {
+                        await App.Current.MainPage.DisplayAlert(
+                            "No Access",
+                            "Your account does not have permission to access any pages.",
+                            "OK");
+                    }
                 }
             }
             catch (Exception ex)
@@ -88,6 +102,7 @@ namespace PCBTracker.UI.ViewModels
                 await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
         }
+
 
     }
 }

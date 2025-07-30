@@ -17,7 +17,8 @@ namespace PCBTracker.Services.Interfaces
         /// <returns>
         /// A User entity if the credentials match a stored user; otherwise, null.
         /// </returns>
-        User? Authenticate(string username, string password);
+        Task<User?> AuthenticateAsync(string username, string password);
+
 
         /// <summary>
         /// Creates a new user record with a specified role and securely hashed password.
