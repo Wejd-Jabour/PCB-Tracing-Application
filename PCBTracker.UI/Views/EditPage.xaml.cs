@@ -42,5 +42,24 @@ namespace PCBTracker.UI.Views
             if (BindingContext is EditViewModel vm)
                 await vm.LoadAsync(); // Loads board types, skids, and performs initial search.
         }
+
+        private void OnFilterCompleted(object sender, EventArgs e)
+        {
+            if (BindingContext is EditViewModel vm &&
+                vm.SearchCommand.CanExecute(null))
+            {
+                vm.SearchCommand.Execute(null);
+            }
+        }
+
+        private void OnFilterChanged(object sender, EventArgs e)
+        {
+            if (BindingContext is EditViewModel vm &&
+                vm.SearchCommand.CanExecute(null))
+            {
+                vm.SearchCommand.Execute(null);
+            }
+        }
+
     }
 }

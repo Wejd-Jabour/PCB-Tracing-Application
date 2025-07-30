@@ -20,13 +20,29 @@ namespace PCBTracker.UI.Views
             // Loads and instantiates the visual elements defined in DataExtractPage.xaml.
             InitializeComponent();
 
-            // Resolves the DataExtractViewModel from the application's MAUI dependency injection system.
-            // The resolved instance is assigned as the BindingContext so that XAML data bindings function correctly.
-            BindingContext = Application.Current              // Gets the current Application instance.
-                             .Handler                         // Accesses the native platform handler.
-                             .MauiContext                     // Provides platform-aware context including services.
-                             .Services                        // The service provider container (IServiceProvider).
-                             .GetRequiredService<DataExtractViewModel>(); // Resolves the registered ViewModel instance.
+            BindingContext = Application.Current
+                             .Handler
+                             .MauiContext
+                             .Services
+                             .GetRequiredService<DataExtractViewModel>();
+        }
+
+        private void OnFilterCompleted(object sender, EventArgs e)
+        {
+            if (BindingContext is DataExtractViewModel vm &&
+                vm.SearchCommand.CanExecute(null))
+            {
+                vm.SearchCommand.Execute(null);
+            }
+        }
+
+        private void OnFilterChanged(object sender, EventArgs e)
+        {
+            if (BindingContext is DataExtractViewModel vm &&
+                vm.SearchCommand.CanExecute(null))
+            {
+                vm.SearchCommand.Execute(null);
+            }
         }
 
         /// <summary>
@@ -39,7 +55,7 @@ namespace PCBTracker.UI.Views
 
             // Ensures the bound ViewModel is the correct type before invoking async logic.
             if (BindingContext is DataExtractViewModel vm)
-                await vm.LoadAsync(); // Loads board types, skids, and initiates default search.
+                await vm.LoadAsync();
         }
     }
 }

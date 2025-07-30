@@ -23,28 +23,31 @@
 
                     <!-- Row 1: Inputs -->
                     <Entry Grid.Row="1" Grid.Column="0" WidthRequest="120" HeightRequest="40"
-                       Placeholder="Serial" Text="{Binding SerialNumberFilter}" />
+                       Placeholder="Serial" Text="{Binding SerialNumberFilter}" Completed="OnFilterCompleted"/>
 
-                                        <Picker Grid.Row="1" Grid.Column="1" WidthRequest="140" HeightRequest="40"
+                    <Picker Grid.Row="1" Grid.Column="1" WidthRequest="140" HeightRequest="40"
                         ItemsSource="{Binding BoardTypes}"
-                        SelectedItem="{Binding SelectedBoardTypeFilter}" />
+                        SelectedItem="{Binding SelectedBoardTypeFilter}" 
+                        SelectedIndexChanged="OnFilterChanged"/>
 
-                                        <DatePicker Grid.Row="1" Grid.Column="2" HeightRequest="40"
+                    <DatePicker Grid.Row="1" Grid.Column="2" HeightRequest="40"
                             Date="{Binding DateFrom}" />
 
-                                        <DatePicker Grid.Row="1" Grid.Column="3" HeightRequest="40"
+                    <DatePicker Grid.Row="1" Grid.Column="3" HeightRequest="40"
                             Date="{Binding DateTo}" />
 
-                                        <Picker Grid.Row="1" Grid.Column="4" WidthRequest="120" HeightRequest="40"
+                    <Picker Grid.Row="1" Grid.Column="4" WidthRequest="120" HeightRequest="40"
                         ItemsSource="{Binding Skids}"
                         ItemDisplayBinding="{Binding SkidName}"
+                        SelectedIndexChanged="OnFilterChanged"
                         SelectedItem="{Binding SelectedSkidFilter}" />
 
-                                        <Picker Grid.Row="1" Grid.Column="5" WidthRequest="130" HeightRequest="40"
+                    <Picker Grid.Row="1" Grid.Column="5" WidthRequest="130" HeightRequest="40"
                         ItemsSource="{Binding IsShippedOptions}"
-                        SelectedItem="{Binding SelectedIsShippedOption}" />
+                        SelectedItem="{Binding SelectedIsShippedOption}" 
+                        SelectedIndexChanged="OnFilterChanged"/>
 
-                                        <Button Grid.Row="1" Grid.Column="6" HeightRequest="40"
+                    <Button Grid.Row="1" Grid.Column="6" HeightRequest="40"
                         Text="{Binding DateModeButtonText}"
                         Command="{Binding ToggleDateModeCommand}" />
                 </Grid>
@@ -76,7 +79,7 @@
 
             <!-- COLUMN HEADERS -->
             <ScrollView Grid.Row="1" Orientation="Horizontal" HeightRequest="40">
-                <Grid ColumnDefinitions="2*,2*,*,*,*,*,*" BackgroundColor="LightGray" Padding="8">
+                <Grid ColumnDefinitions="1.2*,1.8*,*,*,*,*,*" BackgroundColor="LightGray" Padding="8">
                     <Label Text="Serial"    Grid.Column="0" FontAttributes="Bold"/>
                     <Label Text="Part #"    Grid.Column="1" FontAttributes="Bold"/>
                     <Label Text="Type"      Grid.Column="2" FontAttributes="Bold"/>
