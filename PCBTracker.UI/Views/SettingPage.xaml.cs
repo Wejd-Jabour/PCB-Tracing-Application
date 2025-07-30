@@ -24,6 +24,19 @@ namespace PCBTracker.UI.Views
                 UserCreateSection.IsVisible = !UserCreateSection.IsVisible;
         }
 
+        private void TogglePermissionUpdateVisibility(object sender, EventArgs e)
+        {
+            if (PermissionUpdateSection != null)
+                PermissionUpdateSection.IsVisible = !PermissionUpdateSection.IsVisible;
+        }
+
+
+        private void ToggleUserRemoveVisibility(object sender, EventArgs e)
+        {
+            if (UserRemoveSection != null)
+                UserRemoveSection.IsVisible = !UserRemoveSection.IsVisible;
+        }
+
 
         protected override async void OnAppearing()
         {

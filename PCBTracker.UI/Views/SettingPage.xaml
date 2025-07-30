@@ -5,56 +5,146 @@
     x:Class="PCBTracker.UI.Views.SettingPage"
     Title="Settings">
 
-    <VerticalStackLayout Padding="10" Spacing="10">
-        <Button Text="Add Inspection" Clicked="ToggleUserCreateVisibility" />
+    <ScrollView>
+        <VerticalStackLayout Padding="10" Spacing="10">
+            <Button Text="Add Inspection" Clicked="ToggleUserCreateVisibility" Margin="0,10"/>
 
-        <Grid x:Name="UserCreateSection" IsVisible="{Binding IsUserCreateSectionVisible}" RowDefinitions="Auto,Auto,*,Auto" Padding="10" RowSpacing="10">
+            <Grid x:Name="UserCreateSection" IsVisible="{Binding IsUserCreateSectionVisible}" RowDefinitions="Auto,Auto,*,Auto" Padding="10" RowSpacing="10">
 
-            <VerticalStackLayout Grid.Row="0" Spacing="12">
-                <Label Text="Filters" FontAttributes="Bold" FontSize="Medium"/>
+                <VerticalStackLayout Grid.Row="0" Spacing="12">
+                    <Label Text="Filters" FontAttributes="Bold" FontSize="Medium"/>
 
-                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,0.5*,0.5*, 0.5*, 0.5*" RowDefinitions="Auto,Auto">
-                    <!-- Row 0: Labels -->
-                    <Label Text="Employee ID"         Grid.Row="0" Grid.Column="0"/>
-                    <Label Text="Username"         Grid.Row="0" Grid.Column="1"/>
-                    <Label Text="Password"       Grid.Row="0" Grid.Column="2"/>
-                    <Label Text="First Name"        Grid.Row="0" Grid.Column="3"/>
-                    <Label Text="Last Name"          Grid.Row="0" Grid.Column="4"/>
-                    <Label Text="Admin"        Grid.Row="0" Grid.Column="5"/>
-                    <Label Text="Scan"          Grid.Row="0" Grid.Column="6"/>
-                    <Label Text="Edit"             Grid.Row="0" Grid.Column="7"/>
-                    <Label Text="Inspection"   Grid.Row="0" Grid.Column="8"/>
+                    <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,0.5*,0.5*, 0.5*, 0.5*" RowDefinitions="Auto,Auto">
+                        <!-- Row 0: Labels -->
+                        <Label Text="Employee ID"         Grid.Row="0" Grid.Column="0"/>
+                        <Label Text="Username"         Grid.Row="0" Grid.Column="1"/>
+                        <Label Text="Password"       Grid.Row="0" Grid.Column="2"/>
+                        <Label Text="First Name"        Grid.Row="0" Grid.Column="3"/>
+                        <Label Text="Last Name"          Grid.Row="0" Grid.Column="4"/>
+                        <Label Text="Admin"        Grid.Row="0" Grid.Column="5"/>
+                        <Label Text="Scan"          Grid.Row="0" Grid.Column="6"/>
+                        <Label Text="Edit"             Grid.Row="0" Grid.Column="7"/>
+                        <Label Text="Inspection"   Grid.Row="0" Grid.Column="8"/>
 
-                    <!-- Row 1: Inputs -->
-                    <Entry Grid.Row="1" Grid.Column="0"
-                       WidthRequest="120" HeightRequest="40"
-                       Placeholder="Employee ID"
-                       Keyboard="Numeric"
-                       Text="{Binding NewEmployeeIDText}" />
+                        <!-- Row 1: Inputs -->
+                        <Entry Grid.Row="1" Grid.Column="0"
+                           WidthRequest="120" HeightRequest="40"
+                           Placeholder="Employee ID"
+                           Keyboard="Numeric"
+                           Text="{Binding NewEmployeeIDText}" />
 
-                    <Entry Grid.Row="1" Grid.Column="1" WidthRequest="120" HeightRequest="40" 
-					Placeholder="Username" Text="{Binding NewUsername}" />
+                        <Entry Grid.Row="1" Grid.Column="1" WidthRequest="120" HeightRequest="40" 
+					    Placeholder="Username" Text="{Binding NewUsername}" />
 
-                    <Entry Grid.Row="1" Grid.Column="2" WidthRequest="120" HeightRequest="40"
-					Placeholder="Password" Text="{Binding NewPassword}" />
+                        <Entry Grid.Row="1" Grid.Column="2" WidthRequest="120" HeightRequest="40"
+					    Placeholder="Password" Text="{Binding NewPassword}" />
 
-                    <Entry Grid.Row="1" Grid.Column="3" WidthRequest="120" HeightRequest="40" 
-					Placeholder="First Name" Text="{Binding NewFirstName}" />
+                        <Entry Grid.Row="1" Grid.Column="3" WidthRequest="120" HeightRequest="40" 
+					    Placeholder="First Name" Text="{Binding NewFirstName}" />
 
-                    <Entry Grid.Row="1" Grid.Column="4" WidthRequest="120" HeightRequest="40" 
-					Placeholder="Last Name" Text="{Binding NewLastName}" />
+                        <Entry Grid.Row="1" Grid.Column="4" WidthRequest="120" HeightRequest="40" 
+					    Placeholder="Last Name" Text="{Binding NewLastName}" />
 
-                    <Switch  Grid.Row="1" Grid.Column="5" IsToggled="{Binding AdminPermission}"/>
-                    <Switch  Grid.Row="1" Grid.Column="6" IsToggled="{Binding ScanPermission}"/>
-                    <Switch  Grid.Row="1" Grid.Column="7" IsToggled="{Binding EditPermission}"/>
-                    <Switch  Grid.Row="1" Grid.Column="8" IsToggled="{Binding InspectionPermission}"/>
-                </Grid>
+                        <Switch  Grid.Row="1" Grid.Column="5" IsToggled="{Binding AdminPermission}"/>
+                        <Switch  Grid.Row="1" Grid.Column="6" IsToggled="{Binding ScanPermission}"/>
+                        <Switch  Grid.Row="1" Grid.Column="7" IsToggled="{Binding EditPermission}"/>
+                        <Switch  Grid.Row="1" Grid.Column="8" IsToggled="{Binding InspectionPermission}"/>
+                    </Grid>
 
-                <HorizontalStackLayout Spacing="10">
-                    <Button Text="Create New User" Command="{Binding CreateNewUserCommand}" />
-                </HorizontalStackLayout>
-            </VerticalStackLayout>
+                    <HorizontalStackLayout Spacing="10">
+                        <Button Text="Create New User" Command="{Binding CreateNewUserCommand}" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Grid>
 
-        </Grid>
-    </VerticalStackLayout>
+
+            <Button Text="Update Permissions"
+            Clicked="TogglePermissionUpdateVisibility"
+            Margin="0,10" />
+
+            <Grid x:Name="PermissionUpdateSection"
+              IsVisible="{Binding IsPermissionUpdateSectionVisible}"
+              RowSpacing="8"
+              ColumnSpacing="12"
+              Padding="10">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Employee ID -->
+                <Label Grid.Row="0" Grid.Column="0" Text="Employee ID:" VerticalOptions="Center"/>
+                <Entry Grid.Row="0" Grid.Column="1" Text="{Binding UpdateEmployeeIDText}" Keyboard="Numeric" />
+
+                <!-- Username -->
+                <Label Grid.Row="1" Grid.Column="0" Text="Username:" VerticalOptions="Center"/>
+                <Entry Grid.Row="1" Grid.Column="1" Text="{Binding UpdateUsername}" />
+
+                <!-- Admin Permission -->
+                <Label Grid.Row="2" Grid.Column="0" Text="Admin Permission:" VerticalOptions="Center"/>
+                <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding UpdateAdminPermission}" />
+
+                <!-- Scan Permission -->
+                <Label Grid.Row="3" Grid.Column="0" Text="Scan Permission:" VerticalOptions="Center"/>
+                <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding UpdateScanPermission}" />
+
+                <!-- Edit Permission -->
+                <Label Grid.Row="4" Grid.Column="0" Text="Edit Permission:" VerticalOptions="Center"/>
+                <CheckBox Grid.Row="4" Grid.Column="1" IsChecked="{Binding UpdateEditPermission}" />
+
+                <!-- Inspection Permission -->
+                <Label Grid.Row="5" Grid.Column="0" Text="Inspection Permission:" VerticalOptions="Center"/>
+                <CheckBox Grid.Row="5" Grid.Column="1" IsChecked="{Binding UpdateInspectionPermission}" />
+
+                <!-- Submit Button -->
+                <Button Grid.Row="6"
+                Text="Save Changes"
+                Command="{Binding UpdateUserPermissionsCommand}"
+                Margin="0,10,0,0" />
+            </Grid>
+
+            <Button Text="Remove User"
+            Clicked="ToggleUserRemoveVisibility"
+            Margin="0,10" />
+
+            <Grid x:Name="UserRemoveSection"
+              IsVisible="{Binding IsUserRemoveSectionVisible}"
+              RowSpacing="8"
+              ColumnSpacing="12"
+              Padding="10">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" Text="Employee ID:" VerticalOptions="Center"/>
+                <Entry Grid.Row="0" Grid.Column="1" Text="{Binding RemoveEmployeeIDText}" Keyboard="Numeric" />
+
+                <Label Grid.Row="1" Grid.Column="0" Text="Username:" VerticalOptions="Center"/>
+                <Entry Grid.Row="1" Grid.Column="1" Text="{Binding RemoveUsername}" />
+
+                <Button Grid.Row="2"
+                Text="Confirm Removal"
+                Command="{Binding RemoveUserCommand}"
+                Margin="0,10,0,0" />
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

@@ -76,5 +76,36 @@ namespace PCBTracker.Services
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
         }
+
+        public void UpdateUserPermissions(int employeeID, string username, bool admin, bool scan, bool edit, bool inspection)
+        {
+            var user = _dbContext.Users.FirstOrDefault(u => u.EmployeeID == employeeID && u.Username == username);
+            if (user == null)
+                throw new InvalidOperationException("User not found.");
+
+            user.Admin = admin;
+            user.Scan = scan;
+            user.Edit = edit;
+            user.Inspection = inspection;
+
+            _dbContext.SaveChanges();
+        }
+
+
+        public void RemoveUser(int employeeID, string username)
+        {
+            // Prevent deletion of default admin
+            if (employeeID == 1 && username.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("The default admin user cannot be removed.");
+
+            var user = _dbContext.Users.FirstOrDefault(u => u.EmployeeID == employeeID && u.Username == username);
+            if (user == null)
+                throw new InvalidOperationException("User not found.");
+
+            _dbContext.Users.Remove(user);
+            _dbContext.SaveChanges();
+        }
+
+
     }
 }

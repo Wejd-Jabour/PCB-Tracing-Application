@@ -27,5 +27,13 @@ namespace PCBTracker.Services.Interfaces
         /// <param name="password">The plain-text password to be hashed and stored securely.</param>
         /// <param name="role">The user's assigned role. This value is stored as a string.</param>
         void CreateUser(int EmployeeID, string username, string password, string firstName, string lastName, bool admin, bool scan, bool edit, bool inspection);
+
+
+        void UpdateUserPermissions(int employeeID, string username, bool admin, bool scan, bool edit, bool inspection);
+
+
+        void RemoveUser(int employeeID, string username);
+
+
     }
 }
