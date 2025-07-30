@@ -47,32 +47,47 @@ namespace PCBTracker.UI.ViewModels
         [RelayCommand]
         private async Task LoginAsync()
         {
-            // Call the IUserService.Authenticate method with current input values.
-            // This returns a User object if credentials match, or null if invalid.
-            var user = _userService.Authenticate(Username, Password);
-
-            // If authentication fails, show an alert dialog to the user.
-            if (user is null)
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
             {
                 await App.Current.MainPage.DisplayAlert(
-                    "Login Failed",                  // Title
-                    "Invalid username or password.", // Message
-                    "OK");                           // Button text
+                    "Missing Credentials",
+                    "Please enter both username and password.",
+                    "OK");
+                return;
             }
-            else
+
+            try
             {
+                var user = _userService.Authenticate(Username, Password);
+
+            // If authentication fails, show an alert dialog to the user.
+                if (user is null)
+                {
+                    await App.Current.MainPage.DisplayAlert(
+                        "Login Failed",
+                        "Invalid username or password.",
+                        "OK");
+                }
+                else
+                {
                 // Store the authenticated user in a static application-level property.
-                App.CurrentUser = user;
+                    App.CurrentUser = user;
 
                 // If the current navigation shell is AppShell, load any restricted pages.
-                if (Shell.Current is AppShell shell)
-                {
-                    shell.LoadAuthenticatedPages();
-                }
+                    if (Shell.Current is AppShell shell)
+                    {
+                        shell.LoadAuthenticatedPages();
+                    }
 
                 // Navigate to the root-level SubmitPage using the shell routing system.
-                await Shell.Current.GoToAsync("///SubmitPage");
+                    await Shell.Current.GoToAsync("///SubmitPage");
+                }
+            }
+            catch (Exception ex)
+            {
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
         }
+
     }
 }

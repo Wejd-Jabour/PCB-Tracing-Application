@@ -27,6 +27,24 @@ public partial class AppShell : Shell
         Routing.RegisterRoute("EditPage", typeof(EditPage));
 
     }
+    public void Logout()
+    {
+        App.CurrentUser = null;
+
+        Items.Clear();
+        Items.Add(new ShellContent
+        {
+            Route = "LoginPage",
+            ContentTemplate = new DataTemplate(typeof(LoginPage)),
+            Title = "Login",
+            FlyoutItemIsVisible = false
+        });
+
+        MainThread.BeginInvokeOnMainThread(() =>
+            Shell.Current.GoToAsync("//LoginPage"));
+    }
+
+
     public void LoadAuthenticatedPages()
     {
         Items.Clear();
@@ -99,12 +117,39 @@ public partial class AppShell : Shell
                     }
                 }
         });
-
+        Items.Add(new FlyoutItem
+        {
+            Title = "Logout",
+            Route = "LogoutAction",
+            Items =
+    {
+        new ShellContent
+        {
+            ContentTemplate = new DataTemplate(typeof(ContentPage)), // Placeholder page
+            Route = "LogoutAction"
+        }
+    }
+        });
 
     }
     private void AppShell_Navigating(object sender, ShellNavigatingEventArgs e)
     {
         var target = e.Target?.Location.OriginalString;
+
+        if (target?.Contains("LogoutAction") == true)
+        {
+            e.Cancel(); // Prevent navigation
+
+            bool confirm = true;
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                confirm = await Shell.Current.DisplayAlert("Logout", "Are you sure you want to log out?", "Yes", "No");
+                if (confirm)
+                    Logout();
+            });
+
+            return;
+        }
 
         if (target?.Contains("LoginPage") == true)
             return;
@@ -116,4 +161,5 @@ public partial class AppShell : Shell
                 Shell.Current.GoToAsync("//LoginPage"));
         }
     }
+
 }
