@@ -21,12 +21,13 @@ namespace PCBTracker.UI.Views
                 FormSection.IsVisible = !FormSection.IsVisible;
         }
 
-        
-        //protected override async void OnAppearing()
-        //{
-        //    base.OnAppearing();
-        //    if (BindingContext is SettingViewModel vm)
-        //        await vm.LoadAsync();
-        //}
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            if (BindingContext is InspectionViewModel vm)
+                await vm.LoadAsync();
+        }
+
     }
 }
