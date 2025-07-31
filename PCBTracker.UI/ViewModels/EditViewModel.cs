@@ -192,10 +192,10 @@ namespace PCBTracker.UI.ViewModels
         // -----------------------------
 
         [RelayCommand]
-        private async Task ExportCsvAsync()
+        public async Task ExportCsvAsync()
         {
             bool confirm = await App.Current.MainPage.DisplayAlert(
-                "Ready to Export?",
+                "Ready to Convert?",
                 "Would you like to export this data to CSV?",
                 "Yes",
                 "No");
@@ -204,35 +204,53 @@ namespace PCBTracker.UI.ViewModels
                 return;
 
             var sb = new System.Text.StringBuilder();
+            sb.AppendLine("SerialNumber,PartNumber,ShipDate");
 
-            // CSV header
-            sb.AppendLine("SerialNumber,PartNumber,BoardType,PrepDate,ShipDate,IsShipped,SkidID");
+            var exportFilter = new BoardFilterDto
+            {
+                SerialNumber = SerialNumberFilter,
+                BoardType = SelectedBoardTypeFilter,
+                SkidId = SelectedSkidFilter?.SkidID > 0 ? SelectedSkidFilter.SkidID : null,
+                PrepDateFrom = UseShipDate ? null : DateFrom,
+                PrepDateTo = UseShipDate ? null : DateTo,
+                ShipDateFrom = UseShipDate ? DateFrom : null,
+                ShipDateTo = UseShipDate ? DateTo : null,
+                IsShipped = SelectedIsShippedOption switch
+                {
+                    "Shipped" => true,
+                    "Not Shipped" => false,
+                    _ => (bool?)null // "Both"
+                },
+                PageNumber = null, // <-- no paging
+                PageSize = null
+            };
 
-            // Rows
-            foreach (var b in Boards)
+            var allBoards = await _boardService.GetBoardsAsync(exportFilter);
+
+            foreach (var b in allBoards)
             {
                 var shipDate = b.ShipDate?.ToString("yyyy-MM-dd") ?? "";
-                sb.AppendLine($"{b.SerialNumber},{b.PartNumber},{b.BoardType},{b.PrepDate:yyyy-MM-dd},{shipDate},{b.IsShipped},{b.SkidID}");
+                sb.AppendLine($"{b.SerialNumber},{b.PartNumber},{shipDate}");
             }
 
-            // Filename with timestamp
-            var fileName = $"EditExport_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
-
-            // Platform-specific folder
+            var fileName = $"Boards_{DateTime.Now:yyyyMMddHHmmss}.csv";
             string folderPath;
 
-            #if WINDOWS
-                folderPath = System.IO.Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
-            #else
-                folderPath = FileSystem.CacheDirectory;
-            #endif
-        
-            // Final path and write to disk
+#if WINDOWS
+            folderPath = System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "Downloads");
+#elif MACCATALYST
+            folderPath = System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                "Downloads");
+#else
+            folderPath = FileSystem.CacheDirectory;
+#endif
+
             var filePath = System.IO.Path.Combine(folderPath, fileName);
             System.IO.File.WriteAllText(filePath, sb.ToString());
 
-            // Success alert
             await App.Current.MainPage.DisplayAlert("Export Complete", $"File saved to:\n{filePath}", "OK");
         }
 

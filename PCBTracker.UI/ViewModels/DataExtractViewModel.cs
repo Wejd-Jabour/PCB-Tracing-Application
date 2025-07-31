@@ -175,7 +175,28 @@ namespace PCBTracker.UI.ViewModels
             var sb = new System.Text.StringBuilder();
             sb.AppendLine("SerialNumber,PartNumber,ShipDate");
 
-            foreach (var b in Boards)
+            var exportFilter = new BoardFilterDto
+            {
+                SerialNumber = SerialNumberFilter,
+                BoardType = SelectedBoardTypeFilter,
+                SkidId = SelectedSkidFilter?.SkidID > 0 ? SelectedSkidFilter.SkidID : null,
+                PrepDateFrom = UseShipDate ? null : DateFrom,
+                PrepDateTo = UseShipDate ? null : DateTo,
+                ShipDateFrom = UseShipDate ? DateFrom : null,
+                ShipDateTo = UseShipDate ? DateTo : null,
+                IsShipped = SelectedIsShippedOption switch
+                {
+                    "Shipped" => true,
+                    "Not Shipped" => false,
+                    _ => (bool?)null // "Both"
+                },
+                PageNumber = null, // <-- no paging
+                PageSize = null
+            };
+
+            var allBoards = await _boardService.GetBoardsAsync(exportFilter);
+
+            foreach (var b in allBoards)
             {
                 var shipDate = b.ShipDate?.ToString("yyyy-MM-dd") ?? "";
                 sb.AppendLine($"{b.SerialNumber},{b.PartNumber},{shipDate}");

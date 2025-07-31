@@ -82,9 +82,9 @@ namespace PCBTracker.UI.ViewModels
                 _userService.CreateUser(
                     ParsedEmployeeID.Value,
                     newUsername,
+                    newPassword,
                     newFirstName,
                     newLastName,
-                    newPassword,
                     adminPermission,
                     scanPermission,
                     extractPermission,
