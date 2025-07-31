@@ -5,6 +5,15 @@
     xmlns:views="clr-namespace:PCBTracker.UI.Views"
     x:Class="PCBTracker.UI.AppShell"
     >
+    <Shell.FlyoutHeader>
+        <StackLayout Padding="10" BackgroundColor="LightGray">
+            <Label Text="{Binding StatusText}"
+                   FontSize="14"
+                   TextColor="DarkGreen"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
+        </StackLayout>
+    </Shell.FlyoutHeader>
 
 
 

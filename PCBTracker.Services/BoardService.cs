@@ -16,12 +16,12 @@ namespace PCBTracker.Services
     /// </summary>
     public class BoardService : IBoardService
     {
-        private readonly AppDbContext _db;
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
 
         /// <summary>
         /// Initializes the BoardService with an injected AppDbContext.
         /// </summary>
-        public BoardService(AppDbContext db) => _db = db;
+        public BoardService(IDbContextFactory<AppDbContext> contextFactory) => _contextFactory = contextFactory;
 
         /// <summary>
         /// Returns a hardcoded list of supported board types.
@@ -34,32 +34,39 @@ namespace PCBTracker.Services
         /// Retrieves all Skid entities from the database.
         /// </summary>
         public async Task<IEnumerable<Skid>> GetSkidsAsync()
-            => await _db.Skids.ToListAsync();
+        {
+            using var db = await _contextFactory.CreateDbContextAsync();
+            return await db.Skids.ToListAsync();
+        }
 
         /// <summary>
         /// Projects Skid entities into SkidDto view models with ID and name only.
         /// Used in extract filter dropdowns.
         /// </summary>
         public async Task<IEnumerable<SkidDto>> ExtractSkidsAsync()
-            => await _db.Skids
+        {
+            using var db = await _contextFactory.CreateDbContextAsync();
+            return await db.Skids
                         .Select(s => new SkidDto
                         {
                             SkidID = s.SkidID,
                             SkidName = s.SkidName
                         })
                         .ToListAsync();
+        }
 
         /// <summary>
         /// Creates a new Skid record with an incremented numeric SkidName based on max existing SkidID.
         /// </summary>
         public async Task<Skid> CreateNewSkidAsync()
         {
-            var max = await _db.Skids.AnyAsync()
-                ? await _db.Skids.MaxAsync(s => s.SkidID)
+            using var db = await _contextFactory.CreateDbContextAsync();
+            var max = await db.Skids.AnyAsync()
+                ? await db.Skids.MaxAsync(s => s.SkidID)
                 : 0;
             var skid = new Skid { SkidName = (max + 1).ToString() };
-            _db.Skids.Add(skid);
-            await _db.SaveChangesAsync();
+            db.Skids.Add(skid);
+            await db.SaveChangesAsync();
             return skid;
         }
 
@@ -68,8 +75,9 @@ namespace PCBTracker.Services
         /// </summary>
         public async Task SubmitBoardAsync(Board board)
         {
-            _db.Boards.Add(board);
-            await _db.SaveChangesAsync();
+            using var db = await _contextFactory.CreateDbContextAsync();
+            db.Boards.Add(board);
+            await db.SaveChangesAsync();
         }
 
         /// <summary>
@@ -78,6 +86,7 @@ namespace PCBTracker.Services
         /// </summary>
         public async Task CreateBoardAsync(BoardDto dto)
         {
+            using var db = await _contextFactory.CreateDbContextAsync();
             var board = new Board
             {
                 SerialNumber = dto.SerialNumber,
@@ -88,8 +97,8 @@ namespace PCBTracker.Services
                 IsShipped = dto.IsShipped,
                 SkidID = dto.SkidID
             };
-            _db.Boards.Add(board);
-            await _db.SaveChangesAsync();
+            db.Boards.Add(board);
+            await db.SaveChangesAsync();
         }
 
         /// <summary>
@@ -99,7 +108,9 @@ namespace PCBTracker.Services
         /// </summary>
         public async Task CreateBoardAndClaimSkidAsync(BoardDto dto)
         {
-            var skid = await _db.Skids.FindAsync(dto.SkidID);
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            var skid = await db.Skids.FindAsync(dto.SkidID);
             if (skid != null && skid.designatedType == null)
                 skid.designatedType = dto.BoardType;
 
@@ -115,99 +126,39 @@ namespace PCBTracker.Services
                 CreatedAt = DateTime.Now
             };
 
-            _db.Boards.Add(board);
+            db.Boards.Add(board);
 
             switch (dto.BoardType)
             {
                 case "LE":
-                    _db.LE.Add(new LE
-                    {
-                        SerialNumber = dto.SerialNumber,
-                        PartNumber = dto.PartNumber,
-                        BoardType = dto.BoardType,
-                        PrepDate = dto.PrepDate,
-                        IsShipped = dto.IsShipped,
-                        ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null,
-                        SkidID = dto.SkidID
-                    });
+                    db.LE.Add(new LE { SerialNumber = dto.SerialNumber, PartNumber = dto.PartNumber, BoardType = dto.BoardType, PrepDate = dto.PrepDate, IsShipped = dto.IsShipped, ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null, SkidID = dto.SkidID });
                     break;
-
                 case "LE Upgrade":
-                    _db.LE_Upgrade.Add(new LE_Upgrade
-                    {
-                        SerialNumber = dto.SerialNumber,
-                        PartNumber = dto.PartNumber,
-                        BoardType = dto.BoardType,
-                        PrepDate = dto.PrepDate,
-                        IsShipped = dto.IsShipped,
-                        ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null,
-                        SkidID = dto.SkidID
-                    });
+                    db.LE_Upgrade.Add(new LE_Upgrade { SerialNumber = dto.SerialNumber, PartNumber = dto.PartNumber, BoardType = dto.BoardType, PrepDate = dto.PrepDate, IsShipped = dto.IsShipped, ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null, SkidID = dto.SkidID });
                     break;
-
                 case "SAD":
-                    _db.SAD.Add(new SAD
-                    {
-                        SerialNumber = dto.SerialNumber,
-                        PartNumber = dto.PartNumber,
-                        BoardType = dto.BoardType,
-                        PrepDate = dto.PrepDate,
-                        IsShipped = dto.IsShipped,
-                        ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null,
-                        SkidID = dto.SkidID
-                    });
+                    db.SAD.Add(new SAD { SerialNumber = dto.SerialNumber, PartNumber = dto.PartNumber, BoardType = dto.BoardType, PrepDate = dto.PrepDate, IsShipped = dto.IsShipped, ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null, SkidID = dto.SkidID });
                     break;
-
                 case "SAD Upgrade":
-                    _db.SAD_Upgrade.Add(new SAD_Upgrade
-                    {
-                        SerialNumber = dto.SerialNumber,
-                        PartNumber = dto.PartNumber,
-                        BoardType = dto.BoardType,
-                        PrepDate = dto.PrepDate,
-                        IsShipped = dto.IsShipped,
-                        ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null,
-                        SkidID = dto.SkidID
-                    });
+                    db.SAD_Upgrade.Add(new SAD_Upgrade { SerialNumber = dto.SerialNumber, PartNumber = dto.PartNumber, BoardType = dto.BoardType, PrepDate = dto.PrepDate, IsShipped = dto.IsShipped, ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null, SkidID = dto.SkidID });
                     break;
-
                 case "SAT":
-                    _db.SAT.Add(new SAT
-                    {
-                        SerialNumber = dto.SerialNumber,
-                        PartNumber = dto.PartNumber,
-                        BoardType = dto.BoardType,
-                        PrepDate = dto.PrepDate,
-                        IsShipped = dto.IsShipped,
-                        ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null,
-                        SkidID = dto.SkidID
-                    });
+                    db.SAT.Add(new SAT { SerialNumber = dto.SerialNumber, PartNumber = dto.PartNumber, BoardType = dto.BoardType, PrepDate = dto.PrepDate, IsShipped = dto.IsShipped, ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null, SkidID = dto.SkidID });
                     break;
-
                 case "SAT Upgrade":
-                    _db.SAT_Upgrade.Add(new SAT_Upgrade
-                    {
-                        SerialNumber = dto.SerialNumber,
-                        PartNumber = dto.PartNumber,
-                        BoardType = dto.BoardType,
-                        PrepDate = dto.PrepDate,
-                        IsShipped = dto.IsShipped,
-                        ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null,
-                        SkidID = dto.SkidID
-                    });
+                    db.SAT_Upgrade.Add(new SAT_Upgrade { SerialNumber = dto.SerialNumber, PartNumber = dto.PartNumber, BoardType = dto.BoardType, PrepDate = dto.PrepDate, IsShipped = dto.IsShipped, ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null, SkidID = dto.SkidID });
                     break;
-
                 default:
                     throw new InvalidOperationException($"Unknown board type: {dto.BoardType}");
             }
 
             try
             {
-                await _db.SaveChangesAsync();
+                await db.SaveChangesAsync();
             }
             finally
             {
-                _db.ChangeTracker.Clear();
+                db.ChangeTracker.Clear();
             }
         }
 
@@ -217,7 +168,9 @@ namespace PCBTracker.Services
         /// </summary>
         public async Task<IEnumerable<BoardDto>> GetBoardsAsync(BoardFilterDto filter)
         {
-            var query = _db.Boards.AsQueryable();
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            var query = db.Boards.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(filter.SerialNumber))
                 query = query.Where(b => b.SerialNumber.Contains(filter.SerialNumber));
@@ -243,10 +196,8 @@ namespace PCBTracker.Services
             if (filter.IsShipped.HasValue)
                 query = query.Where(b => b.IsShipped == filter.IsShipped.Value);
 
-
             query = query.OrderByDescending(b => b.CreatedAt);
 
-            // Apply pagination
             if (filter.PageNumber.HasValue && filter.PageSize.HasValue)
             {
                 int skip = (filter.PageNumber.Value - 1) * filter.PageSize.Value;
@@ -263,7 +214,6 @@ namespace PCBTracker.Services
                 IsShipped = b.IsShipped,
                 SkidID = b.SkidID
             }).ToListAsync();
-
         }
 
         /// <summary>
@@ -272,10 +222,8 @@ namespace PCBTracker.Services
         /// </summary>
         public async Task<IEnumerable<Skid>> GetRecentSkidsAsync(int count)
         {
-            var recent = await _db.Skids
-                                  .OrderByDescending(s => s.SkidID)
-                                  .Take(count)
-                                  .ToListAsync();
+            using var db = await _contextFactory.CreateDbContextAsync();
+            var recent = await db.Skids.OrderByDescending(s => s.SkidID).Take(count).ToListAsync();
             return recent.OrderBy(s => s.SkidID);
         }
 
@@ -284,19 +232,21 @@ namespace PCBTracker.Services
         /// </summary>
         public async Task DeleteBoardBySerialAsync(string serialNumber)
         {
-            var all = await _db.Boards.Where(b => b.SerialNumber == serialNumber).ToListAsync();
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            var all = await db.Boards.Where(b => b.SerialNumber == serialNumber).ToListAsync();
             if (!all.Any()) return;
 
-            _db.Boards.RemoveRange(all);
+            db.Boards.RemoveRange(all);
 
-            _db.LE.RemoveRange(_db.LE.Where(b => b.SerialNumber == serialNumber));
-            _db.LE_Upgrade.RemoveRange(_db.LE_Upgrade.Where(b => b.SerialNumber == serialNumber));
-            _db.SAD.RemoveRange(_db.SAD.Where(b => b.SerialNumber == serialNumber));
-            _db.SAD_Upgrade.RemoveRange(_db.SAD_Upgrade.Where(b => b.SerialNumber == serialNumber));
-            _db.SAT.RemoveRange(_db.SAT.Where(b => b.SerialNumber == serialNumber));
-            _db.SAT_Upgrade.RemoveRange(_db.SAT_Upgrade.Where(b => b.SerialNumber == serialNumber));
+            db.LE.RemoveRange(db.LE.Where(b => b.SerialNumber == serialNumber));
+            db.LE_Upgrade.RemoveRange(db.LE_Upgrade.Where(b => b.SerialNumber == serialNumber));
+            db.SAD.RemoveRange(db.SAD.Where(b => b.SerialNumber == serialNumber));
+            db.SAD_Upgrade.RemoveRange(db.SAD_Upgrade.Where(b => b.SerialNumber == serialNumber));
+            db.SAT.RemoveRange(db.SAT.Where(b => b.SerialNumber == serialNumber));
+            db.SAT_Upgrade.RemoveRange(db.SAT_Upgrade.Where(b => b.SerialNumber == serialNumber));
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
         }
 
         /// <summary>
@@ -304,9 +254,9 @@ namespace PCBTracker.Services
         /// </summary>
         public async Task UpdateShipDateForSkidAsync(int skidId, DateTime shipDate)
         {
-            var boards = await _db.Boards
-                                  .Where(b => b.SkidID == skidId)
-                                  .ToListAsync();
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            var boards = await db.Boards.Where(b => b.SkidID == skidId).ToListAsync();
 
             foreach (var b in boards)
             {
@@ -314,7 +264,7 @@ namespace PCBTracker.Services
                 b.IsShipped = true;
             }
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
         }
     }
 }

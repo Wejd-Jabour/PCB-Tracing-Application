@@ -297,6 +297,7 @@ namespace PCBTracker.UI.ViewModels
                 PageNumber--;
                 await LoadPageAsync(PageNumber);
             }
-        }
+        } 
     }
 }
+

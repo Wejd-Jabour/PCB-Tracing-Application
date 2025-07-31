@@ -39,7 +39,8 @@
                 HorizontalOptions="End"
                 VerticalOptions="Center"
                 Margin="5"
-                Clicked="OnTogglePasswordVisibility"/>
+                Clicked="OnTogglePasswordVisibility"
+                Command="{Binding TogglePasswordVisibilityCommand}" />
 
         </Grid>
             

@@ -20,6 +20,9 @@ public partial class AppShell : Shell
             FlyoutItemIsVisible = false
         });
 
+        var vm = Application.Current.Handler.MauiContext.Services.GetRequiredService<ConnectionStatusViewModel>();
+        BindingContext = vm;
+
         Navigating += AppShell_Navigating;
     }
 

@@ -23,6 +23,9 @@ namespace PCBTracker.UI.ViewModels
             _userService = userService;
         }
 
+        [ObservableProperty]
+        private bool isPasswordHidden = true;
+
         /// <summary>
         /// Backing property for the entered username.
         /// The [ObservableProperty] attribute generates a public Username property
@@ -101,6 +104,12 @@ namespace PCBTracker.UI.ViewModels
             {
                 await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
+        }
+
+        [RelayCommand]
+        private void TogglePasswordVisibility()
+        {
+            IsPasswordHidden = !IsPasswordHidden;
         }
 
 

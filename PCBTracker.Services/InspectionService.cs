@@ -13,15 +13,17 @@ namespace PCBTracker.Services
 {
     public class InspectionService : IInspectionService
     {
-        private readonly AppDbContext _db;
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
 
-        public InspectionService(AppDbContext db)
+        public InspectionService(IDbContextFactory<AppDbContext> contextFactory)
         {
-            _db = db;
+            _contextFactory = contextFactory;
         }
 
         public async Task SubmitInspectionAsync(InspectionDto dto)
         {
+            using var db = await _contextFactory.CreateDbContextAsync();
+
             var entity = new Inspection
             {
                 Date = dto.Date,
@@ -34,13 +36,15 @@ namespace PCBTracker.Services
                 CreatedAt = DateTime.UtcNow
             };
 
-            _db.Inspections.Add(entity);
-            await _db.SaveChangesAsync();
+            db.Inspections.Add(entity);
+            await db.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<InspectionDto>> GetInspectionsAsync(InspectionFilterDto filter)
         {
-            var query = _db.Inspections.AsQueryable();
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            var query = db.Inspections.AsQueryable();
 
             if (filter.DateFrom.HasValue)
                 query = query.Where(x => x.Date >= filter.DateFrom);

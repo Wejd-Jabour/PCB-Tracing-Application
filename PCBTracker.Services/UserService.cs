@@ -13,15 +13,14 @@ namespace PCBTracker.Services
     /// </summary>
     public class UserService : IUserService
     {
-        private readonly AppDbContext _dbContext;
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
 
         /// <summary>
-        /// Constructor that accepts an AppDbContext instance for database access.
-        /// The context is injected through the DI container at runtime.
+        /// Constructor that accepts a factory for AppDbContext instances.
         /// </summary>
-        public UserService(AppDbContext dbContext)
+        public UserService(IDbContextFactory<AppDbContext> contextFactory)
         {
-            _dbContext = dbContext;
+            _contextFactory = contextFactory;
         }
 
         /// <summary>
@@ -31,8 +30,8 @@ namespace PCBTracker.Services
         /// </summary>
         public async Task<User?> AuthenticateAsync(string username, string password)
         {
-            var user = await _dbContext.Users
-                .SingleOrDefaultAsync(u => u.Username == username);
+            using var db = await _contextFactory.CreateDbContextAsync();
+            var user = await db.Users.SingleOrDefaultAsync(u => u.Username == username);
 
             if (user == null)
                 return null;
@@ -43,21 +42,19 @@ namespace PCBTracker.Services
             return null;
         }
 
-
         /// <summary>
         /// Creates and persists a new user account with hashed password and role.
         /// Throws an exception if the username is already in use.
         /// </summary>
         public void CreateUser(int employeeID, string username, string password, string firstName, string lastName, bool admin, bool scan, bool extract, bool edit, bool inspection)
         {
-            // Check for username duplication before proceeding.
-            if (_dbContext.Users.Any(u => u.Username == username))
+            using var db = _contextFactory.CreateDbContext();
+
+            if (db.Users.Any(u => u.Username == username))
                 throw new InvalidOperationException($"User '{username}' already exists.");
 
-            // Hash the password using BCrypt for secure storage.
             var hash = BCrypt.Net.BCrypt.HashPassword(password);
 
-            // Create a new User entity with the hashed password and assigned role.
             var user = new User
             {
                 EmployeeID = employeeID,
@@ -72,14 +69,15 @@ namespace PCBTracker.Services
                 Inspection = inspection
             };
 
-            // Add the user to the Users DbSet and persist it to the database.
-            _dbContext.Users.Add(user);
-            _dbContext.SaveChanges();
+            db.Users.Add(user);
+            db.SaveChanges();
         }
 
         public void UpdateUserPermissions(int employeeID, string username, bool admin, bool scan, bool extract, bool edit, bool inspection)
         {
-            var user = _dbContext.Users.FirstOrDefault(u => u.EmployeeID == employeeID && u.Username == username);
+            using var db = _contextFactory.CreateDbContext();
+
+            var user = db.Users.FirstOrDefault(u => u.EmployeeID == employeeID && u.Username == username);
             if (user == null)
                 throw new InvalidOperationException("User not found.");
 
@@ -89,24 +87,22 @@ namespace PCBTracker.Services
             user.Edit = edit;
             user.Inspection = inspection;
 
-            _dbContext.SaveChanges();
+            db.SaveChanges();
         }
-
 
         public void RemoveUser(int employeeID, string username)
         {
-            // Prevent deletion of default admin
+            using var db = _contextFactory.CreateDbContext();
+
             if (employeeID == 1 && username.Equals("admin", StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException("The default admin user cannot be removed.");
 
-            var user = _dbContext.Users.FirstOrDefault(u => u.EmployeeID == employeeID && u.Username == username);
+            var user = db.Users.FirstOrDefault(u => u.EmployeeID == employeeID && u.Username == username);
             if (user == null)
                 throw new InvalidOperationException("User not found.");
 
-            _dbContext.Users.Remove(user);
-            _dbContext.SaveChanges();
+            db.Users.Remove(user);
+            db.SaveChanges();
         }
-
-
     }
 }

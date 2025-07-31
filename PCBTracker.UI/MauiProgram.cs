@@ -36,13 +36,14 @@ public static class MauiProgram
         // Define the SQL Server connection string targeting LocalDB for easy local development.
         // - Integrated Security uses Windows Authentication.
         // - Initial Catalog specifies the database name; LocalDB will create it if it doesn't exist.
-        var connStr =
-            @"Data Source=(LocalDB)\MSSQLLocalDB;
-              Initial Catalog=PCBTracking;
-              Integrated Security=True;";
-        builder.Services.AddDbContext<AppDbContext>(options =>
-            // Use the SQL Server provider with the given connection string
+        var connStr = @"Server=192.168.2.248;
+                Database=ATXData;
+                User Id=rw_atxshipping;
+                Password=Queen7-Friendly-Sale;
+                TrustServerCertificate=True;";
+        builder.Services.AddDbContextFactory<AppDbContext>(options =>
             options.UseSqlServer(connStr));
+
 
         // === Register application services for Dependency Injection ===
         builder.Services.AddSingleton<IInspectionService, InspectionService>();
@@ -60,6 +61,9 @@ public static class MauiProgram
         builder.Services.AddTransient<InspectionPage>();
 
         builder.Services.AddTransient<SettingViewModel>();
+
+        builder.Services.AddSingleton(new ConnectionStatusService(connStr));
+        builder.Services.AddSingleton<ConnectionStatusViewModel>();
 
         // Build the configured MAUI application
         var app = builder.Build();
@@ -87,6 +91,7 @@ public static class MauiProgram
                     Admin = true,
                     Edit = true,
                     Scan = true,
+                    Extract = true,
                     Inspection = true
                 };
                 db.Users.Add(admin);

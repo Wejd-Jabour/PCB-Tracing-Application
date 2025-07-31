@@ -18,7 +18,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PCBTracker.UI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+8f7a4b79f0381735c0521fb3fa9146b10c95c43f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+6cd3dcef3600c831588d44b7a8c49800cd4acf6c")]
 [assembly: System.Reflection.AssemblyProductAttribute("PCBTracker.UI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PCBTracker.UI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
