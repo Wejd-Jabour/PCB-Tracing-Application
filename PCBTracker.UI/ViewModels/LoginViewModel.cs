@@ -79,7 +79,6 @@ namespace PCBTracker.UI.ViewModels
                         shell.LoadAuthenticatedPages();
                     }
 
-                    // ✅ Priority route selection
                     string? targetRoute = user.Scan ? "SubmitPage"
                                          : user.Extract ? "DataExtract"
                                          : user.Edit ? "EditPage"
