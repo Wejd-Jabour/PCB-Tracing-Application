@@ -28,7 +28,7 @@ namespace PCBTracker.UI.ViewModels
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
                 ["LE"] = "ASY-G8GMLESBH-P-ATLR07MR1",
-                ["LE Upgrade"] = "Unknown",
+                ["LE Upgrade"] = "ASY-G8GMLEB-UG-KIT-P-ATLR05MR1",
                 ["SAD"] = "ASY-G8GMSADSBH-P-ATLR03MR1",
                 ["SAD Upgrade"] = "ASY-GSGMSADB-UG-KIT-P-ATLR05MR2",
                 ["SAT"] = "ASY-G8GMSATSBH-P-ATLR02MR1",
@@ -150,7 +150,10 @@ namespace PCBTracker.UI.ViewModels
             try
             {
                 if (SerialNumber.Length != 16)
+                { 
                     throw new Exception("Invalid Serial Number Length");
+                }
+                    
 
                 var dto = new BoardDto
                 {
@@ -164,8 +167,16 @@ namespace PCBTracker.UI.ViewModels
                 };
 
                 await _boardService.CreateBoardAndClaimSkidAsync(dto);
-
                 //await App.Current.MainPage.DisplayAlert("Success", "Board submitted.", "OK");
+
+                // Re-fetch the updated skid
+                var updatedSkidList = await _boardService.GetSkidsAsync();
+                var refreshedSkid = updatedSkidList.FirstOrDefault(s => s.SkidID == SelectedSkid.SkidID);
+                if (refreshedSkid != null)
+                {
+                    SelectedSkid.designatedType = refreshedSkid.designatedType;
+                    OnPropertyChanged(nameof(CurrentSkidType));
+                }
 
                 SerialNumber = string.Empty;
 
@@ -178,6 +189,7 @@ namespace PCBTracker.UI.ViewModels
                     "Duplicate Board",
                     "A board with that serial number already exists in this session. Please check your Serial Number and try again, or edit the existing record.",
                     "OK");
+                    SerialNumber = string.Empty;
             }
             catch (DbUpdateException dbEx) when (dbEx.InnerException is SqlException sqlEx
                                                  && sqlEx.Number == 2627)
@@ -186,6 +198,7 @@ namespace PCBTracker.UI.ViewModels
                     "Serial Number Taken",
                     "That serial number is already in use. Each board must have a unique Serial Number.",
                     "OK");
+                    SerialNumber = string.Empty;
             }
             catch (Exception ex)
             {
@@ -231,7 +244,7 @@ namespace PCBTracker.UI.ViewModels
             {
                 try
                 {
-                    await Task.Delay(1000, token);
+                    await Task.Delay(1300, token);
                     if (!token.IsCancellationRequested && CanSubmit())
                     {
                         MainThread.BeginInvokeOnMainThread(() =>

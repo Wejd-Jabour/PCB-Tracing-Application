@@ -20,6 +20,21 @@ namespace PCBTracker.UI.Views
             if (FormSection != null)
                 FormSection.IsVisible = !FormSection.IsVisible;
         }
+        private void TogglePastInspectionVisibility(object sender, EventArgs e)
+        {
+            if (PastInspectionSection != null)
+                PastInspectionSection.IsVisible = !PastInspectionSection.IsVisible;
+        }
+        private void ToggleAssemblyVisibility(object sender, EventArgs e)
+        {
+            if (AssemblyCountSection != null)
+                AssemblyCountSection.IsVisible = !AssemblyCountSection.IsVisible;
+        }
+        private void ToggleAssemblyViewVisibility(object sender, EventArgs e)
+        {
+            if (AssemblyCountViewSection != null)
+                AssemblyCountViewSection.IsVisible = !AssemblyCountViewSection.IsVisible;
+        }
 
 
         protected override async void OnAppearing()

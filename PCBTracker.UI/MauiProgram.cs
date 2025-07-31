@@ -49,6 +49,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<IInspectionService, InspectionService>();
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IBoardService, BoardService>();
+        builder.Services.AddScoped<IAssemblyCompletionService, AssemblyCompletionService>();
+
 
         // === Register ViewModels and Pages ===
         builder.Services.AddTransient<LoginViewModel>();

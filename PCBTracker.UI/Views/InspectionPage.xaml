@@ -11,6 +11,7 @@
 
 			<!-- Submit Form -->
 			<StackLayout x:Name="FormSection" IsVisible="False">
+                <Label Text="Add Inspection" FontAttributes="Bold" FontSize="18" />
 
 				<Label Text="Date" />
 				<DatePicker Date="{Binding Date}" />
@@ -33,51 +34,141 @@
 				<Label Text="Additional Notes" />
 				<Editor Text="{Binding AdditionalNotes}" AutoSize="TextChanges" />
 
-
-				<Button Text="Submit Inspection" Command="{Binding SubmitCommand}" />
+                <HorizontalStackLayout Spacing="10" Margin="10">
+                    <Button Text="Submit Inspection" Command="{Binding SubmitCommand}" />
+                </HorizontalStackLayout>
 			</StackLayout>
 
             <!-- Divider -->
             <BoxView HeightRequest="1" BackgroundColor="Gray" Margin="0,20" />
 
-            <!-- Extract Section -->
-            <Label Text="Past Inspections" FontAttributes="Bold" FontSize="18" />
+            <!-- Toggle Form Button -->
+            <Button Text="Past Inspections" Clicked="TogglePastInspectionVisibility" />
 
-            <!-- COLUMN HEADERS -->
-            <ScrollView Orientation="Horizontal" HeightRequest="40">
-                <Grid ColumnDefinitions="2*,2*,2*,2*,2*,3*" BackgroundColor="LightGray" Padding="8">
-                    <Label Text="Date" Grid.Column="0" FontAttributes="Bold"/>
-                    <Label Text="Product Type" Grid.Column="1" FontAttributes="Bold"/>
-                    <Label Text="Serial #" Grid.Column="2" FontAttributes="Bold"/>
-                    <Label Text="Severity" Grid.Column="3" FontAttributes="Bold"/>
-                    <Label Text="Issue" Grid.Column="4" FontAttributes="Bold"/>
-                    <Label Text="Action Taken" Grid.Column="5" FontAttributes="Bold"/>
+            <StackLayout x:Name="PastInspectionSection" IsVisible="False">
+
+                <!-- Extract Section -->
+                <Label Text="Past Inspections" FontAttributes="Bold" FontSize="18" />
+
+                <!-- COLUMN HEADERS -->
+                <ScrollView Orientation="Horizontal" HeightRequest="40">
+                    <Grid ColumnDefinitions="2*,2*,2*,2*,2*,3*" BackgroundColor="LightGray" Padding="8">
+                        <Label Text="Date" Grid.Column="0" FontAttributes="Bold"/>
+                        <Label Text="Product Type" Grid.Column="1" FontAttributes="Bold"/>
+                        <Label Text="Serial #" Grid.Column="2" FontAttributes="Bold"/>
+                        <Label Text="Severity" Grid.Column="3" FontAttributes="Bold"/>
+                        <Label Text="Issue" Grid.Column="4" FontAttributes="Bold"/>
+                        <Label Text="Action Taken" Grid.Column="5" FontAttributes="Bold"/>
+                    </Grid>
+                </ScrollView>
+
+                <!-- INSPECTION RESULTS -->
+                <CollectionView ItemsSource="{Binding Inspections}" VerticalOptions="FillAndExpand">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Padding="6" Margin="2" BorderColor="#ccc">
+                                <Grid ColumnDefinitions="2*,2*,2*,2*,2*,3*">
+                                    <Label Text="{Binding Date, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="0"/>
+                                    <Label Text="{Binding ProductType}" Grid.Column="1"/>
+                                    <Label Text="{Binding SerialNumber}" Grid.Column="2"/>
+                                    <Label Text="{Binding SeverityLevel}" Grid.Column="3"/>
+                                    <Label Text="{Binding IssueDescription}" Grid.Column="4"/>
+                                    <Label Text="{Binding ImmediateActionTaken}" Grid.Column="5"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <HorizontalStackLayout Spacing="10" Margin='10'>
+                    <Button Text="Export CSV" Command="{Binding ExportCsvCommand}" Margin="0,10" />
+                </HorizontalStackLayout>
+
+            </StackLayout>
+
+            <BoxView HeightRequest="1" BackgroundColor="Gray" Margin="0,20" />
+
+
+            <!-- Toggle Form Button -->
+            <Button Text="Add Assembly Count" Clicked="ToggleAssemblyVisibility" />
+
+            <StackLayout x:Name="AssemblyCountSection" IsVisible="False">
+
+                <VerticalStackLayout Spacing="10" Padding="10">
+                    <Label Text="Assemblies Completed" FontAttributes="Bold" FontSize="18" />
+
+                    <DatePicker Date="{Binding AssemblyDate}" />
+
+                    <Picker Title="Board Type"
+                        ItemsSource="{Binding AssemblyTypes}"
+                        SelectedItem="{Binding SelectedAssemblyType}" />
+
+                    <Entry Keyboard="Numeric"
+                        Placeholder="Count"
+                        Text="{Binding AssemblyCountText}" />
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Button Text="Submit Assembly"
+                            Command="{Binding SubmitAssemblyCommand}" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </StackLayout>
+
+
+            <BoxView HeightRequest="1" BackgroundColor="Gray" Margin="0,20" />
+
+
+            <!-- Toggle Form Button -->
+            <Button Text="View Assembly Count" Clicked="ToggleAssemblyViewVisibility" />
+
+            <StackLayout x:Name="AssemblyCountViewSection" IsVisible="False">
+                <!-- Filters -->
+                <HorizontalStackLayout Spacing="10" Padding="0,10">
+                    <VerticalStackLayout>
+                        <Label Text="From" />
+                        <DatePicker Date="{Binding AssemblyFilterFrom}" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout>
+                        <Label Text="To" />
+                        <DatePicker Date="{Binding AssemblyFilterTo}" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout>
+                        <Label Text="Board Type" />
+                        <Picker ItemsSource="{Binding AssemblyTypes}" SelectedItem="{Binding SelectedAssemblyFilterType}" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout VerticalOptions="End">
+                        <Button Text="Filter" Command="{Binding LoadAssembliesCommand}" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+
+                <!-- Column Headers -->
+                <Grid ColumnDefinitions="2*,3*,2*" BackgroundColor="LightGray" Padding="8">
+                    <Label Text="Date" Grid.Column="0" FontAttributes="Bold" />
+                    <Label Text="Board Type" Grid.Column="1" FontAttributes="Bold" />
+                    <Label Text="Count" Grid.Column="2" FontAttributes="Bold" />
                 </Grid>
-            </ScrollView>
 
-            <!-- INSPECTION RESULTS -->
-            <CollectionView ItemsSource="{Binding Inspections}" VerticalOptions="FillAndExpand">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" />
-                </CollectionView.ItemsLayout>
-
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame Padding="6" Margin="2" BorderColor="#ccc">
-                            <Grid ColumnDefinitions="2*,2*,2*,2*,2*,3*">
-                                <Label Text="{Binding Date, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="0"/>
-                                <Label Text="{Binding ProductType}" Grid.Column="1"/>
-                                <Label Text="{Binding SerialNumber}" Grid.Column="2"/>
-                                <Label Text="{Binding SeverityLevel}" Grid.Column="3"/>
-                                <Label Text="{Binding IssueDescription}" Grid.Column="4"/>
-                                <Label Text="{Binding ImmediateActionTaken}" Grid.Column="5"/>
+                <!-- Data Rows -->
+                <CollectionView ItemsSource="{Binding SubmittedAssemblies}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="2*,3*,2*" Padding="8" BackgroundColor="White">
+                                <Label Text="{Binding Date, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="0" />
+                                <Label Text="{Binding BoardType}" Grid.Column="1" />
+                                <Label Text="{Binding Count}" Grid.Column="2" />
                             </Grid>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
-            <Button Text="Export CSV" Command="{Binding ExportCsvCommand}" Margin="0,10" />
+            </StackLayout>
+
 
         </VerticalStackLayout>
 	</ScrollView>
