@@ -1,4 +1,4 @@
-﻿﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PCBTracker.Domain.DTOs;
 using PCBTracker.Services.Interfaces;
@@ -318,7 +318,6 @@ namespace PCBTracker.UI.ViewModels
                 PageNumber--;
                 await LoadPageAsync(PageNumber);
             }
-        } 
+        }
     }
 }
-

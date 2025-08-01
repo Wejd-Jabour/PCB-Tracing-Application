@@ -74,29 +74,11 @@ namespace PCBTracker.UI.ViewModels
                 {
                     App.CurrentUser = user;
 
-                    if (Shell.Current is AppShell shell)
+                    // Switch from LoginShell to AppShell
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
-                        shell.LoadAuthenticatedPages();
-                    }
-
-                    string? targetRoute = user.Scan ? "SubmitPage"
-                                         : user.Extract ? "DataExtract"
-                                         : user.Edit ? "EditPage"
-                                         : user.Inspection ? "InspectionPage"
-                                         : user.Admin ? "SettingPage"
-                                         : null;
-
-                    if (targetRoute != null)
-                    {
-                        await Shell.Current.GoToAsync($"///{targetRoute}");
-                    }
-                    else
-                    {
-                        await App.Current.MainPage.DisplayAlert(
-                            "No Access",
-                            "Your account does not have permission to access any pages.",
-                            "OK");
-                    }
+                        Application.Current.MainPage = new AppShell();
+                    });
                 }
             }
             catch (Exception ex)

@@ -10,20 +10,10 @@ public partial class AppShell : Shell
         InitializeComponent();
         RegisterRoutes();
 
-        // Start with only login page visible
-        Items.Clear();
-        Items.Add(new ShellContent
-        {
-            Route = "LoginPage",
-            ContentTemplate = new DataTemplate(typeof(LoginPage)),
-            Title = "Login",
-            FlyoutItemIsVisible = false
-        });
-
         var vm = Application.Current.Handler.MauiContext.Services.GetRequiredService<ConnectionStatusViewModel>();
         BindingContext = vm;
 
-        Navigating += AppShell_Navigating;
+        BuildTabsForUser(App.CurrentUser);
     }
 
     private void RegisterRoutes()
@@ -35,166 +25,62 @@ public partial class AppShell : Shell
         Routing.RegisterRoute("SettingPage", typeof(SettingPage));
     }
 
-    public void LoadAuthenticatedPages()
+    private void BuildTabsForUser(PCBTracker.Domain.Entities.User? user)
     {
-        Items.Clear();
+        MainTabBar.Items.Clear();
 
-        var user = App.CurrentUser;
         if (user == null)
             return;
 
-        // Submit Page (requires Scan permission)
         if (user.Scan)
-        {
-            Items.Add(new FlyoutItem
-            {
-                Title = "Submit",
-                Route = "SubmitPage",
-                Items =
-                {
-                    new ShellContent
-                    {
-                        ContentTemplate = new DataTemplate(typeof(SubmitPage)),
-                        Route = "SubmitPage"
-                    }
-                }
-            });
-        }
+            AddTab("Submit", "SubmitPage", typeof(SubmitPage));
 
-        // Extract Page (requires Extract permission)
         if (user.Extract)
-        {
-            Items.Add(new FlyoutItem
-            {
-                Title = "Extract",
-                Route = "DataExtract",
-                Items =
-                {
-                    new ShellContent
-                    {
-                        ContentTemplate = new DataTemplate(typeof(DataExtractPage)),
-                        Route = "DataExtract"
-                    }
-                }
-            });
-        }
+            AddTab("Extract", "DataExtract", typeof(DataExtractPage));
 
-        // Edit Page (requires Edit permission)
         if (user.Edit)
-        {
-            Items.Add(new FlyoutItem
-            {
-                Title = "Edit",
-                Route = "EditPage",
-                Items =
-                {
-                    new ShellContent
-                    {
-                        ContentTemplate = new DataTemplate(typeof(EditPage)),
-                        Route = "EditPage"
-                    }
-                }
-            });
-        }
+            AddTab("Edit", "EditPage", typeof(EditPage));
 
-        // Inspection Page (requires Inspection permission)
         if (user.Inspection)
-        {
-            Items.Add(new FlyoutItem
-            {
-                Title = "Inspection",
-                Route = "InspectionPage",
-                Items =
-                {
-                    new ShellContent
-                    {
-                        ContentTemplate = new DataTemplate(typeof(InspectionPage)),
-                        Route = "InspectionPage"
-                    }
-                }
-            });
-        }
+            AddTab("Inspection", "InspectionPage", typeof(InspectionPage));
 
-        // Settings Page (requires Admin permission)
         if (user.Admin)
-        {
-            Items.Add(new FlyoutItem
-            {
-                Title = "Settings",
-                Route = "SettingPage",
-                Items =
-                {
-                    new ShellContent
-                    {
-                        ContentTemplate = new DataTemplate(typeof(SettingPage)),
-                        Route = "SettingPage"
-                    }
-                }
-            });
-        }
-
-        // Logout option (always visible)
-        Items.Add(new FlyoutItem
-        {
-            Title = "Logout",
-            Route = "LogoutAction",
-            Items =
-            {
-                new ShellContent
-                {
-                    ContentTemplate = new DataTemplate(typeof(ContentPage)), // dummy
-                    Route = "LogoutAction"
-                }
-            }
-        });
+            AddTab("Settings", "SettingPage", typeof(SettingPage));
     }
 
-    private void AppShell_Navigating(object sender, ShellNavigatingEventArgs e)
+    private void AddTab(string title, string route, Type pageType)
     {
-        var target = e.Target?.Location.OriginalString;
-
-        // Handle Logout navigation manually
-        if (target?.Contains("LogoutAction") == true)
+        var shellContent = new ShellContent
         {
-            e.Cancel();
+            Title = title,
+            Route = route,
+            ContentTemplate = new DataTemplate(pageType)
+        };
 
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                bool confirm = await Shell.Current.DisplayAlert("Logout", "Are you sure you want to log out?", "Yes", "No");
-                if (confirm)
-                    Logout();
-            });
-
-            return;
-        }
-
-        // Allow navigating to login
-        if (target?.Contains("LoginPage") == true)
-            return;
-
-        // Block navigation if user is not logged in
-        if (App.CurrentUser == null)
+        var tab = new Tab
         {
-            e.Cancel();
-            MainThread.BeginInvokeOnMainThread(() =>
-                Shell.Current.GoToAsync("//LoginPage"));
-        }
+            Title = title,
+            Route = route
+        };
+        tab.Items.Add(shellContent);
+
+        MainTabBar.Items.Add(tab);
+    }
+
+    private async void OnLogoutClicked(object sender, EventArgs e)
+    {
+        bool confirm = await DisplayAlert("Logout", "Are you sure you want to log out?", "Yes", "No");
+        if (confirm)
+            Logout();
     }
 
     public void Logout()
     {
         App.CurrentUser = null;
 
-        Items.Clear();
-        Items.Add(new ShellContent
-        {
-            Route = "LoginPage",
-            ContentTemplate = new DataTemplate(typeof(LoginPage)),
-            Title = "Login",
-            FlyoutItemIsVisible = false
-        });
-
         MainThread.BeginInvokeOnMainThread(() =>
-            Shell.Current.GoToAsync("//LoginPage"));
+        {
+            Application.Current.MainPage = new LoginShell();
+        });
     }
 }
