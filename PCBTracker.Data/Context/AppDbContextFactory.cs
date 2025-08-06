@@ -27,8 +27,8 @@ namespace PCBTracker.Data.Context
             // Initial Catalog: Sets the database name to "PCBTracking".
             // Integrated Security: Enables Windows Authentication (no username/password required).
             builder.UseSqlServer(
-                 @"Server=192.168.2.248;
-                Database=ATXData;
+                @"Server=192.168.2.10;
+                Database=McLevinShipping;
                 User Id=rw_atxshipping;
                 Password=Queen7-Friendly-Sale;
                 TrustServerCertificate=True;"

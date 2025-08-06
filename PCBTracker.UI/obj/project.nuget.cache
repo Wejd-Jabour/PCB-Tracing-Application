@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "vMc++ZhDchg=",
+  "dgSpecHash": "6nB16uhh74w=",
   "success": true,
-  "projectFilePath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.UI\\PCBTracker.UI.csproj",
+  "projectFilePath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.UI\\PCBTracker.UI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\wejdj\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\wejdj\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
@@ -105,10 +105,6 @@
     "C:\\Users\\wejdj\\.nuget\\packages\\system.threading.channels\\7.0.0\\system.threading.channels.7.0.0.nupkg.sha512",
     "C:\\Users\\wejdj\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "C:\\Users\\wejdj\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
-    "C:\\Users\\wejdj\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\8.0.18\\microsoft.netcore.app.runtime.win-x64.8.0.18.nupkg.sha512",
-    "C:\\Users\\wejdj\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\8.0.18\\microsoft.windowsdesktop.app.runtime.win-x64.8.0.18.nupkg.sha512",
-    "C:\\Users\\wejdj\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\8.0.18\\microsoft.aspnetcore.app.runtime.win-x64.8.0.18.nupkg.sha512",
-    "C:\\Users\\wejdj\\.nuget\\packages\\microsoft.netcore.app.crossgen2.win-x64\\8.0.18\\microsoft.netcore.app.crossgen2.win-x64.8.0.18.nupkg.sha512",
     "C:\\Users\\wejdj\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.19041.57\\microsoft.windows.sdk.net.ref.10.0.19041.57.nupkg.sha512"
   ],
   "logs": []

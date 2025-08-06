@@ -258,13 +258,66 @@ namespace PCBTracker.Services
 
             var boards = await db.Boards.Where(b => b.SkidID == skidId).ToListAsync();
 
-            foreach (var b in boards)
+            foreach (var board in boards)
             {
-                b.ShipDate = shipDate;
-                b.IsShipped = true;
+                board.ShipDate = shipDate;
+                board.IsShipped = true;
+
+                switch (board.BoardType)
+                {
+                    case "LE":
+                        var le = await db.LE.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        if (le != null)
+                        {
+                            le.ShipDate = shipDate;
+                            le.IsShipped = true;
+                        }
+                        break;
+                    case "LE Upgrade":
+                        var leu = await db.LE_Upgrade.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        if (leu != null)
+                        {
+                            leu.ShipDate = shipDate;
+                            leu.IsShipped = true;
+                        }
+                        break;
+                    case "SAD":
+                        var sad = await db.SAD.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        if (sad != null)
+                        {
+                            sad.ShipDate = shipDate;
+                            sad.IsShipped = true;
+                        }
+                        break;
+                    case "SAD Upgrade":
+                        var sadu = await db.SAD_Upgrade.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        if (sadu != null)
+                        {
+                            sadu.ShipDate = shipDate;
+                            sadu.IsShipped = true;
+                        }
+                        break;
+                    case "SAT":
+                        var sat = await db.SAT.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        if (sat != null)
+                        {
+                            sat.ShipDate = shipDate;
+                            sat.IsShipped = true;
+                        }
+                        break;
+                    case "SAT Upgrade":
+                        var satu = await db.SAT_Upgrade.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        if (satu != null)
+                        {
+                            satu.ShipDate = shipDate;
+                            satu.IsShipped = true;
+                        }
+                        break;
+                }
             }
 
             await db.SaveChangesAsync();
         }
+
     }
 }

@@ -9385,11 +9385,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.UI\\PCBTracker.UI.csproj",
+      "projectUniqueName": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.UI\\PCBTracker.UI.csproj",
       "projectName": "PCBTracker.UI",
-      "projectPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.UI\\PCBTracker.UI.csproj",
+      "projectPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.UI\\PCBTracker.UI.csproj",
       "packagesPath": "C:\\Users\\wejdj\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.UI\\obj\\",
+      "outputPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.UI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -9411,14 +9411,14 @@
         "net8.0-windows10.0.19041": {
           "targetAlias": "net8.0-windows10.0.19041.0",
           "projectReferences": {
-            "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.Data\\PCBTracker.Data.csproj": {
-              "projectPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.Data\\PCBTracker.Data.csproj"
+            "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.Data\\PCBTracker.Data.csproj": {
+              "projectPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.Data\\PCBTracker.Data.csproj"
             },
-            "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.Domain\\PCBTracker.Domain.csproj": {
-              "projectPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.Domain\\PCBTracker.Domain.csproj"
+            "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.Domain\\PCBTracker.Domain.csproj": {
+              "projectPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.Domain\\PCBTracker.Domain.csproj"
             },
-            "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.Services\\PCBTracker.Services.csproj": {
-              "projectPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.Services\\PCBTracker.Services.csproj"
+            "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.Services\\PCBTracker.Services.csproj": {
+              "projectPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.Services\\PCBTracker.Services.csproj"
             }
           }
         }
@@ -9479,24 +9479,8 @@
         "warn": true,
         "downloadDependencies": [
           {
-            "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
-            "version": "[8.0.18, 8.0.18]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Crossgen2.win-x64",
-            "version": "[8.0.18, 8.0.18]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Runtime.win-x64",
-            "version": "[8.0.18, 8.0.18]"
-          },
-          {
             "name": "Microsoft.Windows.SDK.NET.Ref",
             "version": "[10.0.19041.57, 10.0.19041.57]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
-            "version": "[8.0.18, 8.0.18]"
           }
         ],
         "frameworkReferences": {

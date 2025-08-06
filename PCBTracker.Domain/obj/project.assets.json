@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.Domain\\PCBTracker.Domain.csproj",
+      "projectUniqueName": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.Domain\\PCBTracker.Domain.csproj",
       "projectName": "PCBTracker.Domain",
-      "projectPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.Domain\\PCBTracker.Domain.csproj",
+      "projectPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.Domain\\PCBTracker.Domain.csproj",
       "packagesPath": "C:\\Users\\wejdj\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.Domain\\obj\\",
+      "outputPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.Domain\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

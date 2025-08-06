@@ -36,8 +36,8 @@ public static class MauiProgram
         // Define the SQL Server connection string targeting LocalDB for easy local development.
         // - Integrated Security uses Windows Authentication.
         // - Initial Catalog specifies the database name; LocalDB will create it if it doesn't exist.
-        var connStr = @"Server=192.168.2.248;
-                Database=ATXData;
+        var connStr = @"Server=192.168.2.10;
+                Database=McLevinShipping;
                 User Id=rw_atxshipping;
                 Password=Queen7-Friendly-Sale;
                 TrustServerCertificate=True;";

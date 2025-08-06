@@ -1,21 +1,17 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\",
+  "WorkspaceRootPath": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\wejdj\\onedrive\\desktop\\mclevin application\\pcb-tracing-application\\pcbtracker.ui\\views\\dataextractpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|solutionrelative:pcbtracker.ui\\views\\dataextractpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{A88A29FB-F90B-4F90-BD21-E773547372EF}|PCBTracker.Services\\PCBTracker.Services.csproj|c:\\users\\wejdj\\onedrive\\desktop\\final mclevin app\\pcb-tracing-application\\pcbtracker.services\\boardservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A88A29FB-F90B-4F90-BD21-E773547372EF}|PCBTracker.Services\\PCBTracker.Services.csproj|solutionrelative:pcbtracker.services\\boardservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\wejdj\\onedrive\\desktop\\mclevin application\\pcb-tracing-application\\pcbtracker.ui\\views\\editpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|solutionrelative:pcbtracker.ui\\views\\editpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{0F6B3EF1-96E9-4551-80BF-B457A1865929}|PCBTracker.Data\\PCBTracker.Data.csproj|c:\\users\\wejdj\\onedrive\\desktop\\final mclevin app\\pcb-tracing-application\\pcbtracker.data\\context\\appdbcontextfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0F6B3EF1-96E9-4551-80BF-B457A1865929}|PCBTracker.Data\\PCBTracker.Data.csproj|solutionrelative:pcbtracker.data\\context\\appdbcontextfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\wejdj\\onedrive\\desktop\\mclevin application\\pcb-tracing-application\\pcbtracker.ui\\views\\editpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|solutionrelative:pcbtracker.ui\\views\\editpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\wejdj\\onedrive\\desktop\\mclevin application\\pcb-tracing-application\\pcbtracker.ui\\mauiprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\wejdj\\onedrive\\desktop\\final mclevin app\\pcb-tracing-application\\pcbtracker.ui\\mauiprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|solutionrelative:pcbtracker.ui\\mauiprogram.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -26,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -38,55 +34,41 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "EditPage.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.UI\\Views\\EditPage.xaml.cs",
-              "RelativeDocumentMoniker": "PCBTracker.UI\\Views\\EditPage.xaml.cs",
-              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.UI\\Views\\EditPage.xaml.cs",
-              "RelativeToolTip": "PCBTracker.UI\\Views\\EditPage.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "BoardService.cs",
+              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.Services\\BoardService.cs",
+              "RelativeDocumentMoniker": "PCBTracker.Services\\BoardService.cs",
+              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.Services\\BoardService.cs",
+              "RelativeToolTip": "PCBTracker.Services\\BoardService.cs",
+              "ViewState": "AgIAAPYAAAAAAAAAAAAQwBkBAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-01T12:06:54.37Z",
+              "WhenOpened": "2025-08-01T17:27:06.458Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "EditPage.xaml",
-              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.UI\\Views\\EditPage.xaml",
-              "RelativeDocumentMoniker": "PCBTracker.UI\\Views\\EditPage.xaml",
-              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.UI\\Views\\EditPage.xaml",
-              "RelativeToolTip": "PCBTracker.UI\\Views\\EditPage.xaml",
-              "ViewState": "AgIAAGMAAAAAAAAAAAAAAH8AAAAkAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-08-01T12:06:52.612Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "DataExtractPage.xaml",
-              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.UI\\Views\\DataExtractPage.xaml",
-              "RelativeDocumentMoniker": "PCBTracker.UI\\Views\\DataExtractPage.xaml",
-              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.UI\\Views\\DataExtractPage.xaml*",
-              "RelativeToolTip": "PCBTracker.UI\\Views\\DataExtractPage.xaml*",
-              "ViewState": "AgIAAEgAAAAAAAAAAAAAAGMAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-07-31T20:27:56.866Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "MauiProgram.cs",
-              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.UI\\MauiProgram.cs",
-              "RelativeDocumentMoniker": "PCBTracker.UI\\MauiProgram.cs",
-              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\McLevin Application\\PCB-Tracing-Application\\PCBTracker.UI\\MauiProgram.cs",
-              "RelativeToolTip": "PCBTracker.UI\\MauiProgram.cs",
-              "ViewState": "AgIAAEcAAAAAAAAAAAAYwF8AAAAjAAAAAAAAAA==",
+              "Title": "AppDbContextFactory.cs",
+              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.Data\\Context\\AppDbContextFactory.cs",
+              "RelativeDocumentMoniker": "PCBTracker.Data\\Context\\AppDbContextFactory.cs",
+              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.Data\\Context\\AppDbContextFactory.cs",
+              "RelativeToolTip": "PCBTracker.Data\\Context\\AppDbContextFactory.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAwwBAAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-31T20:12:10.126Z",
+              "WhenOpened": "2025-08-01T17:13:53.423Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MauiProgram.cs",
+              "DocumentMoniker": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.UI\\MauiProgram.cs",
+              "RelativeDocumentMoniker": "PCBTracker.UI\\MauiProgram.cs",
+              "ToolTip": "C:\\Users\\wejdj\\OneDrive\\Desktop\\Final McLevin App\\PCB-Tracing-Application\\PCBTracker.UI\\MauiProgram.cs",
+              "RelativeToolTip": "PCBTracker.UI\\MauiProgram.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAAwCgAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-01T17:13:44.652Z"
             }
           ]
         }

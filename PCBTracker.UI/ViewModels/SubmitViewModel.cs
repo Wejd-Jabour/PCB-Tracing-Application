@@ -117,8 +117,6 @@ namespace PCBTracker.UI.ViewModels
 
             SelectedSkid = Skids[^1];
 
-            if (IsShipped && ShipDate == null)
-                ShipDate = PrepDate;
         }
 
         // ------------------------------
@@ -162,7 +160,7 @@ namespace PCBTracker.UI.ViewModels
                     BoardType = SelectedBoardType,
                     PrepDate = PrepDate,
                     IsShipped = IsShipped,
-                    ShipDate = IsShipped ? ShipDate : null,
+                    ShipDate = IsShipped ? PrepDate : null,
                     SkidID = SelectedSkid.SkidID
                 };
 

@@ -7,7 +7,7 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
-        RedirectConsoleOutputToFile();
+        //RedirectConsoleOutputToFile();
     }
 
     protected override Window CreateWindow(IActivationState? activationState)
