@@ -28,7 +28,7 @@ namespace PCBTracker.Services
         /// These values are used for board classification in the UI and logic layers.
         /// </summary>
         public Task<IEnumerable<string>> GetBoardTypesAsync()
-            => Task.FromResult((IEnumerable<string>)new[] { "LE", "LE Upgrade", "SAD", "SAD Upgrade", "SAT", "SAT Upgrade" });
+            => Task.FromResult((IEnumerable<string>)new[] { "LE", "LE Upgrade", "LE Tray", "SAD", "SAD Upgrade", "SAT", "SAT Upgrade" });
 
         /// <summary>
         /// Retrieves all Skid entities from the database.
@@ -134,6 +134,9 @@ namespace PCBTracker.Services
                     db.LE.Add(new LE { SerialNumber = dto.SerialNumber, PartNumber = dto.PartNumber, BoardType = dto.BoardType, PrepDate = dto.PrepDate, IsShipped = dto.IsShipped, ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null, SkidID = dto.SkidID });
                     break;
                 case "LE Upgrade":
+                    db.LE_Upgrade.Add(new LE_Upgrade { SerialNumber = dto.SerialNumber, PartNumber = dto.PartNumber, BoardType = dto.BoardType, PrepDate = dto.PrepDate, IsShipped = dto.IsShipped, ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null, SkidID = dto.SkidID });
+                    break;
+                case "LE Tray":
                     db.LE_Upgrade.Add(new LE_Upgrade { SerialNumber = dto.SerialNumber, PartNumber = dto.PartNumber, BoardType = dto.BoardType, PrepDate = dto.PrepDate, IsShipped = dto.IsShipped, ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null, SkidID = dto.SkidID });
                     break;
                 case "SAD":

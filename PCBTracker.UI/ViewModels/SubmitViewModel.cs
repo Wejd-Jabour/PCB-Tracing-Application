@@ -29,6 +29,7 @@ namespace PCBTracker.UI.ViewModels
             {
                 ["LE"] = "ASY-G8GMLESBH-P-ATLR07MR1",
                 ["LE Upgrade"] = "ASY-G8GMLEB-UG-KIT-P-ATLR05MR1",
+                ["LE Tray"] = "ASY-G8GMLESB-P-ATLR06MR0",
                 ["SAD"] = "ASY-G8GMSADSBH-P-ATLR03MR1",
                 ["SAD Upgrade"] = "ASY-GSGMSADB-UG-KIT-P-ATLR05MR2",
                 ["SAT"] = "ASY-G8GMSATSBH-P-ATLR02MR1",
@@ -147,9 +148,19 @@ namespace PCBTracker.UI.ViewModels
         {
             try
             {
-                if (SerialNumber.Length != 16)
-                { 
-                    throw new Exception("Invalid Serial Number Length");
+                if (selectedBoardType == "LE" || selectedBoardType == "LE Upgrade" || selectedBoardType == "LE Tray")
+                {
+                    if (SerialNumber.Length != 18)
+                    {
+                        throw new Exception("Invalid Serial Number Length");
+                    }
+                }
+                else
+                {
+                    if (SerialNumber.Length != 16)
+                    {
+                        throw new Exception("Invalid Serial Number Length");
+                    }
                 }
                     
 

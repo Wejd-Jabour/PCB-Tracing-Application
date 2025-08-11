@@ -35,6 +35,7 @@ public class AppDbContext : DbContext
 
     public DbSet<LE> LE { get; set; } = null!;
     public DbSet<LE_Upgrade> LE_Upgrade { get; set; } = null!;
+    public DbSet<LE_Tray> LE_Tray { get; set; } = null!;
     public DbSet<SAD> SAD { get; set; } = null!;
     public DbSet<SAD_Upgrade> SAD_Upgrade { get; set; } = null!;
     public DbSet<SAT> SAT { get; set; } = null!;
@@ -62,6 +63,11 @@ public class AppDbContext : DbContext
 
         // Enforces unique SerialNumber on the LE_Upgrade table.
         modelBuilder.Entity<LE_Upgrade>()
+            .HasIndex(b => b.SerialNumber)
+            .IsUnique();
+
+        // Enforces unique SerialNumber on the LE_Upgrade table.
+        modelBuilder.Entity<LE_Tray>()
             .HasIndex(b => b.SerialNumber)
             .IsUnique();
 
