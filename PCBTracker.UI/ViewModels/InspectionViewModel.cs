@@ -26,7 +26,7 @@ namespace PCBTracker.UI.ViewModels
             _completionService = completionService;
             Date = DateTime.Today;
             SeverityLevels = new ObservableCollection<string> { "Minor", "Moderate", "High", "Unknown" };
-            ProductTypes = new ObservableCollection<string> { "LE", "LE Upgrade", "SAT", "SAT Upgrade", "SAD", "SAD Upgrade", "Node" }; 
+            ProductTypes = new ObservableCollection<string> { "LE", "LE Upgrade", "LE Tray", "SAT", "SAT Upgrade", "SAD", "SAD Upgrade", "Node" }; 
         }
 
         // Input Fields

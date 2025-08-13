@@ -103,7 +103,7 @@ namespace PCBTracker.UI.ViewModels
             foreach (var t in types)
                 BoardTypes.Add(t);
 
-            var recent = await _boardService.GetRecentSkidsAsync(10);
+            var recent = await _boardService.GetRecentSkidsAsync(100);
             Skids.Clear();
             foreach (var s in recent)
                 Skids.Add(s);
