@@ -253,7 +253,7 @@ namespace PCBTracker.UI.ViewModels
             {
                 try
                 {
-                    await Task.Delay(1300, token);
+                    await Task.Delay(2700, token);
                     if (!token.IsCancellationRequested && CanSubmit())
                     {
                         MainThread.BeginInvokeOnMainThread(() =>
