@@ -7,6 +7,8 @@ using PCBTracker.Domain.Entities;
 using PCBTracker.Services.Interfaces;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PCBTracker.UI.ViewModels
@@ -87,6 +89,12 @@ namespace PCBTracker.UI.ViewModels
         [NotifyCanExecuteChangedFor(nameof(PageForwardCommand))]
         private Skid selectedSkid;
 
+        // ---- Skid count (NEW) ----
+        [ObservableProperty]
+        private int skidBoardCount;
+
+        public string SkidBoardCountLabel => $"Boards on this skid: {SkidBoardCount:N0}";
+
         // ------------------------------
         // Lifecycle Command
         // ------------------------------
@@ -118,6 +126,7 @@ namespace PCBTracker.UI.ViewModels
 
             SelectedSkid = Skids[^1];
 
+            await RefreshSkidCountAsync(); // refresh count on load
         }
 
         // ------------------------------
@@ -151,18 +160,13 @@ namespace PCBTracker.UI.ViewModels
                 if (selectedBoardType == "LE" || selectedBoardType == "LE Upgrade" || selectedBoardType == "LE Tray")
                 {
                     if (SerialNumber.Length != 18)
-                    {
                         throw new Exception("Invalid Serial Number Length");
-                    }
                 }
                 else
                 {
                     if (SerialNumber.Length != 16)
-                    {
                         throw new Exception("Invalid Serial Number Length");
-                    }
                 }
-                    
 
                 var dto = new BoardDto
                 {
@@ -176,9 +180,8 @@ namespace PCBTracker.UI.ViewModels
                 };
 
                 await _boardService.CreateBoardAndClaimSkidAsync(dto);
-                //await App.Current.MainPage.DisplayAlert("Success", "Board submitted.", "OK");
 
-                // Re-fetch the updated skid
+                // Re-fetch the updated skid designation (if it changed)
                 var updatedSkidList = await _boardService.GetSkidsAsync();
                 var refreshedSkid = updatedSkidList.FirstOrDefault(s => s.SkidID == SelectedSkid.SkidID);
                 if (refreshedSkid != null)
@@ -190,6 +193,9 @@ namespace PCBTracker.UI.ViewModels
                 SerialNumber = string.Empty;
 
                 OnPropertyChanged(nameof(CurrentSkidType));
+
+                // Update the count after a successful submit
+                await RefreshSkidCountAsync();
             }
             catch (DbUpdateException dbEx) when (dbEx.InnerException is SqlException sqlEx
                                                  && sqlEx.Message.Contains("cannot be tracked"))
@@ -198,7 +204,7 @@ namespace PCBTracker.UI.ViewModels
                     "Duplicate Board",
                     "A board with that serial number already exists in this session. Please check your Serial Number and try again, or edit the existing record.",
                     "OK");
-                    SerialNumber = string.Empty;
+                SerialNumber = string.Empty;
             }
             catch (DbUpdateException dbEx) when (dbEx.InnerException is SqlException sqlEx
                                                  && sqlEx.Number == 2627)
@@ -207,7 +213,7 @@ namespace PCBTracker.UI.ViewModels
                     "Serial Number Taken",
                     "That serial number is already in use. Each board must have a unique Serial Number.",
                     "OK");
-                    SerialNumber = string.Empty;
+                SerialNumber = string.Empty;
             }
             catch (Exception ex)
             {
@@ -235,6 +241,7 @@ namespace PCBTracker.UI.ViewModels
             var newSkid = await _boardService.CreateNewSkidAsync();
             Skids.Add(newSkid);
             SelectedSkid = newSkid;
+            await RefreshSkidCountAsync();
         }
 
         // ------------------------------
@@ -307,7 +314,7 @@ namespace PCBTracker.UI.ViewModels
             => SelectedSkid != null && Skids.IndexOf(SelectedSkid) < Skids.Count - 1;
 
         // ------------------------------
-        // Skid Type Display
+        // Skid Type + Count Display
         // ------------------------------
 
         /// <summary>
@@ -317,11 +324,31 @@ namespace PCBTracker.UI.ViewModels
             => SelectedSkid?.designatedType ?? "(unassigned)";
 
         /// <summary>
-        /// Updates the display when the selected skid changes.
+        /// Updates the display and count when the selected skid changes.
         /// </summary>
         partial void OnSelectedSkidChanged(Skid oldValue, Skid newValue)
         {
             OnPropertyChanged(nameof(CurrentSkidType));
+            _ = RefreshSkidCountAsync(); // fire & forget
+        }
+
+        /// <summary>
+        /// Recalculates the count of boards on the currently selected skid.
+        /// </summary>
+        private async Task RefreshSkidCountAsync()
+        {
+            if (SelectedSkid == null) { SkidBoardCount = 0; OnPropertyChanged(nameof(SkidBoardCountLabel)); return; }
+
+            var filter = new BoardFilterDto
+            {
+                SkidId = SelectedSkid.SkidID,
+                PageNumber = null, // load all to count
+                PageSize = null
+            };
+
+            var all = await _boardService.GetBoardsAsync(filter);
+            SkidBoardCount = all.Count();
+            OnPropertyChanged(nameof(SkidBoardCountLabel));
         }
     }
 }

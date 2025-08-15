@@ -14,8 +14,8 @@
                 Title="Board Type"
                 ItemsSource="{Binding BoardTypes}"
                 SelectedItem="{Binding SelectedBoardType}" />
-    
-			<Entry
+
+            <Entry
                 x:Name="SerialNumberEntry"
                 Placeholder="Serial Number"
                 Text="{Binding SerialNumber}"
@@ -29,14 +29,13 @@
             <DatePicker
                 Date="{Binding PrepDate}" />
 
-			<HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-				<Label
-				  Text="Mark as Shipped"
-				  VerticalOptions="Center" />
-				<Switch
-				  IsToggled="{Binding IsShipped}" />
-			</HorizontalStackLayout>
-
+            <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                <Label
+                  Text="Mark as Shipped"
+                  VerticalOptions="Center" />
+                <Switch
+                  IsToggled="{Binding IsShipped}" />
+            </HorizontalStackLayout>
 
             <VerticalStackLayout
                 Spacing="10"
@@ -48,43 +47,45 @@
                 <HorizontalStackLayout
                   Spacing="10"
                   HorizontalOptions="Start">
-                                <Button
-                  Text="‹"
-                  Command="{Binding PageBackwardCommand}"
-                  WidthRequest="50"
-                  HeightRequest="50" />
+                    <Button
+                      Text="‹"
+                      Command="{Binding PageBackwardCommand}"
+                      WidthRequest="50"
+                      HeightRequest="50" />
 
-                                <Picker
-                  Title="Skid"
-                  ItemsSource="{Binding Skids}"
-                  SelectedItem="{Binding SelectedSkid}"
-                  ItemDisplayBinding="{Binding SkidName}"
-                  WidthRequest="200" />
+                    <Picker
+                      Title="Skid"
+                      ItemsSource="{Binding Skids}"
+                      SelectedItem="{Binding SelectedSkid}"
+                      ItemDisplayBinding="{Binding SkidName}"
+                      WidthRequest="200" />
 
-                                <Button
-                  Text="›"
-                  Command="{Binding PageForwardCommand}"
-                  WidthRequest="50"
-                  HeightRequest="50" />
+                    <Button
+                      Text="›"
+                      Command="{Binding PageForwardCommand}"
+                      WidthRequest="50"
+                      HeightRequest="50" />
                 </HorizontalStackLayout>
 
                 <Label Text="This skid is for:" VerticalOptions="Center" HorizontalOptions="Center"/>
-                <Label Text="{Binding CurrentSkidType}" 
-                     FontAttributes="Bold" 
-                     VerticalOptions="Center"
-                     HorizontalOptions='Center'/>
+                <Label Text="{Binding CurrentSkidType}"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center" />
 
-                <!-- Change Skid button, below and left-aligned -->
-                            <Button
-                Text="Start New Skid"
-                Command="{Binding ChangeSkidCommand}"
-                WidthRequest="200"
-                HeightRequest="50"
-                 />
+                <!-- Skid count (NEW) -->
+                <Label Text="{Binding SkidBoardCountLabel}"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
 
+                <!-- Change Skid button -->
+                <Button
+                    Text="Start New Skid"
+                    Command="{Binding ChangeSkidCommand}"
+                    WidthRequest="200"
+                    HeightRequest="50" />
             </VerticalStackLayout>
-
-
 
             <Button
                 x:Name="SubmitButton"
@@ -93,8 +94,6 @@
                 Padding="20"
                 Margin="30"
                 Clicked="OnSubmitClicked" />
-			
-			
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
