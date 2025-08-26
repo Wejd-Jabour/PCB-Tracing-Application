@@ -95,7 +95,8 @@ namespace PCBTracker.Services
                 PrepDate = dto.PrepDate,
                 ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null,
                 IsShipped = dto.IsShipped,
-                SkidID = dto.SkidID
+                SkidID = dto.SkidID,
+                IsImported = false
             };
             db.Boards.Add(board);
             await db.SaveChangesAsync();
@@ -123,7 +124,8 @@ namespace PCBTracker.Services
                 ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null,
                 IsShipped = dto.IsShipped,
                 SkidID = dto.SkidID,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+                IsImported = false
             };
 
             db.Boards.Add(board);
@@ -137,7 +139,7 @@ namespace PCBTracker.Services
                     db.LE_Upgrade.Add(new LE_Upgrade { SerialNumber = dto.SerialNumber, PartNumber = dto.PartNumber, BoardType = dto.BoardType, PrepDate = dto.PrepDate, IsShipped = dto.IsShipped, ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null, SkidID = dto.SkidID });
                     break;
                 case "LE Tray":
-                    db.LE_Tray.Add(new LE_Tray{ SerialNumber = dto.SerialNumber, PartNumber = dto.PartNumber, BoardType = dto.BoardType, PrepDate = dto.PrepDate, IsShipped = dto.IsShipped, ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null, SkidID = dto.SkidID });
+                    db.LE_Tray.Add(new LE_Tray { SerialNumber = dto.SerialNumber, PartNumber = dto.PartNumber, BoardType = dto.BoardType, PrepDate = dto.PrepDate, IsShipped = dto.IsShipped, ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null, SkidID = dto.SkidID });
                     break;
                 case "SAD":
                     db.SAD.Add(new SAD { SerialNumber = dto.SerialNumber, PartNumber = dto.PartNumber, BoardType = dto.BoardType, PrepDate = dto.PrepDate, IsShipped = dto.IsShipped, ShipDate = dto.IsShipped ? dto.ShipDate ?? dto.PrepDate : null, SkidID = dto.SkidID });
@@ -184,26 +186,29 @@ namespace PCBTracker.Services
             if (filter.SkidId.HasValue)
                 query = query.Where(b => b.SkidID == filter.SkidId.Value);
 
+            if (filter.IsShipped.HasValue)
+                query = query.Where(b => b.IsShipped == filter.IsShipped.Value);
+
+            // NEW: tri-state Imported filter
+            if (filter.IsImported.HasValue)
+                query = query.Where(b => b.IsImported == filter.IsImported.Value);
+
+            // Date ranges
             if (filter.PrepDateFrom.HasValue)
                 query = query.Where(b => b.PrepDate >= filter.PrepDateFrom.Value);
-
             if (filter.PrepDateTo.HasValue)
                 query = query.Where(b => b.PrepDate <= filter.PrepDateTo.Value);
 
             if (filter.ShipDateFrom.HasValue)
                 query = query.Where(b => b.ShipDate >= filter.ShipDateFrom.Value);
-
             if (filter.ShipDateTo.HasValue)
                 query = query.Where(b => b.ShipDate <= filter.ShipDateTo.Value);
-
-            if (filter.IsShipped.HasValue)
-                query = query.Where(b => b.IsShipped == filter.IsShipped.Value);
 
             query = query.OrderByDescending(b => b.CreatedAt);
 
             if (filter.PageNumber.HasValue && filter.PageSize.HasValue)
             {
-                int skip = (filter.PageNumber.Value - 1) * filter.PageSize.Value;
+                var skip = (filter.PageNumber.Value - 1) * filter.PageSize.Value;
                 query = query.Skip(skip).Take(filter.PageSize.Value);
             }
 
@@ -212,10 +217,11 @@ namespace PCBTracker.Services
                 SerialNumber = b.SerialNumber,
                 PartNumber = b.PartNumber,
                 BoardType = b.BoardType,
+                SkidID = b.SkidID,
                 PrepDate = b.PrepDate,
                 ShipDate = b.ShipDate,
                 IsShipped = b.IsShipped,
-                SkidID = b.SkidID
+                IsImported = b.IsImported // NEW
             }).ToListAsync();
         }
 
@@ -320,6 +326,68 @@ namespace PCBTracker.Services
             }
 
             await db.SaveChangesAsync();
+        }
+
+        // ----------------------------
+        // NEW: Delete all boards on a skid
+        // ----------------------------
+        public async Task<int> DeleteBoardsBySkidAsync(int skidId)
+        {
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            // Collect all serials on the skid (to clean subtype tables)
+            var serials = await db.Boards
+                .Where(b => b.SkidID == skidId)
+                .Select(b => b.SerialNumber)
+                .ToListAsync();
+
+            if (serials.Count == 0)
+                return 0;
+
+            // Remove from subtype tables first
+            db.LE.RemoveRange(db.LE.Where(x => serials.Contains(x.SerialNumber)));
+            db.LE_Upgrade.RemoveRange(db.LE_Upgrade.Where(x => serials.Contains(x.SerialNumber)));
+            db.LE_Tray.RemoveRange(db.LE_Tray.Where(x => serials.Contains(x.SerialNumber)));
+            db.SAD.RemoveRange(db.SAD.Where(x => serials.Contains(x.SerialNumber)));
+            db.SAD_Upgrade.RemoveRange(db.SAD_Upgrade.Where(x => serials.Contains(x.SerialNumber)));
+            db.SAT.RemoveRange(db.SAT.Where(x => serials.Contains(x.SerialNumber)));
+            db.SAT_Upgrade.RemoveRange(db.SAT_Upgrade.Where(x => serials.Contains(x.SerialNumber)));
+
+            // Remove main board rows
+            var boards = db.Boards.Where(b => b.SkidID == skidId);
+            db.Boards.RemoveRange(boards);
+
+            // Save once; return number of state entries written
+            var affected = await db.SaveChangesAsync();
+            return affected;
+        }
+
+        public async Task<int> UpdateIsImportedAsync(DateTime? date, bool? useShipDate, int? skidId, bool isImported)
+        {
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            if (date == null && skidId == null)
+                return 0; // no criteria, no-op by design
+
+            var query = db.Boards.AsQueryable();
+
+            if (date != null && useShipDate.HasValue)
+            {
+                var d = date.Value.Date;
+                if (useShipDate.Value)
+                    query = query.Where(b => b.ShipDate.HasValue && b.ShipDate.Value.Date == d);
+                else
+                    query = query.Where(b => b.PrepDate.Date == d);
+            }
+
+            if (skidId.HasValue)
+                query = query.Where(b => b.SkidID == skidId.Value);
+
+            var list = await query.ToListAsync();
+            foreach (var b in list)
+                b.IsImported = isImported;
+
+            return await db.SaveChangesAsync();
         }
 
     }

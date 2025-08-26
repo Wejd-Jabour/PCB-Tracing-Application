@@ -1,10 +1,11 @@
-﻿﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PCBTracker.Domain.DTOs;
 using PCBTracker.Services.Interfaces;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace PCBTracker.UI.ViewModels
@@ -12,326 +13,324 @@ namespace PCBTracker.UI.ViewModels
     /// <summary>
     /// ViewModel for the Edit page.
     /// Enables filtering of boards, deleting records by serial number,
-    /// applying ship dates to skids, paginating results, and exporting to CSV.
+    /// applying ship dates to skids, deleting all boards on a skid,
+    /// tri-state filtering by Imported, and batch setting IsImported by Ship Date and/or Skid.
     /// </summary>
     public partial class EditViewModel : ObservableObject
     {
         private readonly IBoardService _boardService;
 
+        public EditViewModel(IBoardService boardService)
+        {
+            _boardService = boardService;
+
+            // Defaults
+            DateFrom = DateTime.Today.AddDays(-7);
+            DateTo = DateTime.Today;
+
+            // Shipped tri-state
+            IsShippedOptions = new ObservableCollection<string>(new[] { "Both", "Shipped", "Not Shipped" });
+            SelectedIsShippedOption = IsShippedOptions.First();
+
+            // Imported tri-state (NEW)
+            IsImportedOptions = new ObservableCollection<string>(new[] { "Both", "Imported", "Not Imported" });
+            SelectedIsImportedOption = IsImportedOptions.First();
+
+            // Imported action defaults
+            UseImportDate = false;
+            ImportTargetDate = DateTime.Today;
+            UseImportSkid = false;
+            ImportTargetSkid = null;
+            ImportFlag = true; // default to mark as imported
+        }
+
         // -----------------------------
         // Observable Collections
         // -----------------------------
-
-        [ObservableProperty]
-        private ObservableCollection<BoardDto> boards = new(); // Holds board search results.
-
-        [ObservableProperty]
-        private ObservableCollection<string> boardTypes = new(); // Board type filter list.
-
-        [ObservableProperty]
-        private ObservableCollection<SkidDto> skids = new(); // Skid filter list.
+        [ObservableProperty] private ObservableCollection<BoardDto> boards = new();
+        [ObservableProperty] private ObservableCollection<string> boardTypes = new();
+        [ObservableProperty] private ObservableCollection<SkidDto> skids = new();
 
         // -----------------------------
         // Filter Inputs
         // -----------------------------
+        [ObservableProperty] private string? serialNumberFilter;
+        [ObservableProperty] private string? selectedBoardTypeFilter;
+        [ObservableProperty] private SkidDto? selectedSkidFilter;
 
-        [ObservableProperty]
-        private string serialNumberFilter = string.Empty; // Text to match SerialNumber (contains).
+        [ObservableProperty] private DateTime dateFrom;
+        [ObservableProperty] private DateTime dateTo;
 
-        [ObservableProperty]
-        private string selectedBoardTypeFilter = string.Empty; // Selected BoardType to match.
+        // Date mode (same as original)
+        [ObservableProperty] private bool useShipDate = false;
+        public string DateModeButtonText => UseShipDate ? "Use Prep Dates" : "Use Ship Dates";
+        public string DateModeLabel => UseShipDate
+            ? "Filtering by Ship Date range."
+            : "Filtering by Prep Date range.";
 
-        [ObservableProperty]
-        private SkidDto? selectedSkidFilter = null; // Skid selection; null or SkidID = 0 means "All".
+        // Shipped tri-state
+        [ObservableProperty] private ObservableCollection<string> isShippedOptions;
+        [ObservableProperty] private string selectedIsShippedOption = "Both";
 
-        [ObservableProperty]
-        private DateTime dateFrom = DateTime.Today.AddMonths(-1); // Start of date filter range.
-
-        [ObservableProperty]
-        private DateTime dateTo = DateTime.Today; // End of date filter range.
-
-        [ObservableProperty]
-        private bool useShipDate = false; // Whether to filter on ShipDate or PrepDate.
-
-        [ObservableProperty]
-        bool isShipped = false;
-
-        [ObservableProperty]
-        private string selectedIsShippedOption = "Both";
-        public List<string> IsShippedOptions { get; } = new() { "Both", "Shipped", "Not Shipped" };
+        // Imported tri-state (NEW)
+        [ObservableProperty] private ObservableCollection<string> isImportedOptions;
+        [ObservableProperty] private string selectedIsImportedOption = "Both";
 
         // -----------------------------
-        // Edit Operations
+        // Actions
         // -----------------------------
+        // Remove by serial
+        [ObservableProperty] private string? removeSerialNumber;
 
-        [ObservableProperty]
-        private string removeSerialNumber = string.Empty; // Serial number to delete.
+        // Apply ship date to skid
+        [ObservableProperty] private SkidDto? applyShipDateSkid;
+        [ObservableProperty] private DateTime newShipDate = DateTime.Today;
 
-        [ObservableProperty]
-        private SkidDto? applyShipDateSkid = null; // Skid to which a ship date will be applied.
+        // NEW: Set Imported Flag by Ship Date and/or Skid
+        [ObservableProperty] private bool useImportDate;
+        [ObservableProperty] private DateTime importTargetDate;
+        [ObservableProperty] private bool useImportSkid;
+        [ObservableProperty] private SkidDto? importTargetSkid;
+        [ObservableProperty] private bool importFlag;
 
-        [ObservableProperty]
-        private DateTime newShipDate = DateTime.Today; // Ship date to apply to the above skid.
-
-        // -----------------------------
-        // Pagination
-        // -----------------------------
-
-        [ObservableProperty]
-        private int pageNumber = 1; // Current page number (1-based index).
-
-        [ObservableProperty]
-        private bool hasNextPage; // Whether another page exists after current.
+        // Delete skid
+        [ObservableProperty] private SkidDto? deleteSkidTarget;
 
         // -----------------------------
-        // Display Strings
+        // Pagination (same behavior)
         // -----------------------------
-
-        public string DateModeLabel => useShipDate ? "Filtering by Ship Date" : "Filtering by Prep Date";
-
-        public string DateModeButtonText => useShipDate ? "Switch to Prep Date" : "Switch to Ship Date";
+        private const int PageSize = 50;
+        [ObservableProperty] private int pageNumber = 1;
+        [ObservableProperty] private bool hasNextPage;
 
         // -----------------------------
-        // Constructor
+        // Commands
         // -----------------------------
-
-        public EditViewModel(IBoardService boardService)
+        [RelayCommand]
+        private async Task ToggleDateMode()
         {
-            _boardService = boardService; // DI-injected service for board data operations.
+            UseShipDate = !UseShipDate;
+            OnPropertyChanged(nameof(DateModeButtonText));
+            OnPropertyChanged(nameof(DateModeLabel));
         }
-
-        // -----------------------------
-        // Initialization
-        // -----------------------------
 
         [RelayCommand]
         public async Task LoadAsync()
         {
-            // Get board types from service and populate the list.
-            var types = await _boardService.GetBoardTypesAsync();
-            BoardTypes.Clear();
-            BoardTypes.Add(string.Empty); // Add blank option for "All"
-            foreach (var t in types)
-                BoardTypes.Add(t);
-
-            // Get skids as DTOs for filtering.
-            var allSkids = await _boardService.ExtractSkidsAsync();
-            Skids.Clear();
-            Skids.Add(new SkidDto { SkidID = 0, SkidName = "<All Skids>" }); // Special entry
-            foreach (var s in allSkids)
-                Skids.Add(s);
-
-            // Load the first page of search results.
-            await SearchAsync();
-        }
-
-        // -----------------------------
-        // Date Mode Toggle
-        // -----------------------------
-
-        [RelayCommand]
-        public void ToggleDateMode()
-        {
-            UseShipDate = !UseShipDate; // Flip mode
-            OnPropertyChanged(nameof(DateModeLabel)); // Update label
-            OnPropertyChanged(nameof(DateModeButtonText)); // Update button text
-        }
-
-        // -----------------------------
-        // Search
-        // -----------------------------
-
-        [RelayCommand]
-        public async Task SearchAsync()
-        {
-            PageNumber = 1;
-            await LoadPageAsync(PageNumber); // Start from page 1
-        }
-
-        // -----------------------------
-        // Record Deletion
-        // -----------------------------
-
-        [RelayCommand]
-        public async Task RemoveBoardAsync()
-        {
-            // Skip if no input
-            if (string.IsNullOrWhiteSpace(RemoveSerialNumber))
-                return;
-
-            // Delete by serial number
-            await _boardService.DeleteBoardBySerialAsync(RemoveSerialNumber);
-
-            // Reload results
-            await SearchAsync();
-
-            // Confirmation
-            await App.Current.MainPage.DisplayAlert("Removed", $"Board {RemoveSerialNumber} deleted.", "OK");
-        }
-
-        // -----------------------------
-        // Ship Date Application
-        // -----------------------------
-
-        [RelayCommand]
-        public async Task ApplyShipDateToSkidAsync()
-        {
-            // Must have valid skid selected (ID != 0)
-            if (ApplyShipDateSkid == null || ApplyShipDateSkid.SkidID == 0)
-                return;
-
-            await _boardService.UpdateShipDateForSkidAsync(ApplyShipDateSkid.SkidID, NewShipDate);
-
-            await SearchAsync();
-
-            await App.Current.MainPage.DisplayAlert("Updated", $"Applied ship date to Skid {ApplyShipDateSkid.SkidName}.", "OK");
-        }
-
-        // -----------------------------
-        // CSV Export
-        // -----------------------------
-
-        [RelayCommand]
-        public async Task ExportCsvAsync()
-        {
-            bool confirm = await App.Current.MainPage.DisplayAlert(
-                "Ready to Convert?",
-                "Would you like to export this data to CSV?",
-                "Yes",
-                "No");
-
-            if (!confirm)
-                return;
-
-            var sb = new System.Text.StringBuilder();
-            sb.AppendLine("SerialNumber,PartNumber,ShipDate");
-
-            var exportFilter = new BoardFilterDto
+            if (!BoardTypes.Any())
             {
-                SerialNumber = SerialNumberFilter,
-                BoardType = SelectedBoardTypeFilter,
-                SkidId = SelectedSkidFilter?.SkidID > 0 ? SelectedSkidFilter.SkidID : null,
-                PrepDateFrom = UseShipDate ? null : DateFrom,
-                PrepDateTo = UseShipDate ? null : DateTo,
-                ShipDateFrom = UseShipDate ? DateFrom : null,
-                ShipDateTo = UseShipDate ? DateTo : null,
-                IsShipped = SelectedIsShippedOption switch
-                {
-                    "Shipped" => true,
-                    "Not Shipped" => false,
-                    _ => (bool?)null // "Both"
-                },
-                PageNumber = null, // <-- no paging
-                PageSize = null
-            };
-
-            var allBoards = await _boardService.GetBoardsAsync(exportFilter);
-
-            foreach (var b in allBoards)
-            {
-                var shipDate = b.ShipDate?.ToString("yyyy-MM-dd") ?? "";
-                sb.AppendLine($"{b.SerialNumber},{b.PartNumber},{shipDate}");
+                var types = await _boardService.GetBoardTypesAsync();
+                BoardTypes = new ObservableCollection<string>(types.Prepend("All"));
+                SelectedBoardTypeFilter = BoardTypes.First();
             }
 
-            var fileName = $"Boards_{DateTime.Now:yyyyMMddHHmmss}.csv";
-            string folderPath;
+            if (!Skids.Any())
+            {
+                var skids = await _boardService.ExtractSkidsAsync();
+                Skids = new ObservableCollection<SkidDto>(skids.Prepend(new SkidDto { SkidID = 0, SkidName = "All" }));
+                SelectedSkidFilter = Skids.First();
+            }
 
-#if WINDOWS
-            folderPath = System.IO.Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                "Downloads");
-#elif MACCATALYST
-            folderPath = System.IO.Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                "Downloads");
-#else
-            folderPath = FileSystem.CacheDirectory;
-#endif
-
-            var filePath = System.IO.Path.Combine(folderPath, fileName);
-            System.IO.File.WriteAllText(filePath, sb.ToString());
-
-            await App.Current.MainPage.DisplayAlert("Export Complete", $"File saved to:\n{filePath}", "OK");
+            await Search();
         }
 
-        // -----------------------------
-        // Pagination
-        // -----------------------------
+        [RelayCommand]
+        private async Task Search()
+        {
+            PageNumber = 1;
+            await LoadPageAsync(PageNumber);
+        }
 
         [RelayCommand]
-        private async Task NextPageAsync()
+        private async Task NextPage()
         {
             if (!HasNextPage) return;
-
             PageNumber++;
             await LoadPageAsync(PageNumber);
         }
 
         [RelayCommand]
-        private async Task PreviousPageAsync()
+        private async Task PreviousPage()
         {
-            if (PageNumber > 1)
-            {
-                PageNumber--;
-                await LoadPageAsync(PageNumber);
-            }
+            if (PageNumber <= 1) return;
+            PageNumber--;
+            await LoadPageAsync(PageNumber);
         }
 
-        /// <summary>
-        /// Loads a specific page of board data using current filters.
-        /// Also preloads the next page to determine if paging forward is possible.
-        /// </summary>
+        [RelayCommand]
+        private async Task ExportCsv()
+        {
+            // Export ALL rows matching current filters (not just the visible page).
+            var exportFilter = BuildFilterForAll();
+            var allBoards = await _boardService.GetBoardsAsync(exportFilter);
+
+            var sb = new StringBuilder();
+            sb.AppendLine("SerialNumber,PartNumber,BoardType,PrepDate,ShipDate,IsShipped,IsImported,SkidID");
+
+            foreach (var b in allBoards)
+            {
+                var prep = b.PrepDate.ToString("yyyy-MM-dd");
+                var ship = b.ShipDate.HasValue ? b.ShipDate.Value.ToString("yyyy-MM-dd") : "";
+                sb.AppendLine($"{b.SerialNumber},{b.PartNumber},{b.BoardType},{prep},{ship},{b.IsShipped},{b.IsImported},{b.SkidID}");
+            }
+
+            var fileName = $"edit_boards_all_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+
+#if WINDOWS
+            var folderPath = System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "Downloads");
+#elif MACCATALYST
+            var folderPath = System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                "Downloads");
+#else
+            var folderPath = FileSystem.CacheDirectory;
+#endif
+
+            var filePath = System.IO.Path.Combine(folderPath, fileName);
+            System.IO.File.WriteAllText(filePath, sb.ToString());
+
+            await App.Current.MainPage.DisplayAlert("Export Complete", $"Saved to {filePath}", "OK");
+        }
+
+        [RelayCommand]
+        private async Task RemoveBoard()
+        {
+            if (string.IsNullOrWhiteSpace(RemoveSerialNumber))
+            {
+                await App.Current.MainPage.DisplayAlert("Missing Serial", "Enter a serial number to remove.", "OK");
+                return;
+            }
+
+            await _boardService.DeleteBoardBySerialAsync(RemoveSerialNumber.Trim());
+            await App.Current.MainPage.DisplayAlert("Removed", $"Board {RemoveSerialNumber} removed (if it existed).", "OK");
+            await LoadPageAsync(PageNumber);
+        }
+
+        [RelayCommand]
+        private async Task ApplyShipDateToSkid()
+        {
+            if (ApplyShipDateSkid == null || ApplyShipDateSkid.SkidID <= 0)
+            {
+                await App.Current.MainPage.DisplayAlert("Missing Skid", "Choose a skid.", "OK");
+                return;
+            }
+
+            await _boardService.UpdateShipDateForSkidAsync(ApplyShipDateSkid.SkidID, NewShipDate);
+            await App.Current.MainPage.DisplayAlert("Updated", $"Applied {NewShipDate:yyyy-MM-dd} to skid {ApplyShipDateSkid.SkidName}.", "OK");
+            await LoadPageAsync(PageNumber);
+        }
+
+        // NEW: Apply imported flag by Ship Date and/or Skid
+        [RelayCommand]
+        private async Task ApplyImportFlag()
+        {
+            DateTime? dateCriterion = null;
+            bool? useShipDateField = null;
+
+            if (UseImportDate)
+            {
+                dateCriterion = ImportTargetDate.Date;
+                useShipDateField = true; // ALWAYS Ship Date
+            }
+
+            int? skidCriterion = null;
+            if (UseImportSkid && ImportTargetSkid != null && ImportTargetSkid.SkidID > 0)
+            {
+                skidCriterion = ImportTargetSkid.SkidID;
+            }
+
+            if (dateCriterion == null && skidCriterion == null)
+            {
+                await App.Current.MainPage.DisplayAlert("No Criteria", "Select at least Date or Skid (or both).", "OK");
+                return;
+            }
+
+            var affected = await _boardService.UpdateIsImportedAsync(dateCriterion, useShipDateField, skidCriterion, ImportFlag);
+            await App.Current.MainPage.DisplayAlert("Done", $"Updated {affected} board(s).", "OK");
+            await LoadPageAsync(PageNumber);
+        }
+
+        [RelayCommand]
+        private async Task DeleteSkid()
+        {
+            if (DeleteSkidTarget == null || DeleteSkidTarget.SkidID <= 0)
+            {
+                await App.Current.MainPage.DisplayAlert("Missing Skid", "Choose a skid to delete.", "OK");
+                return;
+            }
+
+            var count = await _boardService.DeleteBoardsBySkidAsync(DeleteSkidTarget.SkidID);
+            await App.Current.MainPage.DisplayAlert("Deleted", $"Deleted {count} board(s) on skid {DeleteSkidTarget.SkidName}.", "OK");
+            await LoadPageAsync(PageNumber);
+        }
+
+        // -----------------------------
+        // Internal helpers
+        // -----------------------------
+        private BoardFilterDto BuildFilterPaged(int page, int size) => new BoardFilterDto
+        {
+            SerialNumber = SerialNumberFilter,
+            BoardType = SelectedBoardTypeFilter != null && SelectedBoardTypeFilter != "All" ? SelectedBoardTypeFilter : null,
+            SkidId = (SelectedSkidFilter?.SkidID ?? 0) > 0 ? SelectedSkidFilter!.SkidID : (int?)null,
+            PrepDateFrom = UseShipDate ? null : DateFrom,
+            PrepDateTo = UseShipDate ? null : DateTo,
+            ShipDateFrom = UseShipDate ? DateFrom : null,
+            ShipDateTo = UseShipDate ? DateTo : null,
+            IsShipped = SelectedIsShippedOption switch
+            {
+                "Shipped" => true,
+                "Not Shipped" => false,
+                _ => (bool?)null
+            },
+            IsImported = SelectedIsImportedOption switch
+            {
+                "Imported" => true,
+                "Not Imported" => false,
+                _ => (bool?)null
+            },
+            PageNumber = page,
+            PageSize = size
+        };
+
+        // NEW: unpaged filter for exporting ALL rows matching the current filters
+        private BoardFilterDto BuildFilterForAll() => new BoardFilterDto
+        {
+            SerialNumber = SerialNumberFilter,
+            BoardType = SelectedBoardTypeFilter != null && SelectedBoardTypeFilter != "All" ? SelectedBoardTypeFilter : null,
+            SkidId = (SelectedSkidFilter?.SkidID ?? 0) > 0 ? SelectedSkidFilter!.SkidID : (int?)null,
+            PrepDateFrom = UseShipDate ? null : DateFrom,
+            PrepDateTo = UseShipDate ? null : DateTo,
+            ShipDateFrom = UseShipDate ? DateFrom : null,
+            ShipDateTo = UseShipDate ? DateTo : null,
+            IsShipped = SelectedIsShippedOption switch
+            {
+                "Shipped" => true,
+                "Not Shipped" => false,
+                _ => (bool?)null
+            },
+            IsImported = SelectedIsImportedOption switch
+            {
+                "Imported" => true,
+                "Not Imported" => false,
+                _ => (bool?)null
+            },
+            PageNumber = null,
+            PageSize = null
+        };
+
         private async Task LoadPageAsync(int page)
         {
-            // Build active filter
-            var filter = new BoardFilterDto
-            {
-                SerialNumber = SerialNumberFilter,
-                BoardType = SelectedBoardTypeFilter,
-                SkidId = SelectedSkidFilter?.SkidID > 0 ? SelectedSkidFilter.SkidID : null,
-                PrepDateFrom = UseShipDate ? null : DateFrom,
-                PrepDateTo = UseShipDate ? null : DateTo,
-                ShipDateFrom = UseShipDate ? DateFrom : null,
-                ShipDateTo = UseShipDate ? DateTo : null,
-                IsShipped = SelectedIsShippedOption switch
-                {
-                    "Shipped" => true,
-                    "Not Shipped" => false,
-                    _ => (bool?)null // "Both"
-                },
-                PageNumber = page,
-                PageSize = 50
-            };
+            Boards.Clear();
 
-            // Fetch current page
+            var filter = BuildFilterPaged(page, PageSize);
             var results = (await _boardService.GetBoardsAsync(filter)).ToList();
 
-            Boards.Clear();
             foreach (var b in results)
                 Boards.Add(b);
 
-            // Build next-page filter
-            var nextFilter = new BoardFilterDto
-            {
-                SerialNumber = filter.SerialNumber,
-                BoardType = filter.BoardType,
-                SkidId = filter.SkidId,
-                PrepDateFrom = filter.PrepDateFrom,
-                PrepDateTo = filter.PrepDateTo,
-                ShipDateFrom = filter.ShipDateFrom,
-                ShipDateTo = filter.ShipDateTo,
-                IsShipped = SelectedIsShippedOption switch
-                {
-                    "Shipped" => true,
-                    "Not Shipped" => false,
-                    _ => (bool?)null // "Both"
-                },
-                PageNumber = page + 1,
-                PageSize = filter.PageSize
-            };
-
-            var nextPageResults = await _boardService.GetBoardsAsync(nextFilter);
-            HasNextPage = nextPageResults.Any(); // Flag next page availability
+            HasNextPage = results.Count == PageSize;
         }
     }
 }

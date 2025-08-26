@@ -66,5 +66,7 @@
         /// </summary>
         public bool? IsShipped { get; set; }
 
+        public bool? IsImported { get; set; }
+
     }
 }

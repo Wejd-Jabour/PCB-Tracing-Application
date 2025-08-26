@@ -10,7 +10,8 @@
             <VerticalStackLayout Grid.Row="0" Spacing="12">
                 <Label Text="Filters" FontAttributes="Bold" FontSize="Medium"/>
 
-                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
+                <!-- increased to 8 columns to add Imported Status -->
+                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
                     <!-- Row 0: Labels -->
                     <Label Text="Serial #"         Grid.Row="0" Grid.Column="0"/>
                     <Label Text="Board Type"       Grid.Row="0" Grid.Column="1"/>
@@ -18,6 +19,7 @@
                     <Label Text="Date To"          Grid.Row="0" Grid.Column="3"/>
                     <Label Text="Skid"             Grid.Row="0" Grid.Column="4"/>
                     <Label Text="Shipped Status"   Grid.Row="0" Grid.Column="5"/>
+                    <Label Text="Imported Status"  Grid.Row="0" Grid.Column="6"/>
 
                     <!-- Row 1: Inputs -->
                     <Entry Grid.Row="1" Grid.Column="0" WidthRequest="120" HeightRequest="40"
@@ -45,14 +47,21 @@
                         SelectedItem="{Binding SelectedIsShippedOption}"
                         SelectedIndexChanged="OnFilterChanged"/>
 
-                    <Button Grid.Row="1" Grid.Column="6" HeightRequest="40"
+                    <!-- NEW: tri-state Imported picker -->
+                    <Picker Grid.Row="1" Grid.Column="6" WidthRequest="150" HeightRequest="40"
+                        ItemsSource="{Binding IsImportedOptions}"
+                        SelectedItem="{Binding SelectedIsImportedOption}"
+                        SelectedIndexChanged="OnFilterChanged"/>
+
+                    <!-- moved to column 7 because we added column 6 above -->
+                    <Button Grid.Row="1" Grid.Column="7" HeightRequest="40"
                         Text="{Binding DateModeButtonText}"
                         Command="{Binding ToggleDateModeCommand}" />
                 </Grid>
 
                 <Label Text="{Binding DateModeLabel}" FontAttributes="Italic" HorizontalOptions="Center" />
 
-                <!-- Actions + Total Count -->
+                <!-- Actions + Total Count (unchanged) -->
                 <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
                     <Button Text="Search" Command="{Binding SearchCommand}" />
                     <Button Text="Export CSV" Command="{Binding ExportCsvCommand}" />
@@ -62,14 +71,16 @@
 
             <!-- COLUMN HEADERS -->
             <ScrollView Grid.Row="1" Orientation="Horizontal" HeightRequest="40">
-                <Grid ColumnDefinitions="1.2*,1.8*,*,*,*,*,*" BackgroundColor="LightGray" Padding="8">
+                <!-- increased to 8 columns to add Imported -->
+                <Grid ColumnDefinitions="1.2*,1.8*,*,*,*,*,*,*" BackgroundColor="LightGray" Padding="8">
                     <Label Text="Serial"    Grid.Column="0" FontAttributes="Bold"/>
                     <Label Text="Part #"    Grid.Column="1" FontAttributes="Bold"/>
                     <Label Text="Type"      Grid.Column="2" FontAttributes="Bold"/>
                     <Label Text="Prep Date" Grid.Column="3" FontAttributes="Bold"/>
                     <Label Text="Ship Date" Grid.Column="4" FontAttributes="Bold"/>
                     <Label Text="Shipped"   Grid.Column="5" FontAttributes="Bold"/>
-                    <Label Text="Skid"      Grid.Column="6" FontAttributes="Bold"/>
+                    <Label Text="Imported"  Grid.Column="6" FontAttributes="Bold"/>
+                    <Label Text="Skid"      Grid.Column="7" FontAttributes="Bold"/>
                 </Grid>
             </ScrollView>
 
@@ -84,21 +95,23 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="dto:BoardDto">
                         <Frame Padding="6" Margin="2" BorderColor="#ccc">
-                            <Grid ColumnDefinitions="1.2*,1.8*,*,*,*,*,*">
+                            <!-- increased to 8 columns to add Imported -->
+                            <Grid ColumnDefinitions="1.2*,1.8*,*,*,*,*,*,*">
                                 <Label Text="{Binding SerialNumber}" Grid.Column="0"/>
                                 <Label Text="{Binding PartNumber}" Grid.Column="1"/>
                                 <Label Text="{Binding BoardType}" Grid.Column="2"/>
                                 <Label Text="{Binding PrepDate, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="3"/>
                                 <Label Text="{Binding ShipDate, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="4"/>
                                 <Label Text="{Binding IsShipped}" Grid.Column="5"/>
-                                <Label Text="{Binding SkidID}" Grid.Column="6"/>
+                                <Label Text="{Binding IsImported}" Grid.Column="6"/>
+                                <Label Text="{Binding SkidID}" Grid.Column="7"/>
                             </Grid>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <!-- PAGINATION -->
+            <!-- PAGINATION (unchanged) -->
             <HorizontalStackLayout Grid.Row="3" HorizontalOptions="Center" Spacing="20">
                 <Button Text="Previous Page"
                     Command="{Binding PreviousPageCommand}" />

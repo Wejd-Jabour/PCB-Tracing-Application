@@ -12,7 +12,8 @@
             <VerticalStackLayout Grid.Row="0" Spacing="12">
                 <Label Text="Filters" FontAttributes="Bold" FontSize="Medium"/>
 
-                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
+                <!-- INCREASED TO 8 COLUMNS (added Imported Status) -->
+                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
                     <!-- Row 0: Labels -->
                     <Label Text="Serial #"         Grid.Row="0" Grid.Column="0"/>
                     <Label Text="Board Type"       Grid.Row="0" Grid.Column="1"/>
@@ -20,6 +21,8 @@
                     <Label Text="Date To"          Grid.Row="0" Grid.Column="3"/>
                     <Label Text="Skid"             Grid.Row="0" Grid.Column="4"/>
                     <Label Text="Shipped Status"   Grid.Row="0" Grid.Column="5"/>
+                    <Label Text="Imported Status"  Grid.Row="0" Grid.Column="6"/>
+                    <!-- NEW -->
 
                     <!-- Row 1: Inputs -->
                     <Entry Grid.Row="1" Grid.Column="0" WidthRequest="120" HeightRequest="40"
@@ -47,7 +50,14 @@
                         SelectedItem="{Binding SelectedIsShippedOption}" 
                         SelectedIndexChanged="OnFilterChanged"/>
 
-                    <Button Grid.Row="1" Grid.Column="6" HeightRequest="40"
+                    <!-- NEW: tri-state Imported picker -->
+                    <Picker Grid.Row="1" Grid.Column="6" WidthRequest="150" HeightRequest="40"
+                        ItemsSource="{Binding IsImportedOptions}"
+                        SelectedItem="{Binding SelectedIsImportedOption}"
+                        SelectedIndexChanged="OnFilterChanged"/>
+
+                    <!-- Date mode toggle moved to the last column -->
+                    <Button Grid.Row="1" Grid.Column="7" HeightRequest="40"
                         Text="{Binding DateModeButtonText}"
                         Command="{Binding ToggleDateModeCommand}" />
                 </Grid>
@@ -75,18 +85,63 @@
                         ItemDisplayBinding="{Binding SkidName}" />
                 <DatePicker Date="{Binding NewShipDate}" />
                 <Button Text="Apply Ship Date" Command="{Binding ApplyShipDateToSkidCommand}" />
+
+                <!-- NEW: Set Imported Flag (by Ship Date and/or Skid) -->
+                <BoxView HeightRequest="2" Color="Gray" />
+                <Label Text="Set Imported Flag" FontAttributes="Bold" />
+
+                <!-- Use Date (Ship Date) + Date -->
+                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                    <Label Text="Use Date" VerticalOptions="Center" />
+                    <Switch IsToggled="{Binding UseImportDate}" />
+                    <Label Text="Date" VerticalOptions="Center" />
+                    <DatePicker Date="{Binding ImportTargetDate}"
+                                IsEnabled="{Binding UseImportDate}" />
+                </HorizontalStackLayout>
+
+                <!-- Use Skid + picker -->
+                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                    <Label Text="Use Skid" VerticalOptions="Center" />
+                    <Switch IsToggled="{Binding UseImportSkid}" />
+                    <Picker Title="Skid"
+                            ItemsSource="{Binding Skids}"
+                            SelectedItem="{Binding ImportTargetSkid}"
+                            ItemDisplayBinding="{Binding SkidName}"
+                            WidthRequest="220"
+                            IsEnabled="{Binding UseImportSkid}" />
+                </HorizontalStackLayout>
+
+                <!-- Choose value -->
+                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                    <Label Text="Set to Imported" VerticalOptions="Center" />
+                    <Switch IsToggled="{Binding ImportFlag}" />
+                </HorizontalStackLayout>
+
+                <Button Text="Apply Imported Flag" Command="{Binding ApplyImportFlagCommand}" />
+
+                <!-- EXISTING: Delete Skid -->
+                <BoxView HeightRequest="2" Color="Gray" />
+                <Label Text="Delete All Boards on Skid" FontAttributes="Bold" />
+                <Picker Title="Skid to Delete"
+                        ItemsSource="{Binding Skids}"
+                        SelectedItem="{Binding DeleteSkidTarget}"
+                        ItemDisplayBinding="{Binding SkidName}" />
+                <Button Text="Delete Skid Boards" Command="{Binding DeleteSkidCommand}" BackgroundColor="#d9534f" TextColor="White" />
             </VerticalStackLayout>
 
             <!-- COLUMN HEADERS -->
             <ScrollView Grid.Row="1" Orientation="Horizontal" HeightRequest="40">
-                <Grid ColumnDefinitions="1.2*,1.8*,*,*,*,*,*" BackgroundColor="LightGray" Padding="8">
+                <!-- INCREASED TO 8 COLUMNS (added Imported) -->
+                <Grid ColumnDefinitions="1.2*,1.8*,*,*,*,*,*,*" BackgroundColor="LightGray" Padding="8">
                     <Label Text="Serial"    Grid.Column="0" FontAttributes="Bold"/>
                     <Label Text="Part #"    Grid.Column="1" FontAttributes="Bold"/>
                     <Label Text="Type"      Grid.Column="2" FontAttributes="Bold"/>
                     <Label Text="Prep Date" Grid.Column="3" FontAttributes="Bold"/>
                     <Label Text="Ship Date" Grid.Column="4" FontAttributes="Bold"/>
                     <Label Text="Shipped"   Grid.Column="5" FontAttributes="Bold"/>
-                    <Label Text="Skid"      Grid.Column="6" FontAttributes="Bold"/>
+                    <Label Text="Imported"  Grid.Column="6" FontAttributes="Bold"/>
+                    <!-- NEW -->
+                    <Label Text="Skid"      Grid.Column="7" FontAttributes="Bold"/>
                 </Grid>
             </ScrollView>
 
@@ -101,14 +156,17 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="dto:BoardDto">
                         <Frame Padding="6" Margin="2" BorderColor="#ccc">
-                            <Grid ColumnDefinitions="1.2*,1.8*,*,*,*,*,*">
+                            <!-- INCREASED TO 8 COLUMNS (added Imported) -->
+                            <Grid ColumnDefinitions="1.2*,1.8*,*,*,*,*,*,*">
                                 <Label Text="{Binding SerialNumber}" Grid.Column="0"/>
                                 <Label Text="{Binding PartNumber}" Grid.Column="1"/>
                                 <Label Text="{Binding BoardType}" Grid.Column="2"/>
                                 <Label Text="{Binding PrepDate, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="3"/>
                                 <Label Text="{Binding ShipDate, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="4"/>
                                 <Label Text="{Binding IsShipped}" Grid.Column="5"/>
-                                <Label Text="{Binding SkidID}" Grid.Column="6"/>
+                                <Label Text="{Binding IsImported}" Grid.Column="6"/>
+                                <!-- NEW -->
+                                <Label Text="{Binding SkidID}" Grid.Column="7"/>
                             </Grid>
                         </Frame>
                     </DataTemplate>

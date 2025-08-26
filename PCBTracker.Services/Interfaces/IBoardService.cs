@@ -77,5 +77,18 @@ namespace PCBTracker.Services.Interfaces
         /// Applies the same date to each associated board.
         /// </summary>
         Task UpdateShipDateForSkidAsync(int skidId, DateTime shipDate);
+
+        Task<int> DeleteBoardsBySkidAsync(int skidId);
+
+        /// <summary>
+        /// Updates IsImported for boards filtered by optional date (prep or ship) and/or skid.
+        /// - If <paramref name="date"/> is provided, the date comparison uses date-only semantics.
+        /// - If <paramref name="useShipDate"/> is true, compares ShipDate; otherwise compares PrepDate.
+        /// - If <paramref name="skidId"/> is provided, also filters by that skid.
+        /// Returns the number of affected rows.
+        /// </summary>
+        Task<int> UpdateIsImportedAsync(DateTime? date, bool? useShipDate, int? skidId, bool isImported);
+
+
     }
 }

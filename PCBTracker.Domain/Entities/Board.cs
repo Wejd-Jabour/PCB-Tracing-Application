@@ -22,5 +22,7 @@ namespace PCBTracker.Domain.Entities
         public Skid? Skid { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        public bool IsImported { get; set; } = false;
     }
 }

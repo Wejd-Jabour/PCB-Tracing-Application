@@ -51,5 +51,7 @@ namespace PCBTracker.Domain.DTOs
         /// This value links the board to a grouping unit in the system.
         /// </summary>
         public int SkidID { get; set; }
+
+        public bool IsImported { get; set; }
     }
 }
