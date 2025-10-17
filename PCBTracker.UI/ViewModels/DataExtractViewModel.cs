@@ -157,13 +157,17 @@ namespace PCBTracker.UI.ViewModels
         // -----------------------------
         public async Task LoadAsync()
         {
-            if (!BoardTypes.Any())
-            {
-                var types = await _boardService.GetBoardTypesAsync();
-                BoardTypes = new ObservableCollection<string>(types.Prepend("All"));
-                SelectedBoardTypeFilter = BoardTypes.FirstOrDefault();
-            }
+            // 🔧 CHANGE: Always refresh board types so newly created types appear.
+            // Preserve the current selection if it still exists; otherwise default to "All".
+            var previousSelection = SelectedBoardTypeFilter;
+            var types = await _boardService.GetBoardTypesAsync();
+            BoardTypes = new ObservableCollection<string>(types.Prepend("All"));
+            SelectedBoardTypeFilter =
+                !string.IsNullOrWhiteSpace(previousSelection) && BoardTypes.Contains(previousSelection)
+                    ? previousSelection
+                    : BoardTypes.FirstOrDefault();
 
+            // Skids unchanged (load-once keeps behavior stable)
             if (!Skids.Any())
             {
                 var skids = await _boardService.ExtractSkidsAsync();

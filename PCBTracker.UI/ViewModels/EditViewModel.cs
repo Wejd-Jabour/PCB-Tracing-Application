@@ -12,9 +12,6 @@ namespace PCBTracker.UI.ViewModels
 {
     /// <summary>
     /// ViewModel for the Edit page.
-    /// Enables filtering of boards, deleting records by serial number,
-    /// applying ship dates to skids, deleting all boards on a skid,
-    /// tri-state filtering by Imported, and batch setting IsImported by Ship Date and/or Skid.
     /// </summary>
     public partial class EditViewModel : ObservableObject
     {
@@ -24,88 +21,61 @@ namespace PCBTracker.UI.ViewModels
         {
             _boardService = boardService;
 
-            // Defaults
             DateFrom = DateTime.Today.AddDays(-7);
             DateTo = DateTime.Today;
 
-            // Shipped tri-state
             IsShippedOptions = new ObservableCollection<string>(new[] { "Both", "Shipped", "Not Shipped" });
             SelectedIsShippedOption = IsShippedOptions.First();
 
-            // Imported tri-state (NEW)
             IsImportedOptions = new ObservableCollection<string>(new[] { "Both", "Imported", "Not Imported" });
             SelectedIsImportedOption = IsImportedOptions.First();
 
-            // Imported action defaults
-            UseImportDate = false;
+            NewShipDate = DateTime.Today;
             ImportTargetDate = DateTime.Today;
-            UseImportSkid = false;
-            ImportTargetSkid = null;
-            ImportFlag = true; // default to mark as imported
         }
 
-        // -----------------------------
-        // Observable Collections
-        // -----------------------------
+        // Collections
         [ObservableProperty] private ObservableCollection<BoardDto> boards = new();
         [ObservableProperty] private ObservableCollection<string> boardTypes = new();
         [ObservableProperty] private ObservableCollection<SkidDto> skids = new();
 
-        // -----------------------------
-        // Filter Inputs
-        // -----------------------------
+        // Filters
         [ObservableProperty] private string? serialNumberFilter;
         [ObservableProperty] private string? selectedBoardTypeFilter;
         [ObservableProperty] private SkidDto? selectedSkidFilter;
-
         [ObservableProperty] private DateTime dateFrom;
         [ObservableProperty] private DateTime dateTo;
 
-        // Date mode (same as original)
         [ObservableProperty] private bool useShipDate = false;
         public string DateModeButtonText => UseShipDate ? "Use Prep Dates" : "Use Ship Dates";
-        public string DateModeLabel => UseShipDate
-            ? "Filtering by Ship Date range."
-            : "Filtering by Prep Date range.";
+        public string DateModeLabel => UseShipDate ? "Filtering by Ship Date range." : "Filtering by Prep Date range.";
 
-        // Shipped tri-state
-        [ObservableProperty] private ObservableCollection<string> isShippedOptions;
+        // Shipped / Imported tri-state
+        [ObservableProperty] private ObservableCollection<string> isShippedOptions = new(new[] { "Both", "Shipped", "Not Shipped" });
         [ObservableProperty] private string selectedIsShippedOption = "Both";
 
-        // Imported tri-state (NEW)
-        [ObservableProperty] private ObservableCollection<string> isImportedOptions;
+        [ObservableProperty] private ObservableCollection<string> isImportedOptions = new(new[] { "Both", "Imported", "Not Imported" });
         [ObservableProperty] private string selectedIsImportedOption = "Both";
 
-        // -----------------------------
-        // Actions
-        // -----------------------------
-        // Remove by serial
-        [ObservableProperty] private string? removeSerialNumber;
-
-        // Apply ship date to skid
-        [ObservableProperty] private SkidDto? applyShipDateSkid;
-        [ObservableProperty] private DateTime newShipDate = DateTime.Today;
-
-        // NEW: Set Imported Flag by Ship Date and/or Skid
-        [ObservableProperty] private bool useImportDate;
-        [ObservableProperty] private DateTime importTargetDate;
-        [ObservableProperty] private bool useImportSkid;
-        [ObservableProperty] private SkidDto? importTargetSkid;
-        [ObservableProperty] private bool importFlag;
-
-        // Delete skid
-        [ObservableProperty] private SkidDto? deleteSkidTarget;
-
-        // -----------------------------
-        // Pagination (same behavior)
-        // -----------------------------
+        // Pagination
         private const int PageSize = 50;
         [ObservableProperty] private int pageNumber = 1;
         [ObservableProperty] private bool hasNextPage;
 
-        // -----------------------------
+        // Actions UI state
+        [ObservableProperty] private string? removeSerialNumber; // <-- for XAML Entry.Text
+        [ObservableProperty] private SkidDto? applyShipDateSkid;
+        [ObservableProperty] private DateTime newShipDate = DateTime.Today;
+
+        [ObservableProperty] private bool useImportDate;
+        [ObservableProperty] private DateTime importTargetDate = DateTime.Today;
+        [ObservableProperty] private bool useImportSkid;
+        [ObservableProperty] private SkidDto? importTargetSkid;
+        [ObservableProperty] private bool importFlag;
+
+        [ObservableProperty] private SkidDto? deleteSkidTarget;
+
         // Commands
-        // -----------------------------
         [RelayCommand]
         private async Task ToggleDateMode()
         {
@@ -117,13 +87,16 @@ namespace PCBTracker.UI.ViewModels
         [RelayCommand]
         public async Task LoadAsync()
         {
-            if (!BoardTypes.Any())
-            {
-                var types = await _boardService.GetBoardTypesAsync();
-                BoardTypes = new ObservableCollection<string>(types.Prepend("All"));
-                SelectedBoardTypeFilter = BoardTypes.First();
-            }
+            // Refresh board types every time; preserve selection if possible
+            var previousSelection = SelectedBoardTypeFilter;
+            var types = await _boardService.GetBoardTypesAsync();
+            BoardTypes = new ObservableCollection<string>(types.Prepend("All"));
+            SelectedBoardTypeFilter =
+                !string.IsNullOrWhiteSpace(previousSelection) && BoardTypes.Contains(previousSelection)
+                    ? previousSelection
+                    : BoardTypes.FirstOrDefault();
 
+            // Load skids once
             if (!Skids.Any())
             {
                 var skids = await _boardService.ExtractSkidsAsync();
@@ -157,24 +130,133 @@ namespace PCBTracker.UI.ViewModels
             await LoadPageAsync(PageNumber);
         }
 
+        // --- Buttons from XAML: Remove Board ---
+        [RelayCommand]
+        private async Task RemoveBoard()
+        {
+            var serial = (RemoveSerialNumber ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(serial))
+            {
+                await App.Current.MainPage.DisplayAlert("Remove Board", "Enter a serial number.", "OK");
+                return;
+            }
+
+            var confirm = await App.Current.MainPage.DisplayAlert("Confirm", $"Delete board with Serial '{serial}'?", "Delete", "Cancel");
+            if (!confirm) return;
+
+            await _boardService.DeleteBoardBySerialAsync(serial);
+            await App.Current.MainPage.DisplayAlert("Deleted", $"Board '{serial}' removed (if it existed).", "OK");
+
+            RemoveSerialNumber = string.Empty;
+            await Search();
+        }
+
+        // --- Buttons from XAML: Apply Ship Date to Skid ---
+        [RelayCommand]
+        private async Task ApplyShipDateToSkid()
+        {
+            if (ApplyShipDateSkid == null || ApplyShipDateSkid.SkidID <= 0)
+            {
+                await App.Current.MainPage.DisplayAlert("Apply Ship Date", "Select a valid Skid.", "OK");
+                return;
+            }
+
+            var confirm = await App.Current.MainPage.DisplayAlert(
+                "Confirm",
+                $"Apply Ship Date {NewShipDate:yyyy-MM-dd} to all boards on Skid '{ApplyShipDateSkid.SkidName}'?",
+                "Apply",
+                "Cancel");
+
+            if (!confirm) return;
+
+            await _boardService.UpdateShipDateForSkidAsync(ApplyShipDateSkid.SkidID, NewShipDate);
+            await App.Current.MainPage.DisplayAlert("Done", "Ship dates updated.", "OK");
+            await Search();
+        }
+
+        // --- Buttons from XAML: Apply Imported Flag ---
+        [RelayCommand]
+        private async Task ApplyImportFlag()
+        {
+            DateTime? dateCriterion = null;
+            bool? useShipDateField = null;
+
+            if (UseImportDate)
+            {
+                dateCriterion = ImportTargetDate.Date;
+                // Using ShipDate as the date field for this action (UI label is "Use Date (Ship Date)")
+                useShipDateField = true;
+            }
+
+            int? skidCriterion = null;
+            if (UseImportSkid)
+            {
+                if (ImportTargetSkid == null || ImportTargetSkid.SkidID <= 0)
+                {
+                    await App.Current.MainPage.DisplayAlert("Set Imported Flag", "Select a valid Skid.", "OK");
+                    return;
+                }
+                skidCriterion = ImportTargetSkid.SkidID;
+            }
+
+            if (!dateCriterion.HasValue && !skidCriterion.HasValue)
+            {
+                await App.Current.MainPage.DisplayAlert("Set Imported Flag", "Choose at least one filter: By date and/or By skid.", "OK");
+                return;
+            }
+
+            var confirm = await App.Current.MainPage.DisplayAlert(
+                "Confirm",
+                $"Set Imported={(ImportFlag ? "true" : "false")} on boards{(dateCriterion.HasValue ? $" with Ship Date = {dateCriterion:yyyy-MM-dd}" : "")}{(skidCriterion.HasValue ? $" on Skid '{ImportTargetSkid!.SkidName}'" : "")}?",
+                "Apply",
+                "Cancel");
+
+            if (!confirm) return;
+
+            var affected = await _boardService.UpdateIsImportedAsync(dateCriterion, useShipDateField, skidCriterion, ImportFlag);
+            await App.Current.MainPage.DisplayAlert("Done", $"Updated {affected} board(s).", "OK");
+            await Search();
+        }
+
+        // --- Buttons from XAML: Delete Skid Boards ---
+        [RelayCommand]
+        private async Task DeleteSkid()
+        {
+            if (DeleteSkidTarget == null || DeleteSkidTarget.SkidID <= 0)
+            {
+                await App.Current.MainPage.DisplayAlert("Delete Skid Boards", "Select a valid Skid.", "OK");
+                return;
+            }
+
+            var confirm = await App.Current.MainPage.DisplayAlert(
+                "Confirm",
+                $"Delete ALL boards on Skid '{DeleteSkidTarget.SkidName}'? This cannot be undone.",
+                "Delete",
+                "Cancel");
+
+            if (!confirm) return;
+
+            var count = await _boardService.DeleteBoardsBySkidAsync(DeleteSkidTarget.SkidID);
+            await App.Current.MainPage.DisplayAlert("Deleted", $"Removed {count} board(s).", "OK");
+            await Search();
+        }
+
         [RelayCommand]
         private async Task ExportCsv()
         {
-            // Export ALL rows matching current filters (not just the visible page).
-            var exportFilter = BuildFilterForAll();
-            var allBoards = await _boardService.GetBoardsAsync(exportFilter);
+            var filterAll = BuildFilterForAll();
+            var allBoards = await _boardService.GetBoardsAsync(filterAll);
 
             var sb = new StringBuilder();
-            sb.AppendLine("SerialNumber,PartNumber,BoardType,PrepDate,ShipDate,IsShipped,IsImported,SkidID");
+            sb.AppendLine("SerialNumber,PartNumber,ShipDate");
 
             foreach (var b in allBoards)
             {
-                var prep = b.PrepDate.ToString("yyyy-MM-dd");
                 var ship = b.ShipDate.HasValue ? b.ShipDate.Value.ToString("yyyy-MM-dd") : "";
-                sb.AppendLine($"{b.SerialNumber},{b.PartNumber},{b.BoardType},{prep},{ship},{b.IsShipped},{b.IsImported},{b.SkidID}");
+                sb.AppendLine($"{b.SerialNumber},{b.PartNumber},{ship}");
             }
 
-            var fileName = $"edit_boards_all_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+            var fileName = $"Edit_Export_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
 
 #if WINDOWS
             var folderPath = System.IO.Path.Combine(
@@ -194,81 +276,7 @@ namespace PCBTracker.UI.ViewModels
             await App.Current.MainPage.DisplayAlert("Export Complete", $"Saved to {filePath}", "OK");
         }
 
-        [RelayCommand]
-        private async Task RemoveBoard()
-        {
-            if (string.IsNullOrWhiteSpace(RemoveSerialNumber))
-            {
-                await App.Current.MainPage.DisplayAlert("Missing Serial", "Enter a serial number to remove.", "OK");
-                return;
-            }
-
-            await _boardService.DeleteBoardBySerialAsync(RemoveSerialNumber.Trim());
-            await App.Current.MainPage.DisplayAlert("Removed", $"Board {RemoveSerialNumber} removed (if it existed).", "OK");
-            await LoadPageAsync(PageNumber);
-        }
-
-        [RelayCommand]
-        private async Task ApplyShipDateToSkid()
-        {
-            if (ApplyShipDateSkid == null || ApplyShipDateSkid.SkidID <= 0)
-            {
-                await App.Current.MainPage.DisplayAlert("Missing Skid", "Choose a skid.", "OK");
-                return;
-            }
-
-            await _boardService.UpdateShipDateForSkidAsync(ApplyShipDateSkid.SkidID, NewShipDate);
-            await App.Current.MainPage.DisplayAlert("Updated", $"Applied {NewShipDate:yyyy-MM-dd} to skid {ApplyShipDateSkid.SkidName}.", "OK");
-            await LoadPageAsync(PageNumber);
-        }
-
-        // NEW: Apply imported flag by Ship Date and/or Skid
-        [RelayCommand]
-        private async Task ApplyImportFlag()
-        {
-            DateTime? dateCriterion = null;
-            bool? useShipDateField = null;
-
-            if (UseImportDate)
-            {
-                dateCriterion = ImportTargetDate.Date;
-                useShipDateField = true; // ALWAYS Ship Date
-            }
-
-            int? skidCriterion = null;
-            if (UseImportSkid && ImportTargetSkid != null && ImportTargetSkid.SkidID > 0)
-            {
-                skidCriterion = ImportTargetSkid.SkidID;
-            }
-
-            if (dateCriterion == null && skidCriterion == null)
-            {
-                await App.Current.MainPage.DisplayAlert("No Criteria", "Select at least Date or Skid (or both).", "OK");
-                return;
-            }
-
-            var affected = await _boardService.UpdateIsImportedAsync(dateCriterion, useShipDateField, skidCriterion, ImportFlag);
-            await App.Current.MainPage.DisplayAlert("Done", $"Updated {affected} board(s).", "OK");
-            await LoadPageAsync(PageNumber);
-        }
-
-        [RelayCommand]
-        private async Task DeleteSkid()
-        {
-            if (DeleteSkidTarget == null || DeleteSkidTarget.SkidID <= 0)
-            {
-                await App.Current.MainPage.DisplayAlert("Missing Skid", "Choose a skid to delete.", "OK");
-                return;
-            }
-
-            var count = await _boardService.DeleteBoardsBySkidAsync(DeleteSkidTarget.SkidID);
-            await App.Current.MainPage.DisplayAlert("Deleted", $"Deleted {count} board(s) on skid {DeleteSkidTarget.SkidName}.", "OK");
-            await LoadPageAsync(PageNumber);
-        }
-
-        // -----------------------------
-        // Internal helpers
-        // -----------------------------
+        // Helpers
         private BoardFilterDto BuildFilterPaged(int page, int size) => new BoardFilterDto
         {
             SerialNumber = SerialNumberFilter,
@@ -294,7 +302,6 @@ namespace PCBTracker.UI.ViewModels
             PageSize = size
         };
 
-        // NEW: unpaged filter for exporting ALL rows matching the current filters
         private BoardFilterDto BuildFilterForAll() => new BoardFilterDto
         {
             SerialNumber = SerialNumberFilter,

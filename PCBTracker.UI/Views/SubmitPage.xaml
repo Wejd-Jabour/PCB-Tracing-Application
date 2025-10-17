@@ -16,6 +16,11 @@
                 SelectedItem="{Binding SelectedBoardType}" />
 
             <Entry
+                IsVisible="{Binding IsCreatingNewType}"
+                Placeholder="Enter new board type"
+                Text="{Binding NewBoardTypeText}" />
+
+            <Entry
                 x:Name="SerialNumberEntry"
                 Placeholder="Serial Number"
                 Text="{Binding SerialNumber}"
