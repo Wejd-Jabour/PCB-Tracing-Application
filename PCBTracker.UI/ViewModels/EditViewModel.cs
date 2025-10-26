@@ -75,6 +75,9 @@ namespace PCBTracker.UI.ViewModels
 
         [ObservableProperty] private SkidDto? deleteSkidTarget;
 
+        // NEW: Clear ShipDate for Skid
+        [ObservableProperty] private SkidDto? clearShipDateSkid;
+
         // Commands
         [RelayCommand]
         private async Task ToggleDateMode()
@@ -171,6 +174,29 @@ namespace PCBTracker.UI.ViewModels
 
             await _boardService.UpdateShipDateForSkidAsync(ApplyShipDateSkid.SkidID, NewShipDate);
             await App.Current.MainPage.DisplayAlert("Done", "Ship dates updated.", "OK");
+            await Search();
+        }
+
+        // --- NEW: Clear Ship Date for Skid (also sets IsShipped = false) ---
+        [RelayCommand]
+        private async Task ClearShipDateForSkid()
+        {
+            if (ClearShipDateSkid == null || ClearShipDateSkid.SkidID <= 0)
+            {
+                await App.Current.MainPage.DisplayAlert("Clear Ship Date", "Select a valid Skid.", "OK");
+                return;
+            }
+
+            var confirm = await App.Current.MainPage.DisplayAlert(
+                "Confirm",
+                $"Set Ship Date = null and IsShipped = false for ALL boards on Skid '{ClearShipDateSkid.SkidName}' (#{ClearShipDateSkid.SkidID})?",
+                "Clear",
+                "Cancel");
+
+            if (!confirm) return;
+
+            await _boardService.ClearShipDateForSkidAsync(ClearShipDateSkid.SkidID);
+            await App.Current.MainPage.DisplayAlert("Done", "Ship dates cleared and marked Not Shipped.", "OK");
             await Search();
         }
 

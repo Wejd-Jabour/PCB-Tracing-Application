@@ -86,6 +86,15 @@
                 <DatePicker Date="{Binding NewShipDate}" />
                 <Button Text="Apply Ship Date" Command="{Binding ApplyShipDateToSkidCommand}" />
 
+                <!-- NEW: Clear Ship Date for Skid -->
+                <BoxView HeightRequest="2" Color="Gray" />
+                <Label Text="Clear Ship Date for Skid" FontAttributes="Bold" />
+                <Picker Title="Skid"
+                        ItemsSource="{Binding Skids}"
+                        SelectedItem="{Binding ClearShipDateSkid}"
+                        ItemDisplayBinding="{Binding SkidName}" />
+                <Button Text="Clear Ship Date" Command="{Binding ClearShipDateForSkidCommand}" />
+
                 <!-- NEW: Set Imported Flag (by Ship Date and/or Skid) -->
                 <BoxView HeightRequest="2" Color="Gray" />
                 <Label Text="Set Imported Flag" FontAttributes="Bold" />

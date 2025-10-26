@@ -47,6 +47,7 @@ namespace PCBTracker.Services.Interfaces
         /// </summary>
         Task CreateBoardAsync(BoardDto boardDto);
 
+
         /// <summary>
         /// Persists a BoardDto to the database and updates the target skid
         /// with a designated board type if it has not been assigned one.
@@ -78,6 +79,13 @@ namespace PCBTracker.Services.Interfaces
         /// </summary>
         Task UpdateShipDateForSkidAsync(int skidId, DateTime shipDate);
 
+        /// <summary>
+        /// Clears the ShipDate (sets to null) and sets IsShipped = false
+        /// for all boards on the specified skid. Implementations should also
+        /// mirror this to legacy subtype tables where applicable.
+        /// </summary>
+        Task ClearShipDateForSkidAsync(int skidId);
+
         Task<int> DeleteBoardsBySkidAsync(int skidId);
 
         /// <summary>
@@ -88,7 +96,5 @@ namespace PCBTracker.Services.Interfaces
         /// Returns the number of affected rows.
         /// </summary>
         Task<int> UpdateIsImportedAsync(DateTime? date, bool? useShipDate, int? skidId, bool isImported);
-
-
     }
 }
