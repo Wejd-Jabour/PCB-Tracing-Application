@@ -13,33 +13,39 @@
                 x:Name="BoardTypePicker"
                 Title="Board Type"
                 ItemsSource="{Binding BoardTypes}"
-                SelectedItem="{Binding SelectedBoardType}" />
+                SelectedItem="{Binding SelectedBoardType}"
+                IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}" />
 
             <Entry
                 IsVisible="{Binding IsCreatingNewType}"
                 Placeholder="Enter new board type"
-                Text="{Binding NewBoardTypeText}" />
+                Text="{Binding NewBoardTypeText}"
+                IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}" />
 
             <Entry
                 x:Name="SerialNumberEntry"
                 Placeholder="Serial Number"
                 Text="{Binding SerialNumber}"
-                Completed="OnSerialNumberEntryCompleted" />
+                Completed="OnSerialNumberEntryCompleted"
+                IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}" />
 
             <Entry
                 x:Name="PartNumberEntry"
                 Placeholder="Part Number"
-                Text="{Binding PartNumber}" />
+                Text="{Binding PartNumber}"
+                IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}" />
 
             <DatePicker
-                Date="{Binding PrepDate}" />
+                Date="{Binding PrepDate}"
+                IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}" />
 
             <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
                 <Label
                   Text="Mark as Shipped"
                   VerticalOptions="Center" />
                 <Switch
-                  IsToggled="{Binding IsShipped}" />
+                  IsToggled="{Binding IsShipped}"
+                  IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}" />
             </HorizontalStackLayout>
 
             <VerticalStackLayout
@@ -78,27 +84,41 @@
                        VerticalOptions="Center"
                        HorizontalOptions="Center" />
 
-                <!-- Skid count (NEW) -->
+                <!-- Skid count -->
                 <Label Text="{Binding SkidBoardCountLabel}"
                        FontAttributes="Bold"
                        HorizontalOptions="Center"
                        VerticalOptions="Center" />
 
-                <!-- Change Skid button -->
+                <!-- Renamed button + new command -->
                 <Button
-                    Text="Start New Skid"
-                    Command="{Binding ChangeSkidCommand}"
+                    Text="Confirm Skid"
+                    Command="{Binding OpenConfirmSkidCommand}"
                     WidthRequest="200"
                     HeightRequest="50" />
             </VerticalStackLayout>
 
+            <!-- Submit is disabled while locked -->
             <Button
                 x:Name="SubmitButton"
                 Text="Submit"
                 Command="{Binding SubmitCommand}"
                 Padding="20"
                 Margin="30"
-                Clicked="OnSubmitClicked" />
+                Clicked="OnSubmitClicked"
+                IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}" />
+
+            <!-- Unlock hint (optional, non-blocking) -->
+            <Label
+                Text="This skid is locked. Select latest skid or unlock with your login password."
+                TextColor="Red"
+                IsVisible="{Binding IsSkidLocked}"
+                HorizontalOptions="Center" />
+            <Button
+                Text="Unlock This Skid"
+                Command="{Binding UnlockOldSkidCommand}"
+                IsVisible="{Binding IsSkidLocked}"
+                HorizontalOptions="Center" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

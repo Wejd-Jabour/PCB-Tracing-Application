@@ -74,6 +74,12 @@ namespace PCBTracker.UI.ViewModels
                 {
                     App.CurrentUser = user;
 
+                    // >>> ADD THIS LINE <<<
+                    App.LoggedInPassword = Password;  // store the exact text the user typed this session
+
+                    // (optional hygiene) clear the field in the VM so it isn’t lingering in the UI
+                    Password = string.Empty;
+
                     // Switch from LoginShell to AppShell
                     MainThread.BeginInvokeOnMainThread(() =>
                     {
@@ -86,6 +92,7 @@ namespace PCBTracker.UI.ViewModels
                 await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
         }
+
 
         [RelayCommand]
         private void TogglePasswordVisibility()

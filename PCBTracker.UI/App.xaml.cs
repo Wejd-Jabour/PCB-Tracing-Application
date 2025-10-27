@@ -4,6 +4,10 @@ public partial class App : Application
 {
     public static PCBTracker.Domain.Entities.User? CurrentUser { get; set; }
 
+    // NEW: store the login password for this session (used for old-skid unlock)
+    // If you don't want to keep plaintext, store a hash instead and change the comparison logic accordingly.
+    public static string? LoggedInPassword { get; set; }
+
     public App()
     {
         InitializeComponent();

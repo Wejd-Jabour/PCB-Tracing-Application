@@ -11,6 +11,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.Maui.Controls; // for Navigation to modal
+using PCBTracker.UI.Views;     // ConfirmSkidPage
 
 namespace PCBTracker.UI.ViewModels
 {
@@ -20,6 +23,8 @@ namespace PCBTracker.UI.ViewModels
     /// - PN auto-fill from latest board for existing types (fallback to static map)
     /// - Per-type serial-length enforcement (matches earliest recorded for that type)
     /// - Skid designation enforcement
+    /// - NEW: Confirm Skid modal + sequential new skid
+    /// - NEW: Old-skid password lock (session-scoped unlock per skid)
     /// </summary>
     public partial class SubmitViewModel : ObservableObject
     {
@@ -90,6 +95,13 @@ namespace PCBTracker.UI.ViewModels
 
         public string CurrentSkidType => SelectedSkid?.designatedType ?? "(unassigned)";
 
+        // === NEW: Lock/Unlock state ===
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
+        private bool isSkidLocked; // true means scanning/submit disabled
+
+        private readonly HashSet<int> _unlockedSkids = new();
+
         // ------------------------------
         // Load (types + skids)
         // ------------------------------
@@ -115,12 +127,13 @@ namespace PCBTracker.UI.ViewModels
             }
 
             SelectedSkid = Skids[^1];
+            await UpdateLockForSelectedSkidAsync();
             OnPropertyChanged(nameof(CurrentSkidType));
             await RefreshSkidCountAsync();
         }
 
         // ------------------------------
-        // Skid nav + "Start New Skid"
+        // Skid nav + Confirm Skid flow
         // ------------------------------
 
         [RelayCommand(CanExecute = nameof(CanPageBackward))]
@@ -131,6 +144,7 @@ namespace PCBTracker.UI.ViewModels
             if (idx > 0)
             {
                 SelectedSkid = Skids[idx - 1];
+                await UpdateLockForSelectedSkidAsync();
                 OnPropertyChanged(nameof(CurrentSkidType));
                 await RefreshSkidCountAsync();
             }
@@ -145,13 +159,14 @@ namespace PCBTracker.UI.ViewModels
             if (idx < Skids.Count - 1)
             {
                 SelectedSkid = Skids[idx + 1];
+                await UpdateLockForSelectedSkidAsync();
                 OnPropertyChanged(nameof(CurrentSkidType));
                 await RefreshSkidCountAsync();
             }
         }
         private bool CanPageForward() => SelectedSkid != null && Skids.IndexOf(SelectedSkid) < Skids.Count - 1;
 
-        // ✅ This is the command your XAML binds to
+        // (Old "Start New Skid" kept for any other call sites; not used by the renamed button.)
         [RelayCommand]
         private async Task ChangeSkidAsync()
         {
@@ -160,17 +175,150 @@ namespace PCBTracker.UI.ViewModels
             {
                 Skids.Add(newSkid);
                 SelectedSkid = newSkid;
+                await UpdateLockForSelectedSkidAsync();
                 OnPropertyChanged(nameof(CurrentSkidType));
                 await RefreshSkidCountAsync();
             }
         }
 
-        // When skid changes (via picker), update labels/counts
+        // === NEW: Confirm Skid command (used by renamed button) ===
+        [RelayCommand]
+        private async Task OpenConfirmSkidAsync()
+        {
+            if (SelectedSkid == null)
+            {
+                await App.Current.MainPage.DisplayAlert("No Skid", "Select a skid first.", "OK");
+                return;
+            }
+
+            // Load boards for the review modal
+            var boards = (await _boardService.GetBoardsBySkidAsync(SelectedSkid.SkidID)).ToList();
+
+            var modal = new ConfirmSkidPage(SelectedSkid, boards);
+            await App.Current.MainPage.Navigation.PushModalAsync(modal);
+            var confirmed = await modal.WaitForResultAsync();
+            await App.Current.MainPage.Navigation.PopModalAsync();
+
+            if (!confirmed) return;
+
+            // Re-lock the skid we just confirmed
+            var justConfirmedId = SelectedSkid.SkidID;
+            _unlockedSkids.Remove(justConfirmedId);
+
+            // Decide what to do next based on "latestness"
+            var maxId = await _boardService.GetMaxSkidIdAsync();
+            var isCurrentLatest = (justConfirmedId == maxId);
+
+            if (isCurrentLatest)
+            {
+                // We were on the latest skid → create the next sequential skid
+                var newSkid = await _boardService.CreateNewSkidAsync();
+                Skids.Add(newSkid);
+
+                SelectedSkid = newSkid;
+                _unlockedSkids.Add(newSkid.SkidID);   // latest is unlocked
+                IsSkidLocked = false;
+            }
+            else
+            {
+                // We were on an older skid → DO NOT create a new one.
+                // Jump to the most recent skid instead.
+                await SelectMostRecentSkidAsync();
+            }
+
+            // Clear inputs (keep type selection)
+            SerialNumber = string.Empty;
+            PartNumber = string.Empty;
+            IsShipped = false;
+            ShipDate = null;
+
+            OnPropertyChanged(nameof(CurrentSkidType));
+            await RefreshSkidCountAsync();
+        }
+
+
+        // When skid changes (via picker), update labels/counts and lock state
         partial void OnSelectedSkidChanged(Skid oldValue, Skid newValue)
         {
+            _ = UpdateLockForSelectedSkidAsync();
             OnPropertyChanged(nameof(CurrentSkidType));
             _ = RefreshSkidCountAsync();
         }
+
+        private async Task UpdateLockForSelectedSkidAsync()
+        {
+            if (SelectedSkid == null) { IsSkidLocked = true; return; }
+
+            var maxId = await _boardService.GetMaxSkidIdAsync();
+            var isLatest = SelectedSkid.SkidID == maxId;
+
+            if (isLatest)
+            {
+                IsSkidLocked = false;
+                _unlockedSkids.Add(SelectedSkid.SkidID);
+            }
+            else
+            {
+                IsSkidLocked = !_unlockedSkids.Contains(SelectedSkid.SkidID);
+            }
+        }
+
+        // Manual unlock command (visible only when locked)
+        [RelayCommand]
+        private async Task UnlockOldSkidAsync()
+        {
+            if (SelectedSkid == null) return;
+
+            if (string.IsNullOrWhiteSpace(App.LoggedInPassword))
+            {
+                await App.Current.MainPage.DisplayAlert(
+                    "Cannot Unlock",
+                    "No login password is available in this session. Please log out and log back in, or switch to role-based unlock.",
+                    "OK");
+                return;
+            }
+
+            var entered = await App.Current.MainPage.DisplayPromptAsync(
+                "Unlock Skid",
+                $"Enter the login password to unlock Skid {SelectedSkid.SkidName} for this session:",
+                "Unlock", "Cancel", placeholder: "Password", maxLength: 128, keyboard: Keyboard.Text);
+
+            if (entered == null) return; // cancelled
+
+            if (string.Equals(entered.Trim(), App.LoggedInPassword.Trim(), StringComparison.Ordinal))
+            {
+                _unlockedSkids.Add(SelectedSkid.SkidID);
+                IsSkidLocked = false;
+                await App.Current.MainPage.DisplayAlert("Unlocked", "You can now scan/submit to this skid.", "OK");
+            }
+            else
+            {
+                await App.Current.MainPage.DisplayAlert("Denied", "Incorrect password.", "OK");
+            }
+        }
+
+
+        private async Task SelectMostRecentSkidAsync()
+        {
+            var maxId = await _boardService.GetMaxSkidIdAsync();
+
+            // Ensure Skids list has the latest
+            if (!Skids.Any(s => s.SkidID == maxId))
+            {
+                var all = await _boardService.GetRecentSkidsAsync(100);
+                Skids.Clear();
+                foreach (var s in all) Skids.Add(s);
+            }
+
+            var latest = Skids.OrderBy(s => s.SkidID).LastOrDefault();
+            if (latest != null)
+            {
+                SelectedSkid = latest;                // triggers UpdateLockForSelectedSkidAsync
+                _unlockedSkids.Add(latest.SkidID);    // ensure unlocked
+                IsSkidLocked = false;
+            }
+        }
+
 
         // ------------------------------
         // Validation & Submit
@@ -178,6 +326,8 @@ namespace PCBTracker.UI.ViewModels
 
         private bool CanSubmit()
         {
+            if (IsSkidLocked) return false;
+
             var effectiveType = IsCreatingNewType ? NewBoardTypeText?.Trim() : SelectedBoardType;
             return !string.IsNullOrWhiteSpace(SerialNumber)
                 && !string.IsNullOrWhiteSpace(PartNumber)

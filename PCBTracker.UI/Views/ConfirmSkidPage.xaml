@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="PCBTracker.UI.Views.ConfirmSkidPage"
+    Title="Confirm Skid">
+
+    <VerticalStackLayout Padding="20" Spacing="12">
+        <Label Text="{Binding HeaderText}" FontAttributes="Bold" FontSize="20" HorizontalOptions="Center" />
+
+        <CollectionView ItemsSource="{Binding Boards}" HeightRequest="400">
+            <CollectionView.Header>
+                <Grid ColumnDefinitions="*,*,*,*" Padding="0,0,0,6">
+                    <Label Text="Serial" FontAttributes="Bold" />
+                    <Label Text="Part #" Grid.Column="1" FontAttributes="Bold" />
+                    <Label Text="Type" Grid.Column="2" FontAttributes="Bold" />
+                    <Label Text="ShipDate" Grid.Column="3" FontAttributes="Bold" />
+                </Grid>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="*,*,*,*" Padding="0,4">
+                        <Label Text="{Binding SerialNumber}" />
+                        <Label Text="{Binding PartNumber}" Grid.Column="1" />
+                        <Label Text="{Binding BoardType}" Grid.Column="2" />
+                        <Label Text="{Binding ShipDate, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="3" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Grid ColumnDefinitions="*,*" Padding="0,10,0,0">
+            <Label Text="{Binding TotalsText}" Grid.ColumnSpan="2" FontAttributes="Bold"/>
+        </Grid>
+
+        <HorizontalStackLayout Spacing="12" HorizontalOptions="Center">
+            <Button Text="Cancel" Command="{Binding CancelCommand}" />
+            <Button Text="Confirm" Command="{Binding ConfirmCommand}" />
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

@@ -295,24 +295,48 @@ namespace PCBTracker.Services
             return await db.SaveChangesAsync();
         }
 
-        // -----------------------------
-        // NEW: Clear ShipDate for a skid AND set IsShipped = false
-        // -----------------------------
-        public async Task ClearShipDateForSkidAsync(int skidId)
+        // ======== NEW helpers for Submit flows ========
+
+        public async Task<IEnumerable<BoardDto>> GetBoardsBySkidAsync(int skidId)
+        {
+            using var db = await _contextFactory.CreateDbContextAsync();
+            return await db.Boards
+                .Where(b => b.SkidID == skidId)
+                .OrderBy(b => b.SerialNumber)
+                .Select(b => new BoardDto
+                {
+                    SerialNumber = b.SerialNumber,
+                    PartNumber = b.PartNumber,
+                    BoardType = b.BoardType,
+                    SkidID = b.SkidID,
+                    PrepDate = b.PrepDate,
+                    ShipDate = b.ShipDate,
+                    IsShipped = b.IsShipped,
+                    IsImported = b.IsImported
+                })
+                .ToListAsync();
+        }
+
+        public async Task<int> GetMaxSkidIdAsync()
+        {
+            using var db = await _contextFactory.CreateDbContextAsync();
+            if (!await db.Skids.AnyAsync()) return 0;
+            return await db.Skids.MaxAsync(s => s.SkidID);
+        }
+
+        public async Task<int> ClearShipDateForSkidAsync(int skidId)
         {
             using var db = await _contextFactory.CreateDbContextAsync();
 
             var boards = await db.Boards.Where(b => b.SkidID == skidId).ToListAsync();
-            if (boards.Count == 0)
-                return;
+            if (boards.Count == 0) return 0;
 
             foreach (var board in boards)
             {
-                // Clear ShipDate and mark not shipped
                 board.ShipDate = null;
                 board.IsShipped = false;
 
-                // Update legacy subtype tables (no-ops for unknown types)
+                // Keep legacy subtype tables in sync where applicable (no-op for unknown types)
                 switch (board.BoardType)
                 {
                     case "LE":
@@ -342,7 +366,8 @@ namespace PCBTracker.Services
                 }
             }
 
-            await db.SaveChangesAsync();
+            return await db.SaveChangesAsync();
         }
+
     }
 }

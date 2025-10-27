@@ -40,6 +40,8 @@ namespace PCBTracker.UI.Views
             PasswordEntry.IsPassword = _isPasswordHidden;
         }
 
+
+
         /// <summary>
         /// Event handler for the login button or Enter key.
         /// Executes the ViewModel's login command if it can be run.
