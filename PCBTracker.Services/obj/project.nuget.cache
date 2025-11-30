@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "GZHhLVnAInE=",
+  "dgSpecHash": "hLYw3Zg27fU=",
   "success": true,
-  "projectFilePath": "C:\\Users\\jabou\\Desktop\\Projects\\McLevin App\\PCB-Tracing-Application\\PCBTracker.Services\\PCBTracker.Services.csproj",
+  "projectFilePath": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.Services\\PCBTracker.Services.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\jabou\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\jabou\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
