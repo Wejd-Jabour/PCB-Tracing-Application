@@ -7,8 +7,10 @@ using PCBTracker.Services;                     // Concrete implementations of yo
 using PCBTracker.Services.Interfaces;          // Interfaces like IUserService and IBoardService
 using PCBTracker.UI.ViewModels;                // ViewModel classes for your XAML pages
 using PCBTracker.UI.Views;
-
+using System;
+using System.Net.Http;
 namespace PCBTracker.UI;
+using Microsoft.Extensions.DependencyInjection;
 
 public static class MauiProgram
 {
@@ -50,7 +52,22 @@ public static class MauiProgram
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IBoardService, BoardService>();
         builder.Services.AddScoped<IAssemblyCompletionService, AssemblyCompletionService>();
+        builder.Services.AddScoped<IMaraHollyOrderSyncService, MaraHollyOrderSyncService>();
+        builder.Services.AddScoped<IMaraHollyOrderService, MaraHollyOrderService>();
+        builder.Services.AddSingleton<IMaraHollyOrdersODataClient>(sp =>
+        {
+            var httpClient = new HttpClient
+            {
+                BaseAddress = new Uri("https://maratech.acumatica.com/odata/MaraTech/")
+            };
 
+            return new MaraHollyOrdersODataClient(httpClient);
+        });
+
+        //builder.Services.AddHttpClient<IMaraHollyOrdersODataClient, MaraHollyOrdersODataClient>(client =>
+        //{
+        //    client.BaseAddress = new Uri("https://maratech.acumatica.com/odata/MaraTech/");
+        //});
 
         // === Register ViewModels and Pages ===
         builder.Services.AddTransient<LoginViewModel>();
@@ -66,6 +83,10 @@ public static class MauiProgram
 
         builder.Services.AddSingleton(new ConnectionStatusService(connStr));
         builder.Services.AddSingleton<ConnectionStatusViewModel>();
+
+
+        builder.Services.AddTransient<CoordinatorViewModel>();
+        builder.Services.AddTransient<CoordinatorPage>();
 
         // Build the configured MAUI application
         var app = builder.Build();

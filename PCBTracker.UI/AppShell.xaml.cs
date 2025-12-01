@@ -29,6 +29,7 @@ namespace PCBTracker.UI
             Routing.RegisterRoute(nameof(SubmitPage), typeof(SubmitPage));
             Routing.RegisterRoute(nameof(DataExtractPage), typeof(DataExtractPage));
             Routing.RegisterRoute(nameof(EditPage), typeof(EditPage));
+            Routing.RegisterRoute(nameof(CoordinatorPage), typeof(CoordinatorPage));
 
             // If you have these pages, uncomment/register them as well:
             // Routing.RegisterRoute(nameof(InspectionPage), typeof(InspectionPage));
@@ -44,6 +45,7 @@ namespace PCBTracker.UI
             AddTab("Submit", "submit", typeof(SubmitPage));
             AddTab("Extract", "extract", typeof(DataExtractPage));
             AddTab("Edit", "edit", typeof(EditPage));
+            AddTab("Coordinator", "coordinator", typeof(CoordinatorPage));
 
             // If you have these pages in your UI project, add them back:
             // AddTab("Inspection", "inspection", typeof(InspectionPage));

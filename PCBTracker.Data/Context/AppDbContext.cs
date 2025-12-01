@@ -42,6 +42,7 @@ public class AppDbContext : DbContext
     public DbSet<SAT_Upgrade> SAT_Upgrade { get; set; } = null!;
     public DbSet<Inspection> Inspections { get; set; }
     public DbSet<AssemblyCompletion> AssembliesCompleted { get; set; } = null!;
+    public DbSet<MaraHollyOrderLine> MaraHollyOrderLine { get; set; } = default!;
 
 
     /// <summary>
@@ -55,6 +56,16 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Board>()
             .HasIndex(b => b.SerialNumber)
             .IsUnique();
+
+        modelBuilder.Entity<MaraHollyOrderLine>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+
+            // Unique line per order
+            entity.HasIndex(x => new { x.OrderNbr, x.LineNbr })
+                  .IsUnique();
+        });
+
 
         // Enforces unique SerialNumber on the LE table.
         modelBuilder.Entity<LE>()

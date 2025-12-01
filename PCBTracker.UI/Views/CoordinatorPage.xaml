@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="PCBTracker.UI.Views.CoordinatorPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:PCBTracker.UI.ViewModels"
+    x:Name="CoordinatorPageRoot"
+    Title="Coordinator">
+
+    <ContentPage.ToolbarItems>
+        <!-- Manual sync button -->
+        <ToolbarItem Text="Sync"
+                     Command="{Binding RefreshCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Content>
+        <Grid RowDefinitions="Auto,Auto,Auto,*"
+              Padding="10"
+              RowSpacing="8">
+
+            <!-- Last sync label -->
+            <Label Grid.Row="0"
+                   Text="{Binding LastSyncLabel}"
+                   FontSize="12"
+                   TextColor="Gray" />
+
+            <!-- Search box -->
+            <Entry Grid.Row="1"
+                   Placeholder="Search order #, inventory, PO"
+                   Text="{Binding SearchText}"
+                   ClearButtonVisibility="WhileEditing" />
+
+            <!-- Processing status filter -->
+            <Picker Grid.Row="2"
+                    Title="Filter by processing status"
+                    ItemsSource="{Binding ProcessingStatusOptions}"
+                    SelectedItem="{Binding SelectedProcessingStatusFilter}" />
+
+            <!-- Pull-to-refresh + list -->
+            <RefreshView Grid.Row="3"
+                         IsRefreshing="{Binding IsRefreshing}"
+                         Command="{Binding RefreshCommand}">
+
+                <CollectionView ItemsSource="{Binding Orders}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <SwipeView>
+                                <SwipeView.RightItems>
+                                    <SwipeItems Mode="Reveal">
+                                        <SwipeItem Text="Active"
+                                                   BackgroundColor="Green"
+                                                   Command="{Binding BindingContext.SetActiveCommand, Source={x:Reference CoordinatorPageRoot}}"
+                                                   CommandParameter="{Binding}" />
+                                        <SwipeItem Text="On Hold"
+                                                   BackgroundColor="Orange"
+                                                   Command="{Binding BindingContext.SetOnHoldCommand, Source={x:Reference CoordinatorPageRoot}}"
+                                                   CommandParameter="{Binding}" />
+                                        <SwipeItem Text="Cancel"
+                                                   BackgroundColor="Red"
+                                                   Command="{Binding BindingContext.SetCancelledCommand, Source={x:Reference CoordinatorPageRoot}}"
+                                                   CommandParameter="{Binding}" />
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+
+                                <!-- Card layout for each order -->
+                                <Grid Padding="8">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Row 0: Order # + Acumatica status -->
+                                    <HorizontalStackLayout Grid.Row="0"
+                                                           Grid.ColumnSpan="2"
+                                                           Spacing="8">
+                                        <Label Text="{Binding OrderNbr}"
+                                               FontAttributes="Bold" />
+                                        <Label Text="{Binding Status}" />
+                                    </HorizontalStackLayout>
+
+                                    <!-- Row 1: Inventory ID -->
+                                    <Label Grid.Row="1"
+                                           Grid.ColumnSpan="2"
+                                           Text="{Binding InventoryId}"
+                                           FontSize="13" />
+
+                                    <!-- Row 2: Qty / Open / PO -->
+                                    <HorizontalStackLayout Grid.Row="2"
+                                                           Grid.ColumnSpan="2"
+                                                           Spacing="16">
+                                        <Label Text="{Binding OrderQty, StringFormat='Qty: {0}'}" />
+                                        <Label Text="{Binding OpenQty, StringFormat='Open: {0}'}" />
+                                        <Label Text="{Binding CustomerOrderNbr, StringFormat='PO: {0}'}" />
+                                    </HorizontalStackLayout>
+
+                                    <!-- Row 3: Request date / processing status / last updated -->
+                                    <HorizontalStackLayout Grid.Row="3"
+                                                           Grid.ColumnSpan="2"
+                                                           Spacing="8">
+                                        <Label Text="{Binding RequestDate, StringFormat='Req: {0:yyyy-MM-dd}'}"
+                                               FontSize="11" />
+                                        <Label Text="{Binding ProcessingStatus}"
+                                               FontSize="11"
+                                               FontAttributes="Bold" />
+                                        <Label Text="{Binding LastUpdatedAt, StringFormat='Updated: {0:yyyy-MM-dd}'}"
+                                               FontSize="11"
+                                               TextColor="Gray" />
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </SwipeView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
