@@ -31,8 +31,13 @@ namespace PCBTracker.UI.ViewModels
             _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             _syncService = syncService ?? throw new ArgumentNullException(nameof(syncService));
 
+            // Filter dropdown (includes "All")
             ProcessingStatusOptions = new ObservableCollection<string>(
                 new[] { "All", "Unassigned", "Active", "OnHold", "Cancelled" });
+
+            // Per-row dropdown (no "All")
+            RowProcessingStatusOptions = new ObservableCollection<string>(
+                new[] { "Unassigned", "Active", "OnHold", "Cancelled" });
 
             SelectedProcessingStatusFilter = ProcessingStatusOptions.FirstOrDefault();
         }
@@ -46,6 +51,12 @@ namespace PCBTracker.UI.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<string> processingStatusOptions;
+
+        /// <summary>
+        /// Options for the per-row ProcessingStatus picker.
+        /// </summary>
+        [ObservableProperty]
+        private ObservableCollection<string> rowProcessingStatusOptions;
 
         [ObservableProperty]
         private string? selectedProcessingStatusFilter;
@@ -132,12 +143,12 @@ namespace PCBTracker.UI.ViewModels
                 ErrorMessage = null;
 
                 // 1. Sync with Acumatica
-                var result = await _syncService.SyncAsync();
+                await _syncService.SyncAsync();
 
-                // You could log or surface result.Inserted/Updated here if you like
+                // 2. Record when we synced
                 LastSyncTime = DateTime.UtcNow;
 
-                // 2. Reload from local DB
+                // 3. Reload local orders from DB
                 await LoadOrdersAsync();
             }
             catch (Exception ex)
@@ -150,7 +161,7 @@ namespace PCBTracker.UI.ViewModels
             }
         }
 
-        // Status change commands (for swipe actions / buttons)
+        // Status change commands (still available if you ever wire up swipe actions)
 
         [RelayCommand]
         private async Task SetActiveAsync(MaraHollyOrderLineDto? order)
@@ -168,6 +179,24 @@ namespace PCBTracker.UI.ViewModels
         private async Task SetCancelledAsync(MaraHollyOrderLineDto? order)
         {
             await SetProcessingStatusInternalAsync(order, "Cancelled");
+        }
+
+        /// <summary>
+        /// Confirm button command from each row.
+        /// Uses whatever ProcessingStatus the coordinator picked in the row's Picker.
+        /// </summary>
+        [RelayCommand]
+        private async Task ConfirmProcessingStatusAsync(MaraHollyOrderLineDto? order)
+        {
+            if (order == null)
+                return;
+
+            var newStatus = order.ProcessingStatus;
+
+            if (string.IsNullOrWhiteSpace(newStatus))
+                return;
+
+            await SetProcessingStatusInternalAsync(order, newStatus);
         }
 
         // ---------------------------------
@@ -201,7 +230,7 @@ namespace PCBTracker.UI.ViewModels
                      o.CustomerOrderNbr.Contains(text, StringComparison.OrdinalIgnoreCase)));
             }
 
-            // ProcessingStatus filter
+            // ProcessingStatus filter (ignore "All")
             if (!string.IsNullOrWhiteSpace(SelectedProcessingStatusFilter) &&
                 !string.Equals(SelectedProcessingStatusFilter, "All", StringComparison.OrdinalIgnoreCase))
             {
@@ -212,13 +241,14 @@ namespace PCBTracker.UI.ViewModels
             }
 
             // Order by request date, then OrderNbr, then LineNbr
-            query = query
-                .OrderBy(o => o.RequestDate ?? DateTime.MaxValue)
+            var finalList = query
+                .OrderBy(o => o.RequestDate)
                 .ThenBy(o => o.OrderNbr)
-                .ThenBy(o => o.LineNbr);
+                .ThenBy(o => o.LineNbr)
+                .ToList();
 
             Orders.Clear();
-            foreach (var item in query)
+            foreach (var item in finalList)
             {
                 Orders.Add(item);
             }
@@ -226,6 +256,10 @@ namespace PCBTracker.UI.ViewModels
             OnPropertyChanged(nameof(HasOrders));
         }
 
+        /// <summary>
+        /// Central place where we update processing status and then
+        /// reload the table so the UI immediately reflects the change.
+        /// </summary>
         private async Task SetProcessingStatusInternalAsync(
             MaraHollyOrderLineDto? order,
             string newStatus)
@@ -235,8 +269,10 @@ namespace PCBTracker.UI.ViewModels
 
             try
             {
+                IsBusy = true;
                 ErrorMessage = null;
 
+                // Persist change to local DB
                 await _orderService.UpdateProcessingStatusAsync(order.Id, newStatus);
 
                 // After updating in DB, reload everything so the UI reflects the latest state
@@ -245,6 +281,10 @@ namespace PCBTracker.UI.ViewModels
             catch (Exception ex)
             {
                 ErrorMessage = ex.Message;
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 
