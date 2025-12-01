@@ -95,10 +95,45 @@ namespace PCBTracker.UI.ViewModels
         [ObservableProperty] private int skidBoardCount;
         public string SkidBoardCountLabel => $"Boards on this Skid: {SkidBoardCount:N0}";
 
+
         [ObservableProperty]
         private ObservableCollection<MaraHollyOrderLineDto> activeOrders = new();
 
         public string ActiveOrdersCountLabel => $"Active Orders: {ActiveOrders.Count:N0}";
+
+        [ObservableProperty]
+        private MaraHollyOrderLineDto selectedActiveOrder;
+
+        partial void OnSelectedActiveOrderChanged(MaraHollyOrderLineDto value)
+        {
+            if (value == null) return;
+            BeginWorkOnOrder(value);
+        }
+
+        // Whether we're actively working on an order from the mini-tab
+        [ObservableProperty]
+        private bool isWorkingOnOrder;
+
+        public string WorkingOnOrderLabel =>
+            IsWorkingOnOrder && SelectedActiveOrder != null
+                ? $"Working on order {SelectedActiveOrder.OrderNbr} ({SelectedActiveOrder.InventoryId})"
+                : string.Empty;
+
+        // Board type / part-number are editable only when the skid is unlocked
+        // AND we're not in a “working on order” state.
+        public bool CanEditBoardDetails => !IsSkidLocked && !IsWorkingOnOrder;
+
+        // Keep this in sync when either flag changes
+        partial void OnIsSkidLockedChanged(bool oldValue, bool newValue)
+        {
+            OnPropertyChanged(nameof(CanEditBoardDetails));
+        }
+
+        partial void OnIsWorkingOnOrderChanged(bool oldValue, bool newValue)
+        {
+            OnPropertyChanged(nameof(CanEditBoardDetails));
+            OnPropertyChanged(nameof(WorkingOnOrderLabel));
+        }
 
         public string CurrentSkidType => SelectedSkid?.designatedType ?? "(unassigned)";
 
@@ -529,6 +564,62 @@ namespace PCBTracker.UI.ViewModels
 
             OnPropertyChanged(nameof(ActiveOrdersCountLabel));
         }
+
+        private static string ExtractBoardTypeFromInventoryId(string inventoryId)
+        {
+            if (string.IsNullOrWhiteSpace(inventoryId)) return null;
+
+            var s = inventoryId.ToUpperInvariant();
+
+            // Upgrade kits are marked with UG-KIT / UG KIT
+            bool isUpgrade = s.Contains("UG-KIT") || s.Contains("UG KIT");
+
+            // Family detection based on known part-number patterns
+            string baseType = null;
+
+            if (s.Contains("G8GMLE"))                 // LE family
+                baseType = "LE";
+            else if (s.Contains("G8GMSAD") || s.Contains("GSGMSAD")) // SAD family
+                baseType = "SAD";
+            else if (s.Contains("G8GMSAT"))          // SAT family
+                baseType = "SAT";
+
+            if (baseType == null)
+                return null;
+
+            return isUpgrade ? $"{baseType} Upgrade" : baseType;
+        }
+        private void BeginWorkOnOrder(MaraHollyOrderLineDto order)
+        {
+            if (order == null) return;
+
+            // Flag we’re now “working on” this order
+            IsWorkingOnOrder = true;
+
+            // 1) Set part number = inventory ID
+            PartNumber = order.InventoryId ?? string.Empty;
+
+            // 2) Extract board type from the inventory ID
+            var boardType = ExtractBoardTypeFromInventoryId(order.InventoryId);
+
+            if (!string.IsNullOrWhiteSpace(boardType))
+            {
+                // Ensure the board type is in the picker list (after sentinel)
+                if (!BoardTypes.Contains(boardType))
+                {
+                    BoardTypes.Add(boardType);
+                }
+
+                // Choose that board type; we’re not creating a brand-new named type here
+                SelectedBoardType = boardType;
+                IsCreatingNewType = false;
+                NewBoardTypeText = string.Empty;
+            }
+
+            // If you want, you could also clear the serial # so they start scanning fresh:
+            // SerialNumber = string.Empty;
+        }
+
 
         private async Task RefreshSkidCountAsync()
         {

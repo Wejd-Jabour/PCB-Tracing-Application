@@ -8,19 +8,25 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
             <Label Text="Submit Board" FontSize="24" HorizontalOptions="Center" />
-
+            <Label
+                Text="{Binding WorkingOnOrderLabel}"
+                TextColor="Blue"
+                FontAttributes="Italic"
+                Margin="0,4,0,0"
+                IsVisible="{Binding IsWorkingOnOrder}" />
+            
             <Picker
                 x:Name="BoardTypePicker"
                 Title="Board Type"
                 ItemsSource="{Binding BoardTypes}"
                 SelectedItem="{Binding SelectedBoardType}"
-                IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}" />
+                IsEnabled="{Binding CanEditBoardDetails}" />
 
             <Entry
                 IsVisible="{Binding IsCreatingNewType}"
                 Placeholder="Enter new board type"
                 Text="{Binding NewBoardTypeText}"
-                IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}" />
+                IsEnabled="{Binding CanEditBoardDetails}" />
 
             <Entry
                 x:Name="SerialNumberEntry"
@@ -33,7 +39,7 @@
                 x:Name="PartNumberEntry"
                 Placeholder="Part Number"
                 Text="{Binding PartNumber}"
-                IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}" />
+                IsEnabled="{Binding CanEditBoardDetails}" />
 
             <DatePicker
                 Date="{Binding PrepDate}"
@@ -123,6 +129,7 @@
 
 
             <!-- MINI-TAB: Active Orders -->
+            <!-- MINI-TAB: Active Orders -->
             <Border
     Margin="0,20,0,0"
     Stroke="LightGray"
@@ -171,8 +178,11 @@
 
                     <!-- Tab content -->
                     <CollectionView
-            ItemsSource="{Binding ActiveOrders}"
-            HeightRequest="160">
+                        x:Name="ActiveOrdersCollectionView"
+                        ItemsSource="{Binding ActiveOrders}"
+                        SelectedItem="{Binding SelectedActiveOrder}"
+                        SelectionMode="Single"
+                        HeightRequest="160">
 
                         <CollectionView.EmptyView>
                             <Label Text="No active orders."
@@ -207,6 +217,8 @@
 
                 </VerticalStackLayout>
             </Border>
+
+            
 
         </VerticalStackLayout>
     </ScrollView>
