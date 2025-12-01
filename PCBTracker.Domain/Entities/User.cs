@@ -20,6 +20,6 @@ namespace PCBTracker.Domain.Entities
         public bool Extract { get; set; } = false; //Can extract information
         public bool Edit { get; set; } = false; //Can delete/update boards
         public bool Inspection { get; set; } = false; //Can add board inspection
-
+        public bool Coordinator { get; set; } = false; //Can access coordinator page
     }
 }
