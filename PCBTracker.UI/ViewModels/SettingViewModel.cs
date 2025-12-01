@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PCBTracker.Data.Migrations;
 using PCBTracker.Services.Interfaces;
 using System;
 using System.Threading.Tasks;
@@ -27,7 +28,7 @@ namespace PCBTracker.UI.ViewModels
         [ObservableProperty] bool scanPermission = false;
         [ObservableProperty] bool extractPermission = false;
         [ObservableProperty] bool editPermission = false;
-        [ObservableProperty] bool inspectionPermission = false;
+        [ObservableProperty] bool coordinatorPermission = false;
         [ObservableProperty] private bool isUserCreateSectionVisible = false;
 
         [ObservableProperty] private string updateEmployeeIDText = string.Empty;
@@ -36,7 +37,7 @@ namespace PCBTracker.UI.ViewModels
         [ObservableProperty] private bool updateScanPermission = false;
         [ObservableProperty] private bool updateExtractPermission = false;
         [ObservableProperty] private bool updateEditPermission = false;
-        [ObservableProperty] private bool updateInspectionPermission = false;
+        [ObservableProperty] private bool updateCoordinatorPermission = false;
         [ObservableProperty] private bool isPermissionUpdateSectionVisible = false;
 
         [ObservableProperty] private string removeEmployeeIDText = string.Empty;
@@ -89,7 +90,7 @@ namespace PCBTracker.UI.ViewModels
                     scanPermission,
                     extractPermission,
                     editPermission,
-                    inspectionPermission);
+                    coordinatorPermission);
 
                 await App.Current.MainPage.DisplayAlert("Success", "User created successfully.", "OK");
 
@@ -103,7 +104,7 @@ namespace PCBTracker.UI.ViewModels
                 ScanPermission = false;
                 ExtractPermission = false;
                 EditPermission = false;
-                InspectionPermission = false;
+                CoordinatorPermission = false;
 
                 IsUserCreateSectionVisible = false;
             }
@@ -148,7 +149,7 @@ namespace PCBTracker.UI.ViewModels
                     updateScanPermission,
                     updateExtractPermission,
                     updateEditPermission,
-                    updateInspectionPermission
+                    updateCoordinatorPermission
                 );
 
                 await App.Current.MainPage.DisplayAlert("Success", "Permissions updated.", "OK");
@@ -159,7 +160,7 @@ namespace PCBTracker.UI.ViewModels
                 UpdateScanPermission = false;
                 UpdateExtractPermission = false;
                 UpdateEditPermission = false;
-                UpdateInspectionPermission = false;
+                updateCoordinatorPermission = false;
                 IsPermissionUpdateSectionVisible = false;
             }
             catch (Exception ex)

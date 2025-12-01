@@ -25,7 +25,7 @@
                         <Label Text="Scan"          Grid.Row="0" Grid.Column="6"/>
                         <Label Text="Extract"          Grid.Row="0" Grid.Column="7"/>
                         <Label Text="Edit"             Grid.Row="0" Grid.Column="8"/>
-                        <Label Text="Inspection"   Grid.Row="0" Grid.Column="9"/>
+                        <Label Text="Coordinator"   Grid.Row="0" Grid.Column="9"/>
 
                         <!-- Row 1: Inputs -->
                         <Entry Grid.Row="1" Grid.Column="0"
@@ -50,7 +50,7 @@
                         <Switch  Grid.Row="1" Grid.Column="6" IsToggled="{Binding ScanPermission}"/>
                         <Switch  Grid.Row="1" Grid.Column="7" IsToggled="{Binding ExtractPermission}"/>
                         <Switch  Grid.Row="1" Grid.Column="8" IsToggled="{Binding EditPermission}"/>
-                        <Switch  Grid.Row="1" Grid.Column="9" IsToggled="{Binding InspectionPermission}"/>
+                        <Switch  Grid.Row="1" Grid.Column="9" IsToggled="{Binding CoordinatorPermission}"/>
                     </Grid>
 
                     <HorizontalStackLayout Spacing="10">
@@ -109,9 +109,9 @@
                 <Label Grid.Row="5" Grid.Column="0" Text="Edit Permission:" VerticalOptions="Center"/>
                 <CheckBox Grid.Row="5" Grid.Column="1" IsChecked="{Binding UpdateEditPermission}" />
 
-                <!-- Inspection Permission -->
-                <Label Grid.Row="6" Grid.Column="0" Text="Inspection Permission:" VerticalOptions="Center"/>
-                <CheckBox Grid.Row="6" Grid.Column="1" IsChecked="{Binding UpdateInspectionPermission}" />
+                <!-- Coordinator Permission -->
+                <Label Grid.Row="6" Grid.Column="0" Text="Coordinator Permission:" VerticalOptions="Center"/>
+                <CheckBox Grid.Row="6" Grid.Column="1" IsChecked="{Binding UpdateCoordinatorPermission}" />
 
                 <!-- Submit Button -->
                 <Button Grid.Row="7"

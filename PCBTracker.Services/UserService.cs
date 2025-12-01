@@ -46,7 +46,7 @@ namespace PCBTracker.Services
         /// Creates and persists a new user account with hashed password and role.
         /// Throws an exception if the username is already in use.
         /// </summary>
-        public void CreateUser(int employeeID, string username, string password, string firstName, string lastName, bool admin, bool scan, bool extract, bool edit, bool inspection)
+        public void CreateUser(int employeeID, string username, string password, string firstName, string lastName, bool admin, bool scan, bool extract, bool edit, bool coordinator)
         {
             using var db = _contextFactory.CreateDbContext();
 
@@ -66,14 +66,15 @@ namespace PCBTracker.Services
                 Scan = scan,
                 Extract = extract,
                 Edit = edit,
-                Inspection = inspection
+                Inspection = false,
+                Coordinator = coordinator
             };
 
             db.Users.Add(user);
             db.SaveChanges();
         }
 
-        public void UpdateUserPermissions(int employeeID, string username, bool admin, bool scan, bool extract, bool edit, bool inspection)
+        public void UpdateUserPermissions(int employeeID, string username, bool admin, bool scan, bool extract, bool edit, bool coordinator)
         {
             using var db = _contextFactory.CreateDbContext();
 
@@ -85,7 +86,7 @@ namespace PCBTracker.Services
             user.Scan = scan;
             user.Extract = extract;
             user.Edit = edit;
-            user.Inspection = inspection;
+            user.Coordinator = coordinator;
 
             db.SaveChanges();
         }

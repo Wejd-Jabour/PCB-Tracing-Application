@@ -1,94 +1,86 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Maui.ApplicationModel;   // MainThread
-using Microsoft.Maui.Controls;
+﻿using Microsoft.Maui.Controls;
 using PCBTracker.UI.Views;
 
-namespace PCBTracker.UI
+namespace PCBTracker.UI;
+
+public partial class AppShell : Shell
 {
-    public partial class AppShell : Shell
+    public AppShell()
     {
-        public AppShell()
+        InitializeComponent();
+        RegisterRoutes();
+
+        var vm = Application.Current.Handler.MauiContext.Services.GetRequiredService<ConnectionStatusViewModel>();
+        BindingContext = vm;
+
+        BuildTabsForUser(App.CurrentUser);
+    }
+
+    private void RegisterRoutes()
+    {
+        Routing.RegisterRoute("SubmitPage", typeof(SubmitPage));
+        Routing.RegisterRoute("DataExtract", typeof(DataExtractPage));
+        Routing.RegisterRoute("EditPage", typeof(EditPage));
+        Routing.RegisterRoute("CoordinatorPage", typeof(CoordinatorPage));
+        Routing.RegisterRoute("SettingPage", typeof(SettingPage));
+    }
+
+    private void BuildTabsForUser(PCBTracker.Domain.Entities.User? user)
+    {
+        MainTabBar.Items.Clear();
+
+        if (user == null)
+            return;
+
+        if (user.Scan)
+            AddTab("Submit", "SubmitPage", typeof(SubmitPage));
+
+        if (user.Extract)
+            AddTab("Extract", "DataExtract", typeof(DataExtractPage));
+
+        if (user.Edit)
+            AddTab("Edit", "EditPage", typeof(EditPage));
+
+        if (user.Coordinator)
+            AddTab("Coordinator", "CoordinatorPage", typeof(CoordinatorPage));
+
+        if (user.Admin)
+            AddTab("Settings", "SettingPage", typeof(SettingPage));
+    }
+
+    private void AddTab(string title, string route, Type pageType)
+    {
+        var shellContent = new ShellContent
         {
-            InitializeComponent();
-            RegisterRoutes();
+            Title = title,
+            Route = route,
+            ContentTemplate = new DataTemplate(pageType)
+        };
 
-            // Optional: bind a connection status VM if it's registered
-            var services = Application.Current?.Handler?.MauiContext?.Services;
-            var statusVm = services?.GetService<ConnectionStatusViewModel>();
-            if (statusVm != null)
-                BindingContext = statusVm;
-
-            BuildTabsForUser(App.CurrentUser);
-        }
-
-        // -------- Routes --------
-        private static void RegisterRoutes()
+        var tab = new Tab
         {
-            // Register any pages you navigate to via route names
-            Routing.RegisterRoute(nameof(SubmitPage), typeof(SubmitPage));
-            Routing.RegisterRoute(nameof(DataExtractPage), typeof(DataExtractPage));
-            Routing.RegisterRoute(nameof(EditPage), typeof(EditPage));
-            Routing.RegisterRoute(nameof(CoordinatorPage), typeof(CoordinatorPage));
+            Title = title,
+            Route = route
+        };
+        tab.Items.Add(shellContent);
 
-            // If you have these pages, uncomment/register them as well:
-            // Routing.RegisterRoute(nameof(InspectionPage), typeof(InspectionPage));
-            // Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
-        }
+        MainTabBar.Items.Add(tab);
+    }
 
-        // -------- Tabs --------
-        private void BuildTabsForUser(PCBTracker.Domain.Entities.User? user)
+    private async void OnLogoutClicked(object sender, EventArgs e)
+    {
+        bool confirm = await DisplayAlert("Logout", "Are you sure you want to log out?", "Yes", "No");
+        if (confirm)
+            Logout();
+    }
+
+    public void Logout()
+    {
+        App.CurrentUser = null;
+
+        MainThread.BeginInvokeOnMainThread(() =>
         {
-            // You can tailor tabs by role if needed using `user`
-            MainTabBar.Items.Clear();
-
-            AddTab("Submit", "submit", typeof(SubmitPage));
-            AddTab("Extract", "extract", typeof(DataExtractPage));
-            AddTab("Edit", "edit", typeof(EditPage));
-            AddTab("Coordinator", "coordinator", typeof(CoordinatorPage));
-
-            // If you have these pages in your UI project, add them back:
-            // AddTab("Inspection", "inspection", typeof(InspectionPage));
-            // AddTab("Settings",   "settings",   typeof(SettingsPage));
-        }
-
-        private void AddTab(string title, string route, Type pageType)
-        {
-            var shellContent = new ShellContent
-            {
-                Title = title,
-                Route = route,
-                ContentTemplate = new DataTemplate(pageType)
-            };
-
-            var tab = new Tab
-            {
-                Title = title,
-                Route = route
-            };
-            tab.Items.Add(shellContent);
-
-            MainTabBar.Items.Add(tab);
-        }
-
-        // -------- Logout --------
-        private async void OnLogoutClicked(object sender, EventArgs e)
-        {
-            bool confirm = await DisplayAlert("Logout", "Are you sure you want to log out?", "Logout", "Cancel");
-            if (confirm)
-                Logout();
-        }
-
-        public void Logout()
-        {
-            // Clear session state
-            App.CurrentUser = null;
-            App.LoggedInPassword = null; // important for the old-skid unlock flow
-
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                Application.Current.MainPage = new LoginShell();
-            });
-        }
+            Application.Current.MainPage = new LoginShell();
+        });
     }
 }
