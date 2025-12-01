@@ -98,6 +98,7 @@
                     HeightRequest="50" />
             </VerticalStackLayout>
 
+            
             <!-- Submit is disabled while locked -->
             <Button
                 x:Name="SubmitButton"
@@ -119,6 +120,94 @@
                 Command="{Binding UnlockOldSkidCommand}"
                 IsVisible="{Binding IsSkidLocked}"
                 HorizontalOptions="Center" />
+
+
+            <!-- MINI-TAB: Active Orders -->
+            <Border
+    Margin="0,20,0,0"
+    Stroke="LightGray"
+    StrokeThickness="1"
+    BackgroundColor="#F5F5F5">
+
+                <VerticalStackLayout Spacing="0">
+
+                    <!-- Tab header -->
+                    <Grid Padding="10" BackgroundColor="#E0E0E0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label
+                Text="Active Orders"
+                FontAttributes="Bold"
+                Grid.Column="0" />
+
+                        <Label
+                Text="{Binding ActiveOrdersCountLabel}"
+                FontAttributes="Bold"
+                Grid.Column="1" />
+                    </Grid>
+
+                    <!-- Column headings -->
+                    <Grid Padding="8,4,8,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Text="Order #"
+                   FontAttributes="Bold"
+                   Grid.Column="0" />
+                        <Label Text="Inventory ID"
+                   FontAttributes="Bold"
+                   Grid.Column="1" />
+                        <Label Text="Qty"
+                   FontAttributes="Bold"
+                   HorizontalTextAlignment="End"
+                   Grid.Column="2" />
+                    </Grid>
+
+                    <!-- Tab content -->
+                    <CollectionView
+            ItemsSource="{Binding ActiveOrders}"
+            HeightRequest="160">
+
+                        <CollectionView.EmptyView>
+                            <Label Text="No active orders."
+                       Padding="10" />
+                        </CollectionView.EmptyView>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="8,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Order number -->
+                                    <Label Text="{Binding OrderNbr}"
+                               Grid.Column="0" />
+
+                                    <!-- Inventory ID -->
+                                    <Label Text="{Binding InventoryId}"
+                               Grid.Column="1" />
+
+                                    <!-- Quantity (OrderQty) -->
+                                    <Label Text="{Binding OrderQty}"
+                               Grid.Column="2"
+                               HorizontalTextAlignment="End" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                </VerticalStackLayout>
+            </Border>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

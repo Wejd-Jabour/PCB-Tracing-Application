@@ -29,6 +29,7 @@ namespace PCBTracker.UI.ViewModels
     public partial class SubmitViewModel : ObservableObject
     {
         private readonly IBoardService _boardService;
+        private readonly IMaraHollyOrderService _orderService;
 
         // Fallback PN map (only when DB has no prior PN for the type)
         private static readonly IReadOnlyDictionary<string, string> _partNumberMap =
@@ -45,9 +46,10 @@ namespace PCBTracker.UI.ViewModels
 
         private const string NewTypeSentinel = "(Add new type…)";
 
-        public SubmitViewModel(IBoardService boardService)
+        public SubmitViewModel(IBoardService boardService, IMaraHollyOrderService orderService)
         {
             _boardService = boardService;
+            _orderService = orderService;
             PrepDate = DateTime.Today;
         }
 
@@ -93,9 +95,13 @@ namespace PCBTracker.UI.ViewModels
         [ObservableProperty] private int skidBoardCount;
         public string SkidBoardCountLabel => $"Boards on this Skid: {SkidBoardCount:N0}";
 
+        [ObservableProperty]
+        private ObservableCollection<MaraHollyOrderLineDto> activeOrders = new();
+
+        public string ActiveOrdersCountLabel => $"Active Orders: {ActiveOrders.Count:N0}";
+
         public string CurrentSkidType => SelectedSkid?.designatedType ?? "(unassigned)";
 
-        // === NEW: Lock/Unlock state ===
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
         private bool isSkidLocked; // true means scanning/submit disabled
@@ -130,6 +136,8 @@ namespace PCBTracker.UI.ViewModels
             await UpdateLockForSelectedSkidAsync();
             OnPropertyChanged(nameof(CurrentSkidType));
             await RefreshSkidCountAsync();
+
+            await LoadActiveOrdersAsync();
         }
 
         // ------------------------------
@@ -501,6 +509,26 @@ namespace PCBTracker.UI.ViewModels
         // ------------------------------
         // Helpers
         // ------------------------------
+        private async Task LoadActiveOrdersAsync()
+        {
+            // Fetch recent orders from local DB (last 30 days)
+            var recent = await _orderService.GetRecentOrdersAsync(days: 30);
+
+            var active = recent
+                .Where(o => string.Equals(o.ProcessingStatus, "Active", StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(o => o.RequestDate)
+                .ThenBy(o => o.OrderNbr)
+                .ThenBy(o => o.LineNbr)
+                .ToList();
+
+            ActiveOrders.Clear();
+            foreach (var order in active)
+            {
+                ActiveOrders.Add(order);
+            }
+
+            OnPropertyChanged(nameof(ActiveOrdersCountLabel));
+        }
 
         private async Task RefreshSkidCountAsync()
         {
