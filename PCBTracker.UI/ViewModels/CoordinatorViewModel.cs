@@ -24,6 +24,9 @@ namespace PCBTracker.UI.ViewModels
         // Backing store for all orders; Orders is the filtered view
         private List<MaraHollyOrderLineDto> _allOrders = new();
 
+        // Statuses that should be hidden unless explicitly filtered
+        private static readonly string[] TerminalStatuses = { "Complete", "Void" };
+
         public CoordinatorViewModel(
             IMaraHollyOrderService orderService,
             IMaraHollyOrderSyncService syncService)
@@ -31,13 +34,13 @@ namespace PCBTracker.UI.ViewModels
             _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             _syncService = syncService ?? throw new ArgumentNullException(nameof(syncService));
 
-            // Filter dropdown (includes "All")
+            // Filter dropdown (includes "All", "Complete", "Void")
             ProcessingStatusOptions = new ObservableCollection<string>(
-                new[] { "All", "Unassigned", "Active", "OnHold", "Cancelled" });
+                new[] { "All", "Unassigned", "Active", "OnHold", "Cancelled", "Complete", "Void" });
 
-            // Per-row dropdown (no "All")
+            // Per-row dropdown (no "All", but includes "Complete" + "Void")
             RowProcessingStatusOptions = new ObservableCollection<string>(
-                new[] { "Unassigned", "Active", "OnHold", "Cancelled" });
+                new[] { "Unassigned", "Active", "OnHold", "Cancelled", "Complete", "Void" });
 
             SelectedProcessingStatusFilter = ProcessingStatusOptions.FirstOrDefault();
         }
@@ -230,19 +233,39 @@ namespace PCBTracker.UI.ViewModels
                      o.CustomerOrderNbr.Contains(text, StringComparison.OrdinalIgnoreCase)));
             }
 
-            // ProcessingStatus filter (ignore "All")
-            if (!string.IsNullOrWhiteSpace(SelectedProcessingStatusFilter) &&
-                !string.Equals(SelectedProcessingStatusFilter, "All", StringComparison.OrdinalIgnoreCase))
-            {
-                var status = SelectedProcessingStatusFilter;
+            // ProcessingStatus filter rules:
+            // - "Complete" => show only completed orders
+            // - "Void"     => show only void orders
+            // - any other specific status => show that status, excluding Complete/Void
+            // - "All" or null/empty       => show everything EXCEPT Complete/Void
+            var filter = SelectedProcessingStatusFilter;
 
+            if (string.Equals(filter, "Complete", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(filter, "Void", StringComparison.OrdinalIgnoreCase))
+            {
+                // Only that terminal status
                 query = query.Where(o =>
-                    string.Equals(o.ProcessingStatus, status, StringComparison.OrdinalIgnoreCase));
+                    string.Equals(o.ProcessingStatus, filter, StringComparison.OrdinalIgnoreCase));
+            }
+            else
+            {
+                // Hide terminal statuses by default
+                query = query.Where(o =>
+                    !TerminalStatuses.Any(ts =>
+                        string.Equals(o.ProcessingStatus, ts, StringComparison.OrdinalIgnoreCase)));
+
+                // Apply any other specific filter (Unassigned, Active, OnHold, Cancelled)
+                if (!string.IsNullOrWhiteSpace(filter) &&
+                    !string.Equals(filter, "All", StringComparison.OrdinalIgnoreCase))
+                {
+                    query = query.Where(o =>
+                        string.Equals(o.ProcessingStatus, filter, StringComparison.OrdinalIgnoreCase));
+                }
             }
 
             // Order by request date, then OrderNbr, then LineNbr
             var finalList = query
-                .OrderBy(o => o.RequestDate)
+                .OrderByDescending(o => o.RequestDate)
                 .ThenBy(o => o.OrderNbr)
                 .ThenBy(o => o.LineNbr)
                 .ToList();

@@ -19,8 +19,12 @@ namespace PCBTracker.Services
             "Unassigned",
             "Active",
             "OnHold",
-            "Cancelled"
+            "Cancelled",
+            "Complete",
+            "Void"
         };
+
+
 
         public MaraHollyOrderService(IDbContextFactory<AppDbContext> contextFactory)
         {
