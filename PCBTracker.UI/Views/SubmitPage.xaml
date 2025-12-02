@@ -8,13 +8,21 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
             <Label Text="Submit Board" FontSize="24" HorizontalOptions="Center" />
-            <Label
-                Text="{Binding WorkingOnOrderLabel}"
-                TextColor="Blue"
-                FontAttributes="Italic"
+            <HorizontalStackLayout
                 Margin="0,4,0,0"
-                IsVisible="{Binding IsWorkingOnOrder}" />
-            
+                Spacing="10"
+                IsVisible="{Binding IsWorkingOnOrder}">
+                            <Label
+                    Text="{Binding WorkingOnOrderLabel}"
+                    TextColor="Blue"
+                    FontAttributes="Italic"
+                    VerticalOptions="Center" />
+                            <Button
+                    Text="Cancel"
+                    Command="{Binding CancelWorkingOnOrderCommand}"
+                    VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+
             <Picker
                 x:Name="BoardTypePicker"
                 Title="Board Type"

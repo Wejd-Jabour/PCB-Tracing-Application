@@ -31,6 +31,15 @@ namespace PCBTracker.UI.ViewModels
         private readonly IBoardService _boardService;
         private readonly IMaraHollyOrderService _orderService;
 
+
+        // Used to restore state when cancelling work on an order
+        private string _savedBoardTypeBeforeOrder;
+        private string _savedPartNumberBeforeOrder;
+        private bool _savedIsCreatingNewTypeBeforeOrder;
+        private string _savedNewBoardTypeTextBeforeOrder;
+
+
+
         // Fallback PN map (only when DB has no prior PN for the type)
         private static readonly IReadOnlyDictionary<string, string> _partNumberMap =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -593,31 +602,56 @@ namespace PCBTracker.UI.ViewModels
         {
             if (order == null) return;
 
-            // Flag we’re now “working on” this order
+            // Save the current "free scan" state so we can go back to it
+            _savedBoardTypeBeforeOrder = SelectedBoardType;
+            _savedPartNumberBeforeOrder = PartNumber;
+            _savedIsCreatingNewTypeBeforeOrder = IsCreatingNewType;
+            _savedNewBoardTypeTextBeforeOrder = NewBoardTypeText;
+
             IsWorkingOnOrder = true;
 
-            // 1) Set part number = inventory ID
+            // 1) Part number becomes the inventory ID from the order
             PartNumber = order.InventoryId ?? string.Empty;
 
-            // 2) Extract board type from the inventory ID
+            // 2) Derive board type from the inventory ID
             var boardType = ExtractBoardTypeFromInventoryId(order.InventoryId);
 
             if (!string.IsNullOrWhiteSpace(boardType))
             {
-                // Ensure the board type is in the picker list (after sentinel)
+                // Ensure the type exists in the list
                 if (!BoardTypes.Contains(boardType))
                 {
                     BoardTypes.Add(boardType);
                 }
 
-                // Choose that board type; we’re not creating a brand-new named type here
                 SelectedBoardType = boardType;
                 IsCreatingNewType = false;
                 NewBoardTypeText = string.Empty;
             }
 
-            // If you want, you could also clear the serial # so they start scanning fresh:
-            // SerialNumber = string.Empty;
+            // (SerialNumber stays whatever it is; they just keep scanning.)
+        }
+
+        [RelayCommand]
+        private void CancelWorkingOnOrder()
+        {
+            if (!IsWorkingOnOrder)
+                return;
+
+            // Restore fields to the state before we started working on the order
+            SelectedBoardType = _savedBoardTypeBeforeOrder;
+            PartNumber = _savedPartNumberBeforeOrder;
+            IsCreatingNewType = _savedIsCreatingNewTypeBeforeOrder;
+            NewBoardTypeText = _savedNewBoardTypeTextBeforeOrder;
+
+            // Clear selection and working flag
+            SelectedActiveOrder = null;
+            IsWorkingOnOrder = false;
+
+            // Optionally clear the saved values
+            _savedBoardTypeBeforeOrder = null;
+            _savedPartNumberBeforeOrder = null;
+            _savedNewBoardTypeTextBeforeOrder = null;
         }
 
 

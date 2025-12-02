@@ -63,17 +63,15 @@
                                        FontAttributes="Bold"
                                        FontSize="12" />
 								<Label Grid.Column="1"
-                                       Text="Inventory"
+                                       Text="Inventory ID"
                                        FontAttributes="Bold"
                                        FontSize="12" />
 								<Label Grid.Column="2"
-                                       Text="Qty"
-                                       HorizontalTextAlignment="End"
+                                       Text="Order Qty"
                                        FontAttributes="Bold"
                                        FontSize="12" />
 								<Label Grid.Column="3"
-                                       Text="Open"
-                                       HorizontalTextAlignment="End"
+                                       Text="Open Qty"
                                        FontAttributes="Bold"
                                        FontSize="12" />
 								<Label Grid.Column="4"
@@ -81,7 +79,7 @@
                                        FontAttributes="Bold"
                                        FontSize="12" />
 								<Label Grid.Column="5"
-                                       Text="Req"
+                                       Text="Request Date"
                                        FontAttributes="Bold"
                                        FontSize="12" />
 								<Label Grid.Column="6"
@@ -137,15 +135,11 @@
 									<!-- Qty -->
 									<Label Grid.Column="2"
                                            Text="{Binding OrderQty, StringFormat='{}{0:0.##}'}"
-                                           HorizontalTextAlignment="End"
-                                           HorizontalOptions="End"
                                            FontSize="12" />
 
 									<!-- Open -->
 									<Label Grid.Column="3"
                                            Text="{Binding OpenQty, StringFormat='{}{0:0.##}'}"
-                                           HorizontalTextAlignment="End"
-                                           HorizontalOptions="End"
                                            FontSize="12" />
 
 									<!-- PO -->
