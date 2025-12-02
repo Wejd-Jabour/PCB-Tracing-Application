@@ -57,6 +57,7 @@ namespace PCBTracker.Services
                     InventoryId = x.InventoryId,
                     OrderQty = x.OrderQty,
                     OpenQty = x.OpenQty,
+                    ScannedQty = x.ScannedQty,
                     RequestDate = x.RequestDate,
                     Status = x.Status,
                     ProcessingStatus = x.ProcessingStatus,
@@ -97,5 +98,26 @@ namespace PCBTracker.Services
 
             await db.SaveChangesAsync(cancellationToken);
         }
+
+
+        public async Task IncrementScannedQtyAsync(
+            int id,
+            decimal incrementBy,
+            CancellationToken cancellationToken = default)
+        {
+            await using var db = await _contextFactory.CreateDbContextAsync(cancellationToken);
+
+            var entity = await db.MaraHollyOrderLine
+                .SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+            if (entity is null)
+                throw new InvalidOperationException($"MaraHollyOrderLine with Id {id} was not found.");
+
+            entity.ScannedQty += incrementBy;
+            entity.LastUpdatedAt = DateTime.UtcNow;
+
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
     }
 }

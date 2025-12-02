@@ -80,10 +80,8 @@ namespace PCBTracker.Services
                         OpenQty = openQty,
                         RequestDate = requestDate,
                         Status = status,
-
-                        // Explicitly default to "Unassigned" for new lines
+                        ScannedQty = openQty,
                         ProcessingStatus = "Unassigned",
-
                         LastUpdatedAt = DateTime.UtcNow
                     };
 

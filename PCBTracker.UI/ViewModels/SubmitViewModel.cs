@@ -60,6 +60,11 @@ namespace PCBTracker.UI.ViewModels
             _boardService = boardService;
             _orderService = orderService;
             PrepDate = DateTime.Today;
+
+            ActiveOrders.CollectionChanged += (_, __) =>
+            {
+                OnPropertyChanged(nameof(HasConfirmableOrders));
+            };
         }
 
         // ------------------------------
@@ -103,6 +108,8 @@ namespace PCBTracker.UI.ViewModels
 
         [ObservableProperty] private int skidBoardCount;
         public string SkidBoardCountLabel => $"Boards on this Skid: {SkidBoardCount:N0}";
+
+        public bool HasConfirmableOrders => ActiveOrders.Any(o => o.CanConfirm);
 
 
         [ObservableProperty]
@@ -447,6 +454,22 @@ namespace PCBTracker.UI.ViewModels
             {
                 await _boardService.CreateBoardAndClaimSkidAsync(dto);
 
+                if (IsWorkingOnOrder && SelectedActiveOrder != null)
+                {
+                    await _orderService.IncrementScannedQtyAsync(SelectedActiveOrder.Id, 1m);
+
+                    // Update the local DTO so the UI reflects the change
+                    SelectedActiveOrder.ScannedQty += 1m;
+
+                    // Force the CollectionView row to refresh
+                    var idx = ActiveOrders.IndexOf(SelectedActiveOrder);
+                    if (idx >= 0)
+                    {
+                        ActiveOrders.RemoveAt(idx);
+                        ActiveOrders.Insert(idx, SelectedActiveOrder);
+                    }
+                }
+
                 // Refresh skid designation (in case it got set server-side)
                 var updatedSkids = await _boardService.GetSkidsAsync();
                 var refreshed = updatedSkids.FirstOrDefault(s => s.SkidID == SelectedSkid.SkidID);
@@ -461,6 +484,7 @@ namespace PCBTracker.UI.ViewModels
 
                 await RefreshSkidCountAsync();
             }
+
             catch (DbUpdateException dbEx) when (dbEx.InnerException is SqlException sqlEx && sqlEx.Number == 2627)
             {
                 await App.Current.MainPage.DisplayAlert("Serial Number Taken",
@@ -572,6 +596,57 @@ namespace PCBTracker.UI.ViewModels
             }
 
             OnPropertyChanged(nameof(ActiveOrdersCountLabel));
+            OnPropertyChanged(nameof(HasConfirmableOrders));
+        }
+
+        [RelayCommand]
+        private async Task ConfirmOrderAsync(MaraHollyOrderLineDto? order)
+        {
+            if (order == null)
+                return;
+
+            if (order.ScannedQty < order.OrderQty)
+            {
+                await App.Current.MainPage.DisplayAlert(
+                    "Not ready",
+                    $"Scanned quantity ({order.ScannedQty}) has not reached the required quantity ({order.OrderQty}).",
+                    "OK");
+                return;
+            }
+
+            var ok = await App.Current.MainPage.DisplayAlert(
+                "Confirm Order Complete",
+                $"Mark order {order.OrderNbr} line {order.LineNbr} as Complete?",
+                "Yes",
+                "No");
+
+            if (!ok)
+                return;
+
+            try
+            {
+                await _orderService.UpdateProcessingStatusAsync(order.Id, "Complete");
+                order.ProcessingStatus = "Complete";
+
+                // Remove from Active list (no longer Active)
+                if (ActiveOrders.Contains(order))
+                    ActiveOrders.Remove(order);
+
+                OnPropertyChanged(nameof(HasConfirmableOrders));
+
+                // If this was the order we were actively working on, drop back to free-scan mode
+                if (SelectedActiveOrder == order)
+                {
+                    CancelWorkingOnOrder();
+                }
+            }
+            catch (Exception ex)
+            {
+                await App.Current.MainPage.DisplayAlert(
+                    "Error",
+                    $"Failed to update order status: {ex.Message}",
+                    "OK");
+            }
         }
 
         private static string ExtractBoardTypeFromInventoryId(string inventoryId)

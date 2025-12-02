@@ -24,5 +24,8 @@ namespace PCBTracker.Services.Interfaces
             int id,
             string newStatus,
             CancellationToken cancellationToken = default);
+
+        Task IncrementScannedQtyAsync(int id, decimal incrementBy, CancellationToken cancellationToken = default);
+
     }
 }

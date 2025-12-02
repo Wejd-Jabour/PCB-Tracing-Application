@@ -20,6 +20,7 @@ namespace PCBTracker.Domain.Entities
         public decimal OrderQty { get; set; }
         public decimal OpenQty { get; set; }
         public DateTime? RequestDate { get; set; }
+        public decimal ScannedQty { get; set; }
         public string Status { get; set; } = default!;
         public string ProcessingStatus { get; set; } = "Unassigned";
         public DateTime LastUpdatedAt { get; set; } = DateTime.UtcNow;

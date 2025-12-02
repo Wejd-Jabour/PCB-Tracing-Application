@@ -3,10 +3,6 @@
   "WorkspaceRootPath": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\jabou\\desktop\\work\\mclevin app\\pcb-tracing-application\\pcbtracker.ui\\views\\coordinatorpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|solutionrelative:pcbtracker.ui\\views\\coordinatorpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|c:\\users\\jabou\\desktop\\work\\mclevin app\\pcb-tracing-application\\pcbtracker.ui\\views\\submitpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|solutionrelative:pcbtracker.ui\\views\\submitpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
@@ -15,8 +11,24 @@
       "RelativeMoniker": "D:0:0:{F74B790D-00A8-4EB8-8872-AADC368B1FC5}|PCBTracker.UI\\PCBTracker.UI.csproj|solutionrelative:pcbtracker.ui\\viewmodels\\submitviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{2106FC62-70FD-4A79-90E5-8ACB6CE0105B}|PCBTracker.Domain\\PCBTracker.Domain.csproj|c:\\users\\jabou\\desktop\\work\\mclevin app\\pcb-tracing-application\\pcbtracker.domain\\dtos\\marahollyorderlinedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2106FC62-70FD-4A79-90E5-8ACB6CE0105B}|PCBTracker.Domain\\PCBTracker.Domain.csproj|solutionrelative:pcbtracker.domain\\dtos\\marahollyorderlinedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A88A29FB-F90B-4F90-BD21-E773547372EF}|PCBTracker.Services\\PCBTracker.Services.csproj|c:\\users\\jabou\\desktop\\work\\mclevin app\\pcb-tracing-application\\pcbtracker.services\\marahollyordersyncservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A88A29FB-F90B-4F90-BD21-E773547372EF}|PCBTracker.Services\\PCBTracker.Services.csproj|solutionrelative:pcbtracker.services\\marahollyordersyncservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A88A29FB-F90B-4F90-BD21-E773547372EF}|PCBTracker.Services\\PCBTracker.Services.csproj|c:\\users\\jabou\\desktop\\work\\mclevin app\\pcb-tracing-application\\pcbtracker.services\\interfaces\\imarahollyorderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A88A29FB-F90B-4F90-BD21-E773547372EF}|PCBTracker.Services\\PCBTracker.Services.csproj|solutionrelative:pcbtracker.services\\interfaces\\imarahollyorderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A88A29FB-F90B-4F90-BD21-E773547372EF}|PCBTracker.Services\\PCBTracker.Services.csproj|c:\\users\\jabou\\desktop\\work\\mclevin app\\pcb-tracing-application\\pcbtracker.services\\marahollyorderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A88A29FB-F90B-4F90-BD21-E773547372EF}|PCBTracker.Services\\PCBTracker.Services.csproj|solutionrelative:pcbtracker.services\\marahollyorderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2106FC62-70FD-4A79-90E5-8ACB6CE0105B}|PCBTracker.Domain\\PCBTracker.Domain.csproj|c:\\users\\jabou\\desktop\\work\\mclevin app\\pcb-tracing-application\\pcbtracker.domain\\entities\\marahollyorderline.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2106FC62-70FD-4A79-90E5-8ACB6CE0105B}|PCBTracker.Domain\\PCBTracker.Domain.csproj|solutionrelative:pcbtracker.domain\\entities\\marahollyorderline.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -35,53 +47,93 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "CoordinatorPage.xaml",
-              "DocumentMoniker": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.UI\\Views\\CoordinatorPage.xaml",
-              "RelativeDocumentMoniker": "PCBTracker.UI\\Views\\CoordinatorPage.xaml",
-              "ToolTip": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.UI\\Views\\CoordinatorPage.xaml",
-              "RelativeToolTip": "PCBTracker.UI\\Views\\CoordinatorPage.xaml",
-              "ViewState": "AgIAAKIAAAAAAAAAAAAAAKgAAAAvAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-12-01T22:54:51.574Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "SubmitViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.UI\\ViewModels\\SubmitViewModel.cs",
-              "RelativeDocumentMoniker": "PCBTracker.UI\\ViewModels\\SubmitViewModel.cs",
-              "ToolTip": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.UI\\ViewModels\\SubmitViewModel.cs",
-              "RelativeToolTip": "PCBTracker.UI\\ViewModels\\SubmitViewModel.cs",
-              "ViewState": "AgIAAFgCAAAAAAAAAAA0wI8CAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T19:52:01.487Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "SubmitPage.xaml",
               "DocumentMoniker": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.UI\\Views\\SubmitPage.xaml",
               "RelativeDocumentMoniker": "PCBTracker.UI\\Views\\SubmitPage.xaml",
               "ToolTip": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.UI\\Views\\SubmitPage.xaml",
               "RelativeToolTip": "PCBTracker.UI\\Views\\SubmitPage.xaml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAA4AAAAAAAAAA==",
+              "ViewState": "AgIAAKIAAAAAAAAAAAAmwLsAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-12-01T07:47:40.501Z",
+              "WhenOpened": "2025-12-02T01:23:18.855Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
+              "Title": "SubmitViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.UI\\ViewModels\\SubmitViewModel.cs",
+              "RelativeDocumentMoniker": "PCBTracker.UI\\ViewModels\\SubmitViewModel.cs",
+              "ToolTip": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.UI\\ViewModels\\SubmitViewModel.cs",
+              "RelativeToolTip": "PCBTracker.UI\\ViewModels\\SubmitViewModel.cs",
+              "ViewState": "AgIAAGACAAAAAAAAAAAowHkCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-02T01:21:17.619Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IMaraHollyOrderService.cs",
+              "DocumentMoniker": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.Services\\Interfaces\\IMaraHollyOrderService.cs",
+              "RelativeDocumentMoniker": "PCBTracker.Services\\Interfaces\\IMaraHollyOrderService.cs",
+              "ToolTip": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.Services\\Interfaces\\IMaraHollyOrderService.cs",
+              "RelativeToolTip": "PCBTracker.Services\\Interfaces\\IMaraHollyOrderService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-02T01:20:21.202Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "MaraHollyOrderService.cs",
               "DocumentMoniker": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.Services\\MaraHollyOrderService.cs",
               "RelativeDocumentMoniker": "PCBTracker.Services\\MaraHollyOrderService.cs",
               "ToolTip": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.Services\\MaraHollyOrderService.cs",
               "RelativeToolTip": "PCBTracker.Services\\MaraHollyOrderService.cs",
-              "ViewState": "AgIAADMAAAAAAAAAAAAowBkAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAIwGgAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T07:33:10.807Z"
+              "WhenOpened": "2025-12-02T01:19:02.65Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MaraHollyOrderSyncService.cs",
+              "DocumentMoniker": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.Services\\MaraHollyOrderSyncService.cs",
+              "RelativeDocumentMoniker": "PCBTracker.Services\\MaraHollyOrderSyncService.cs",
+              "ToolTip": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.Services\\MaraHollyOrderSyncService.cs",
+              "RelativeToolTip": "PCBTracker.Services\\MaraHollyOrderSyncService.cs",
+              "ViewState": "AgIAAJAAAAAAAAAAAAAowKIAAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-02T01:16:45.038Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MaraHollyOrderLineDto.cs",
+              "DocumentMoniker": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.Domain\\DTOs\\MaraHollyOrderLineDto.cs",
+              "RelativeDocumentMoniker": "PCBTracker.Domain\\DTOs\\MaraHollyOrderLineDto.cs",
+              "ToolTip": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.Domain\\DTOs\\MaraHollyOrderLineDto.cs",
+              "RelativeToolTip": "PCBTracker.Domain\\DTOs\\MaraHollyOrderLineDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-02T01:16:07.962Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "MaraHollyOrderLine.cs",
+              "DocumentMoniker": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.Domain\\Entities\\MaraHollyOrderLine.cs",
+              "RelativeDocumentMoniker": "PCBTracker.Domain\\Entities\\MaraHollyOrderLine.cs",
+              "ToolTip": "C:\\Users\\jabou\\Desktop\\Work\\McLevin App\\PCB-Tracing-Application\\PCBTracker.Domain\\Entities\\MaraHollyOrderLine.cs",
+              "RelativeToolTip": "PCBTracker.Domain\\Entities\\MaraHollyOrderLine.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-02T01:15:18.068Z",
+              "EditorCaption": ""
             }
           ]
         }

@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="PCBTracker.UI.Views.SubmitPage"
+    x:Name="SubmitPageRoot"
     Title="Submit a Board">
 
     <ScrollView>
@@ -137,7 +138,6 @@
 
 
             <!-- MINI-TAB: Active Orders -->
-            <!-- MINI-TAB: Active Orders -->
             <Border
     Margin="0,20,0,0"
     Stroke="LightGray"
@@ -168,29 +168,47 @@
                     <Grid Padding="8,4,8,2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="2*" />
+                            <!-- Order # -->
                             <ColumnDefinition Width="2*" />
+                            <!-- Inventory ID -->
                             <ColumnDefinition Width="*" />
+                            <!-- Qty -->
+                            <ColumnDefinition Width="*" />
+                            <!-- Scanned -->
+                            <ColumnDefinition Width="Auto" />
+                            <!-- Confirm -->
                         </Grid.ColumnDefinitions>
 
                         <Label Text="Order #"
-                   FontAttributes="Bold"
-                   Grid.Column="0" />
+           FontAttributes="Bold"
+           Grid.Column="0" />
                         <Label Text="Inventory ID"
-                   FontAttributes="Bold"
-                   Grid.Column="1" />
+           FontAttributes="Bold"
+           Grid.Column="1" />
                         <Label Text="Qty"
-                   FontAttributes="Bold"
-                   HorizontalTextAlignment="End"
-                   Grid.Column="2" />
+           FontAttributes="Bold"
+           HorizontalTextAlignment="End"
+           Grid.Column="2" />
+                        <Label Text="Scanned"
+           FontAttributes="Bold"
+           HorizontalTextAlignment="End"
+           Grid.Column="3" />
+
+                        <!-- Only show this when at least one row has a Confirm button -->
+                        <Label Text="Confirm"
+           FontAttributes="Bold"
+           Margin="8,0,0,0"
+           Grid.Column="4"
+           IsVisible="{Binding HasConfirmableOrders}" />
                     </Grid>
 
                     <!-- Tab content -->
                     <CollectionView
-                        x:Name="ActiveOrdersCollectionView"
-                        ItemsSource="{Binding ActiveOrders}"
-                        SelectedItem="{Binding SelectedActiveOrder}"
-                        SelectionMode="Single"
-                        HeightRequest="160">
+            x:Name="ActiveOrdersCollectionView"
+            ItemsSource="{Binding ActiveOrders}"
+            SelectedItem="{Binding SelectedActiveOrder}"
+            SelectionMode="Single"
+            HeightRequest="160">
 
                         <CollectionView.EmptyView>
                             <Label Text="No active orders."
@@ -204,6 +222,8 @@
                                         <ColumnDefinition Width="2*" />
                                         <ColumnDefinition Width="2*" />
                                         <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
 
                                     <!-- Order number -->
@@ -218,6 +238,20 @@
                                     <Label Text="{Binding OrderQty}"
                                Grid.Column="2"
                                HorizontalTextAlignment="End" />
+
+                                    <!-- Scanned counter -->
+                                    <Label Text="{Binding ScannedQty}"
+                               Grid.Column="3"
+                               HorizontalTextAlignment="End" />
+
+                                    <!-- Confirm button: only when ScannedQty >= OrderQty -->
+                                    <Button
+                            Text="Confirm"
+                            Grid.Column="4"
+                            Command="{Binding Source={x:Reference SubmitPageRoot}, Path=BindingContext.ConfirmOrderCommand}"
+                            CommandParameter="{Binding}"
+                            IsEnabled="{Binding CanConfirm}"
+                            IsVisible="{Binding CanConfirm}" />
                                 </Grid>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
@@ -226,7 +260,6 @@
                 </VerticalStackLayout>
             </Border>
 
-            
 
         </VerticalStackLayout>
     </ScrollView>
