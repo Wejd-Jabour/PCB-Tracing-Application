@@ -61,11 +61,14 @@ namespace PCBTracker.UI.ViewModels
             _orderService = orderService;
             PrepDate = DateTime.Today;
 
+            ActiveOrders ??= new ObservableCollection<MaraHollyOrderLineDto>();
+
             ActiveOrders.CollectionChanged += (_, __) =>
             {
                 OnPropertyChanged(nameof(HasConfirmableOrders));
             };
         }
+
 
         // ------------------------------
         // Bindable Properties
@@ -109,7 +112,9 @@ namespace PCBTracker.UI.ViewModels
         [ObservableProperty] private int skidBoardCount;
         public string SkidBoardCountLabel => $"Boards on this Skid: {SkidBoardCount:N0}";
 
-        public bool HasConfirmableOrders => ActiveOrders.Any(o => o.CanConfirm);
+        public bool HasConfirmableOrders =>
+            ActiveOrders != null && ActiveOrders.Any(o => o?.CanConfirm == true);
+
 
 
         [ObservableProperty]
@@ -414,7 +419,7 @@ namespace PCBTracker.UI.ViewModels
                 return;
             }
 
-            // Serial-length rule: match earliest record for that type (if any)
+            // Serial-length rule as before...
             var existingForType = await _boardService.GetBoardsAsync(new BoardFilterDto
             {
                 BoardType = effectiveType,
@@ -426,7 +431,7 @@ namespace PCBTracker.UI.ViewModels
             var list = existingForType?.ToList() ?? new();
             if (list.Count > 0)
             {
-                var earliest = list.LastOrDefault(b => !string.IsNullOrWhiteSpace(b.SerialNumber)); // service returns CreatedAt DESC
+                var earliest = list.LastOrDefault(b => !string.IsNullOrWhiteSpace(b.SerialNumber));
                 if (earliest != null) canonicalLen = earliest.SerialNumber.Length;
             }
 
@@ -452,25 +457,48 @@ namespace PCBTracker.UI.ViewModels
 
             try
             {
+                // 1) Save the board
                 await _boardService.CreateBoardAndClaimSkidAsync(dto);
 
+                // 2) Clear the serial immediately so the UI always feels responsive
+                SerialNumber = string.Empty;
+
+                // 3) Try to bump the order counter, but don't let it kill the scan
                 if (IsWorkingOnOrder && SelectedActiveOrder != null)
                 {
-                    await _orderService.IncrementScannedQtyAsync(SelectedActiveOrder.Id, 1m);
-
-                    // Update the local DTO so the UI reflects the change
-                    SelectedActiveOrder.ScannedQty += 1m;
-
-                    // Force the CollectionView row to refresh
-                    var idx = ActiveOrders.IndexOf(SelectedActiveOrder);
-                    if (idx >= 0)
+                    try
                     {
-                        ActiveOrders.RemoveAt(idx);
-                        ActiveOrders.Insert(idx, SelectedActiveOrder);
+                        await _orderService.IncrementScannedQtyAsync(SelectedActiveOrder.Id, 1m);
+
+                        // Refresh the entire order from the database to get the updated values
+                        var updatedOrder = await _orderService.GetOrderByIdAsync(SelectedActiveOrder.Id);
+                        if (updatedOrder != null)
+                        {
+                            var idx = ActiveOrders.IndexOf(SelectedActiveOrder);
+                            if (idx >= 0)
+                            {
+                                // Replace with the fresh data from DB
+                                ActiveOrders[idx] = updatedOrder;
+                                SelectedActiveOrder = updatedOrder;
+                            }
+                        }
+
+                        // Trigger UI updates
+                        OnPropertyChanged(nameof(ActiveOrdersCountLabel));
+                        OnPropertyChanged(nameof(HasConfirmableOrders));
+                    }
+                    catch (Exception exOrder)
+                    {
+                        // Non-fatal: board is already saved; just inform the user
+                        var baseOrderEx = exOrder.GetBaseException();
+                        await App.Current.MainPage.DisplayAlert(
+                            "Order tracking error",
+                            $"Board was saved, but updating the order counter failed: {baseOrderEx.Message}",
+                            "OK");
                     }
                 }
 
-                // Refresh skid designation (in case it got set server-side)
+                // 4) Refresh skid designation (in case server set it)
                 var updatedSkids = await _boardService.GetSkidsAsync();
                 var refreshed = updatedSkids.FirstOrDefault(s => s.SkidID == SelectedSkid.SkidID);
                 if (refreshed != null)
@@ -479,28 +507,28 @@ namespace PCBTracker.UI.ViewModels
                     OnPropertyChanged(nameof(CurrentSkidType));
                 }
 
-                // Clear only SerialNumber (keep selections for speed)
-                SerialNumber = string.Empty;
-
+                // 5) Refresh count
                 await RefreshSkidCountAsync();
             }
-
             catch (DbUpdateException dbEx) when (dbEx.InnerException is SqlException sqlEx && sqlEx.Number == 2627)
             {
-                await App.Current.MainPage.DisplayAlert("Serial Number Taken",
+                await App.Current.MainPage.DisplayAlert(
+                    "Serial Number Taken",
                     "That serial number already exists. Each board must be unique.",
                     "OK");
                 SerialNumber = string.Empty;
             }
             catch (Exception ex)
             {
-                var msg = string.IsNullOrWhiteSpace(ex.Message)
+                // 2. unwrap TargetInvocationException here
+                var baseEx = ex.GetBaseException();
+                var msg = string.IsNullOrWhiteSpace(baseEx.Message)
                     ? "An unexpected error occurred while saving. Please try again."
-                    : ex.Message;
+                    : baseEx.Message;
+
                 await App.Current.MainPage.DisplayAlert("Error", msg, "OK");
             }
         }
-
         // ------------------------------
         // Debounced Auto-Submit
         // ------------------------------
@@ -517,7 +545,7 @@ namespace PCBTracker.UI.ViewModels
             {
                 try
                 {
-                    await Task.Delay(2700, token);
+                    await Task.Delay(1500, token);
                     if (!token.IsCancellationRequested && CanSubmit())
                     {
                         MainThread.BeginInvokeOnMainThread(() => SubmitCommand.Execute(null));

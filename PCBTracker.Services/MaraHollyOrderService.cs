@@ -32,16 +32,17 @@ namespace PCBTracker.Services
         }
 
         public async Task<IReadOnlyList<MaraHollyOrderLineDto>> GetRecentOrdersAsync(
-            int days = 30,
-            CancellationToken cancellationToken = default)
+    int days = 30,
+    CancellationToken cancellationToken = default)
         {
             using var db = await _contextFactory.CreateDbContextAsync(cancellationToken);
 
-            var cutoff = DateTime.UtcNow.Date.AddDays(-days);
+            // Upper cutoff: today + 30 days
+            var upperCutoff = DateTime.UtcNow.Date.AddDays(days);
 
             var query = db.MaraHollyOrderLine
                 .AsNoTracking()
-                .Where(x => x.RequestDate >= cutoff);
+                .Where(x => x.RequestDate <= upperCutoff);
 
             var list = await query
                 .OrderBy(x => x.RequestDate)
@@ -67,6 +68,7 @@ namespace PCBTracker.Services
 
             return list;
         }
+
 
         public async Task UpdateProcessingStatusAsync(
             int id,
@@ -101,9 +103,9 @@ namespace PCBTracker.Services
 
 
         public async Task IncrementScannedQtyAsync(
-            int id,
-            decimal incrementBy,
-            CancellationToken cancellationToken = default)
+    int id,
+    decimal incrementBy,
+    CancellationToken cancellationToken = default)
         {
             await using var db = await _contextFactory.CreateDbContextAsync(cancellationToken);
 
@@ -111,7 +113,11 @@ namespace PCBTracker.Services
                 .SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
 
             if (entity is null)
-                throw new InvalidOperationException($"MaraHollyOrderLine with Id {id} was not found.");
+            {
+                // Option: just return silently, or log if you have logging
+                // e.g. Debug.WriteLine($"Order line {id} not found when incrementing scan qty.");
+                return;
+            }
 
             entity.ScannedQty += incrementBy;
             entity.LastUpdatedAt = DateTime.UtcNow;
@@ -119,5 +125,35 @@ namespace PCBTracker.Services
             await db.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task<MaraHollyOrderLineDto> GetOrderByIdAsync(
+    int id,
+    CancellationToken cancellationToken = default)
+        {
+            using var db = await _contextFactory.CreateDbContextAsync(cancellationToken);
+
+            var entity = await db.MaraHollyOrderLine
+                .AsNoTracking()
+                .SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+            if (entity is null)
+                return null;
+
+            return new MaraHollyOrderLineDto
+            {
+                Id = entity.Id,
+                CustomerId = entity.CustomerId,
+                OrderNbr = entity.OrderNbr,
+                CustomerOrderNbr = entity.CustomerOrderNbr,
+                LineNbr = entity.LineNbr,
+                InventoryId = entity.InventoryId,
+                OrderQty = entity.OrderQty,
+                OpenQty = entity.OpenQty,
+                ScannedQty = entity.ScannedQty,
+                RequestDate = entity.RequestDate,
+                Status = entity.Status,
+                ProcessingStatus = entity.ProcessingStatus,
+                LastUpdatedAt = entity.LastUpdatedAt
+            };
+        }
     }
 }
