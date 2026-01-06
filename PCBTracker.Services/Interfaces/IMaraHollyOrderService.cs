@@ -27,5 +27,7 @@ namespace PCBTracker.Services.Interfaces
 
         Task IncrementScannedQtyAsync(int id, decimal incrementBy, CancellationToken cancellationToken = default);
 
+        Task<MaraHollyOrderLineDto> GetOrderByIdAsync(int id, CancellationToken cancellationToken = default);
+
     }
 }

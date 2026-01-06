@@ -80,7 +80,7 @@ namespace PCBTracker.Services
                         OpenQty = openQty,
                         RequestDate = requestDate,
                         Status = status,
-                        ScannedQty = openQty,
+                        ScannedQty = orderQty - openQty,
                         ProcessingStatus = "Unassigned",
                         LastUpdatedAt = DateTime.UtcNow
                     };
