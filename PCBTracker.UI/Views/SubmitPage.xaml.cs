@@ -1,5 +1,6 @@
 ﻿// SubmitPage.xaml.cs
 using System;
+using System.Collections.Generic;
 using Microsoft.Maui.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using PCBTracker.UI.ViewModels;
@@ -8,7 +9,7 @@ namespace PCBTracker.UI.Views
 {
     /// <summary>
     /// Code-behind for the SubmitPage view.
-    /// Responsible for initializing the page, resolving the ViewModel, 
+    /// Responsible for initializing the page, resolving the ViewModel,
     /// wiring up event handlers, and handling lifecycle events.
     /// </summary>
     public partial class SubmitPage : ContentPage
@@ -28,17 +29,12 @@ namespace PCBTracker.UI.Views
             ["SAT Upgrade"] = "ASY-G8GMSATB-UG-KIT-P-ATLR03MR1",
         };
 
-        /// <summary>
-        /// Constructor for the SubmitPage.
-        /// Initializes components and sets the data context by resolving the ViewModel via DI.
-        /// </summary>
         public SubmitPage()
         {
             // Builds visual tree from SubmitPage.xaml and wires up named controls.
             InitializeComponent();
 
             // Resolve an instance of SubmitViewModel using MAUI's DI container.
-            // Uses the IServiceProvider exposed by the current application's MauiContext.
             BindingContext = Application.Current
                 .Handler
                 .MauiContext
@@ -49,12 +45,17 @@ namespace PCBTracker.UI.Views
         /// <summary>
         /// Event handler for the 'Completed' event of the SerialNumber entry control.
         /// This is typically triggered by pressing Enter or scanning a barcode.
-        /// Triggers the SubmitCommand and sets focus back to the field for rapid entry.
+        /// Only auto-submits when the Auto Submit toggle is ON.
         /// </summary>
         private void OnSerialNumberEntryCompleted(object sender, EventArgs e)
         {
-            if (BindingContext is SubmitViewModel vm && vm.SubmitCommand.CanExecute(null))
-                vm.SubmitCommand.Execute(null); // Submit the current form.
+            if (BindingContext is SubmitViewModel vm)
+            {
+                // Only auto-submit from the Entry's Completed event when the toggle is ON.
+                // (Manual submission is still available via the Submit button.)
+                if (vm.AutoSubmitEnabled && vm.SubmitCommand.CanExecute(null))
+                    vm.SubmitCommand.Execute(null);
+            }
 
             SerialNumberEntry.Focus(); // Return focus to allow fast repeat input.
         }

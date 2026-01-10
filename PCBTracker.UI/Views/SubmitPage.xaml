@@ -113,7 +113,12 @@
                     HeightRequest="50" />
             </VerticalStackLayout>
 
-            
+            <Label Text="Auto Submit"
+                    FontAttributes="Bold"/>
+            <Switch
+                IsToggled="{Binding AutoSubmitEnabled}"
+                />
+
             <!-- Submit is disabled while locked -->
             <Button
                 x:Name="SubmitButton"

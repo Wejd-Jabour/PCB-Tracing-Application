@@ -96,6 +96,9 @@ namespace PCBTracker.UI.ViewModels
         private bool isCreatingNewType;
 
         [ObservableProperty]
+        private bool autoSubmitEnabled = true;
+
+        [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
         private string newBoardTypeText = string.Empty;
 
@@ -545,8 +548,8 @@ namespace PCBTracker.UI.ViewModels
             {
                 try
                 {
-                    await Task.Delay(500, token);
-                    if (!token.IsCancellationRequested && CanSubmit())
+                    await Task.Delay(800, token);
+                    if (!token.IsCancellationRequested && CanSubmit() && autoSubmitEnabled)
                     {
                         MainThread.BeginInvokeOnMainThread(() => SubmitCommand.Execute(null));
                     }
