@@ -3,60 +3,112 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="PCBTracker.UI.Views.InspectionExtractPage"
-    Title="Inspection Records">
+    Title="Inspection Records"
+    BackgroundColor="#F4F7FA">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="10">
+    <ContentPage.Resources>
+        <Style x:Key="SectionTitle" TargetType="Label">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+        <Style x:Key="FieldLabel" TargetType="Label">
+            <Setter Property="TextColor" Value="#475569" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+        <Style TargetType="Entry">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="PlaceholderColor" Value="#64748B" />
+            <Setter Property="BackgroundColor" Value="#F8FAFC" />
+        </Style>
+        <Style TargetType="Picker">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="TitleColor" Value="#64748B" />
+            <Setter Property="BackgroundColor" Value="#F8FAFC" />
+        </Style>
+        <Style TargetType="DatePicker">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="BackgroundColor" Value="#F8FAFC" />
+        </Style>
+    </ContentPage.Resources>
 
-            <!-- Filters -->
-            <Label Text="Serial Number" />
-            <Entry Text="{Binding SerialNumberFilter}" Placeholder="Partial match" />
-
-            <Label Text="Product Type" />
-            <Picker ItemsSource="{Binding ProductTypes}" SelectedItem="{Binding SelectedProductType}" />
-
-            <Label Text="Severity Level" />
-            <Picker ItemsSource="{Binding SeverityLevels}" SelectedItem="{Binding SelectedSeverity}" />
-
-            <HorizontalStackLayout Spacing="10">
-                <VerticalStackLayout>
-                    <Label Text="From Date" />
-                    <DatePicker Date="{Binding DateFrom}" />
+    <Grid Padding="20" RowDefinitions="Auto,*,Auto" RowSpacing="14">
+        <Border Grid.Row="0" Padding="16" Stroke="#D8E0EA" StrokeThickness="1" BackgroundColor="#FFFFFF">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Inspection Records" FontSize="24" FontAttributes="Bold" TextColor="#0F172A" />
+                    <Label Text="Filter and export submitted inspection history." TextColor="#64748B" />
                 </VerticalStackLayout>
-                <VerticalStackLayout>
-                    <Label Text="To Date" />
-                    <DatePicker Date="{Binding DateTo}" />
+                <HorizontalStackLayout Grid.Column="1" Spacing="10" VerticalOptions="Center">
+                    <Button Text="Search" Command="{Binding SearchCommand}" BackgroundColor="#0F766E" TextColor="#FFFFFF" />
+                    <Button Text="Export CSV" Command="{Binding ExportCsvCommand}" BackgroundColor="#0F172A" TextColor="#FFFFFF" />
+                </HorizontalStackLayout>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" ColumnDefinitions="360,*" ColumnSpacing="14">
+            <Border Grid.Column="0" Padding="16" Stroke="#D8E0EA" StrokeThickness="1" BackgroundColor="#FFFFFF">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Filters" Style="{StaticResource SectionTitle}" />
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Serial Number" Style="{StaticResource FieldLabel}" />
+                        <Entry Text="{Binding SerialNumberFilter}" Placeholder="Partial match" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Product Type" Style="{StaticResource FieldLabel}" />
+                        <Picker ItemsSource="{Binding ProductTypes}" SelectedItem="{Binding SelectedProductType}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Severity Level" Style="{StaticResource FieldLabel}" />
+                        <Picker ItemsSource="{Binding SeverityLevels}" SelectedItem="{Binding SelectedSeverity}" />
+                    </VerticalStackLayout>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <VerticalStackLayout Grid.Column="0" Spacing="6">
+                            <Label Text="From Date" Style="{StaticResource FieldLabel}" />
+                            <DatePicker Date="{Binding DateFrom}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="To Date" Style="{StaticResource FieldLabel}" />
+                            <DatePicker Date="{Binding DateTo}" />
+                        </VerticalStackLayout>
+                    </Grid>
                 </VerticalStackLayout>
-            </HorizontalStackLayout>
+            </Border>
 
-            <Button Text="Search" Command="{Binding SearchCommand}" />
+            <Border Grid.Column="1" Stroke="#D8E0EA" StrokeThickness="1" BackgroundColor="#FFFFFF">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <CollectionView ItemsSource="{Binding Inspections}" Margin="0">
+                    <CollectionView.EmptyView>
+                        <Label Text="No inspections found." Padding="14" TextColor="#64748B" />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="14,10" RowDefinitions="Auto,Auto" ColumnDefinitions="160,170,140,*" ColumnSpacing="12" RowSpacing="4">
+                                <Label Text="{Binding Date, StringFormat='{}{0:yyyy-MM-dd}'}" FontAttributes="Bold" TextColor="#0F172A" />
+                                <Label Grid.Column="1" Text="{Binding ProductType}" TextColor="#0F172A" />
+                                <Label Grid.Column="2" Text="{Binding SeverityLevel}" FontAttributes="Bold" TextColor="#334155" />
+                                <Label Grid.Column="3" Text="{Binding SerialNumber}" TextColor="#0F172A" LineBreakMode="TailTruncation" />
+                                <Label Grid.Row="1" Grid.ColumnSpan="4" Text="{Binding IssueDescription}" TextColor="#64748B" LineBreakMode="TailTruncation" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Border>
+        </Grid>
 
-            <!-- Results -->
-            <CollectionView ItemsSource="{Binding Inspections}" Margin="0,10,0,0">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame BorderColor="LightGray" Padding="10">
-                            <VerticalStackLayout>
-                                <Label Text="{Binding Date, StringFormat='Date: {0:yyyy-MM-dd}'}" />
-                                <Label Text="{Binding ProductType, StringFormat='Product: {0}'}" />
-                                <Label Text="{Binding SerialNumber, StringFormat='SN: {0}'}" />
-                                <Label Text="{Binding SeverityLevel, StringFormat='Severity: {0}'}" />
-                                <Label Text="{Binding IssueDescription, StringFormat='Issue: {0}'}" />
-                            </VerticalStackLayout>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-            <!-- Pagination -->
-            <HorizontalStackLayout Spacing="10" Margin="0,10,0,0">
-                <Button Text="Previous" Command="{Binding PreviousPageCommand}" />
-                <Button Text="Next" Command="{Binding NextPageCommand}" IsEnabled="{Binding HasNextPage}" />
-            </HorizontalStackLayout>
-
-            <!-- Export -->
-            <Button Text="Export to CSV" Command="{Binding ExportCsvCommand}" Margin="0,20,0,0" />
-
-        </VerticalStackLayout>
-    </ScrollView>
+        <Grid Grid.Row="2" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+            <Button Text="Previous" Command="{Binding PreviousPageCommand}" BackgroundColor="#E2E8F0" TextColor="#0F172A" />
+            <Label Grid.Column="1" Text="{Binding PageNumber}" FontAttributes="Bold" TextColor="#0F172A" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Button Grid.Column="2" Text="Next" Command="{Binding NextPageCommand}" IsEnabled="{Binding HasNextPage}" BackgroundColor="#0F766E" TextColor="#FFFFFF" />
+        </Grid>
+    </Grid>
 </ContentPage>

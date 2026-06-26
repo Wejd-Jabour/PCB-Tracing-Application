@@ -1,129 +1,318 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:dto="clr-namespace:PCBTracker.Domain.DTOs;assembly=PCBTracker.Domain"
-             x:Class="PCBTracker.UI.Views.DataExtractPage"
-             Title="Extract Test">
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:dto="clr-namespace:PCBTracker.Domain.DTOs;assembly=PCBTracker.Domain"
+    x:Class="PCBTracker.UI.Views.DataExtractPage"
+    Title="Extract"
+    BackgroundColor="#F4F7FA">
 
-    <ScrollView>
-        <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="10" RowSpacing="10">
-            <VerticalStackLayout Grid.Row="0" Spacing="12">
-                <Label Text="Filters" FontAttributes="Bold" FontSize="Medium"/>
+    <ContentPage.Resources>
+        <Style x:Key="SectionTitle" TargetType="Label">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
 
-                <!-- increased to 8 columns to add Imported Status -->
-                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
-                    <!-- Row 0: Labels -->
-                    <Label Text="Serial #"         Grid.Row="0" Grid.Column="0"/>
-                    <Label Text="Board Type"       Grid.Row="0" Grid.Column="1"/>
-                    <Label Text="Date From"        Grid.Row="0" Grid.Column="2"/>
-                    <Label Text="Date To"          Grid.Row="0" Grid.Column="3"/>
-                    <Label Text="Skid"             Grid.Row="0" Grid.Column="4"/>
-                    <Label Text="Shipped Status"   Grid.Row="0" Grid.Column="5"/>
-                    <Label Text="Imported Status"  Grid.Row="0" Grid.Column="6"/>
+        <Style x:Key="FieldLabel" TargetType="Label">
+            <Setter Property="TextColor" Value="#475569" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
 
-                    <!-- Row 1: Inputs -->
-                    <Entry Grid.Row="1" Grid.Column="0" WidthRequest="120" HeightRequest="40"
-                           Placeholder="Serial" Text="{Binding SerialNumberFilter}" Completed="OnFilterCompleted"/>
+        <Style x:Key="HeaderCell" TargetType="Label">
+            <Setter Property="TextColor" Value="#334155" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
 
-                    <Picker Grid.Row="1" Grid.Column="1" WidthRequest="140" HeightRequest="40"
+        <Style x:Key="BodyCell" TargetType="Label">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="LineBreakMode" Value="TailTruncation" />
+        </Style>
+
+        <Style TargetType="Entry">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="PlaceholderColor" Value="#64748B" />
+            <Setter Property="BackgroundColor" Value="#F8FAFC" />
+            <Setter Property="MinimumHeightRequest" Value="42" />
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Disabled">
+                            <VisualState.Setters>
+                                <Setter Property="TextColor" Value="#334155" />
+                                <Setter Property="PlaceholderColor" Value="#64748B" />
+                                <Setter Property="BackgroundColor" Value="#EEF2F7" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Picker">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="TitleColor" Value="#64748B" />
+            <Setter Property="BackgroundColor" Value="#F8FAFC" />
+            <Setter Property="MinimumHeightRequest" Value="42" />
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Disabled">
+                            <VisualState.Setters>
+                                <Setter Property="TextColor" Value="#334155" />
+                                <Setter Property="TitleColor" Value="#64748B" />
+                                <Setter Property="BackgroundColor" Value="#EEF2F7" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+
+        <Style TargetType="DatePicker">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="BackgroundColor" Value="#F8FAFC" />
+            <Setter Property="MinimumHeightRequest" Value="42" />
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Disabled">
+                            <VisualState.Setters>
+                                <Setter Property="TextColor" Value="#334155" />
+                                <Setter Property="BackgroundColor" Value="#EEF2F7" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid Padding="20" RowDefinitions="Auto,Auto,*,Auto" RowSpacing="14">
+        <Border
+            Grid.Row="0"
+            Padding="16"
+            Stroke="#D8E0EA"
+            StrokeThickness="1"
+            BackgroundColor="#FFFFFF">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                <VerticalStackLayout Spacing="4">
+                    <Label
+                        Text="Extract Boards"
+                        FontSize="24"
+                        FontAttributes="Bold"
+                        TextColor="#0F172A" />
+                    <Label
+                        Text="{Binding DateModeLabel}"
+                        TextColor="#64748B" />
+                </VerticalStackLayout>
+
+                <HorizontalStackLayout Grid.Column="1" Spacing="10" VerticalOptions="Center">
+                    <Label
+                        Text="{Binding TotalCountLabel}"
+                        FontAttributes="Bold"
+                        TextColor="#334155"
+                        VerticalOptions="Center" />
+                    <Button
+                        Text="Search"
+                        Command="{Binding SearchCommand}"
+                        BackgroundColor="#0F766E"
+                        TextColor="#FFFFFF" />
+                    <Button
+                        Text="Export CSV"
+                        Command="{Binding ExportCsvCommand}"
+                        BackgroundColor="#0F172A"
+                        TextColor="#FFFFFF" />
+                </HorizontalStackLayout>
+            </Grid>
+        </Border>
+
+        <Border
+            Grid.Row="1"
+            Padding="16"
+            Stroke="#D8E0EA"
+            StrokeThickness="1"
+            BackgroundColor="#FFFFFF">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+
+            <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto" ColumnSpacing="14" RowSpacing="12">
+                <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="6">
+                    <Label Text="Serial #" Style="{StaticResource FieldLabel}" />
+                    <Entry
+                        Placeholder="Serial"
+                        Text="{Binding SerialNumberFilter}"
+                        Completed="OnFilterCompleted"
+                        BackgroundColor="#F8FAFC"
+                        PlaceholderColor="#94A3B8" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="6">
+                    <Label Text="Board Type" Style="{StaticResource FieldLabel}" />
+                    <Picker
                         ItemsSource="{Binding BoardTypes}"
                         SelectedItem="{Binding SelectedBoardTypeFilter}"
-                        SelectedIndexChanged="OnFilterChanged"/>
+                        SelectedIndexChanged="OnFilterChanged"
+                        BackgroundColor="#F8FAFC" />
+                </VerticalStackLayout>
 
-                    <DatePicker Grid.Row="1" Grid.Column="2" HeightRequest="40"
-                        Date="{Binding DateFrom}" />
+                <VerticalStackLayout Grid.Row="0" Grid.Column="2" Spacing="6">
+                    <Label Text="Date From" Style="{StaticResource FieldLabel}" />
+                    <DatePicker
+                        Date="{Binding DateFrom}"
+                        BackgroundColor="#F8FAFC" />
+                </VerticalStackLayout>
 
-                    <DatePicker Grid.Row="1" Grid.Column="3" HeightRequest="40"
-                        Date="{Binding DateTo}" />
+                <VerticalStackLayout Grid.Row="0" Grid.Column="3" Spacing="6">
+                    <Label Text="Date To" Style="{StaticResource FieldLabel}" />
+                    <DatePicker
+                        Date="{Binding DateTo}"
+                        BackgroundColor="#F8FAFC" />
+                </VerticalStackLayout>
 
-                    <Picker Grid.Row="1" Grid.Column="4" WidthRequest="120" HeightRequest="40"
+                <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="6">
+                    <Label Text="Skid" Style="{StaticResource FieldLabel}" />
+                    <Picker
                         ItemsSource="{Binding Skids}"
                         ItemDisplayBinding="{Binding SkidName}"
                         SelectedIndexChanged="OnFilterChanged"
-                        SelectedItem="{Binding SelectedSkidFilter}" />
+                        SelectedItem="{Binding SelectedSkidFilter}"
+                        BackgroundColor="#F8FAFC" />
+                </VerticalStackLayout>
 
-                    <Picker Grid.Row="1" Grid.Column="5" WidthRequest="130" HeightRequest="40"
+                <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="6">
+                    <Label Text="Shipped Status" Style="{StaticResource FieldLabel}" />
+                    <Picker
                         ItemsSource="{Binding IsShippedOptions}"
                         SelectedItem="{Binding SelectedIsShippedOption}"
-                        SelectedIndexChanged="OnFilterChanged"/>
+                        SelectedIndexChanged="OnFilterChanged"
+                        BackgroundColor="#F8FAFC" />
+                </VerticalStackLayout>
 
-                    <!-- NEW: tri-state Imported picker -->
-                    <Picker Grid.Row="1" Grid.Column="6" WidthRequest="150" HeightRequest="40"
+                <VerticalStackLayout Grid.Row="1" Grid.Column="2" Spacing="6">
+                    <Label Text="Imported Status" Style="{StaticResource FieldLabel}" />
+                    <Picker
                         ItemsSource="{Binding IsImportedOptions}"
                         SelectedItem="{Binding SelectedIsImportedOption}"
-                        SelectedIndexChanged="OnFilterChanged"/>
+                        SelectedIndexChanged="OnFilterChanged"
+                        BackgroundColor="#F8FAFC" />
+                </VerticalStackLayout>
 
-                    <!-- moved to column 7 because we added column 6 above -->
-                    <Button Grid.Row="1" Grid.Column="7" HeightRequest="40"
+                <VerticalStackLayout Grid.Row="1" Grid.Column="3" Spacing="6">
+                    <Label Text="Date Mode" Style="{StaticResource FieldLabel}" />
+                    <Button
                         Text="{Binding DateModeButtonText}"
-                        Command="{Binding ToggleDateModeCommand}" />
-                </Grid>
+                        Command="{Binding ToggleDateModeCommand}"
+                        BackgroundColor="#E2E8F0"
+                        TextColor="#0F172A" />
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
 
-                <Label Text="{Binding DateModeLabel}" FontAttributes="Italic" HorizontalOptions="Center" />
+        <Border
+            Grid.Row="2"
+            Stroke="#D8E0EA"
+            StrokeThickness="1"
+            BackgroundColor="#FFFFFF">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
 
-                <!-- Actions + Total Count (unchanged) -->
-                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                    <Button Text="Search" Command="{Binding SearchCommand}" />
-                    <Button Text="Export CSV" Command="{Binding ExportCsvCommand}" />
-                    <Label Text="{Binding TotalCountLabel}" FontAttributes="Bold" VerticalOptions="Center" />
-                </HorizontalStackLayout>
-            </VerticalStackLayout>
+            <ScrollView Orientation="Horizontal">
+                <Grid WidthRequest="1180" RowDefinitions="Auto,*">
+                    <Grid
+                        Grid.Row="0"
+                        Padding="12,10"
+                        ColumnDefinitions="150,260,130,130,130,110,110,80"
+                        ColumnSpacing="12"
+                        BackgroundColor="#EAF0F6">
+                        <Label Text="Serial" Style="{StaticResource HeaderCell}" />
+                        <Label Grid.Column="1" Text="Part #" Style="{StaticResource HeaderCell}" />
+                        <Label Grid.Column="2" Text="Type" Style="{StaticResource HeaderCell}" />
+                        <Label Grid.Column="3" Text="Prep Date" Style="{StaticResource HeaderCell}" />
+                        <Label Grid.Column="4" Text="Ship Date" Style="{StaticResource HeaderCell}" />
+                        <Label Grid.Column="5" Text="Shipped" Style="{StaticResource HeaderCell}" />
+                        <Label Grid.Column="6" Text="Imported" Style="{StaticResource HeaderCell}" />
+                        <Label Grid.Column="7" Text="Skid" Style="{StaticResource HeaderCell}" />
+                    </Grid>
 
-            <!-- COLUMN HEADERS -->
-            <ScrollView Grid.Row="1" Orientation="Horizontal" HeightRequest="40">
-                <!-- increased to 8 columns to add Imported -->
-                <Grid ColumnDefinitions="1.2*,1.8*,*,*,*,*,*,*" BackgroundColor="LightGray" Padding="8">
-                    <Label Text="Serial"    Grid.Column="0" FontAttributes="Bold"/>
-                    <Label Text="Part #"    Grid.Column="1" FontAttributes="Bold"/>
-                    <Label Text="Type"      Grid.Column="2" FontAttributes="Bold"/>
-                    <Label Text="Prep Date" Grid.Column="3" FontAttributes="Bold"/>
-                    <Label Text="Ship Date" Grid.Column="4" FontAttributes="Bold"/>
-                    <Label Text="Shipped"   Grid.Column="5" FontAttributes="Bold"/>
-                    <Label Text="Imported"  Grid.Column="6" FontAttributes="Bold"/>
-                    <Label Text="Skid"      Grid.Column="7" FontAttributes="Bold"/>
+                    <CollectionView
+                        Grid.Row="1"
+                        ItemsSource="{Binding Boards}"
+                        VerticalOptions="FillAndExpand">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical" />
+                        </CollectionView.ItemsLayout>
+
+                        <CollectionView.EmptyView>
+                            <Label Text="No boards found." Padding="14" TextColor="#64748B" />
+                        </CollectionView.EmptyView>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="dto:BoardDto">
+                                <Grid
+                                    Padding="12,9"
+                                    ColumnDefinitions="150,260,130,130,130,110,110,80"
+                                    ColumnSpacing="12"
+                                    BackgroundColor="#FFFFFF">
+                                    <Label Text="{Binding SerialNumber}" Style="{StaticResource BodyCell}" />
+                                    <Label Grid.Column="1" Text="{Binding PartNumber}" Style="{StaticResource BodyCell}" />
+                                    <Label Grid.Column="2" Text="{Binding BoardType}" Style="{StaticResource BodyCell}" />
+                                    <Label Grid.Column="3" Text="{Binding PrepDate, StringFormat='{}{0:yyyy-MM-dd}'}" Style="{StaticResource BodyCell}" />
+                                    <Label Grid.Column="4" Text="{Binding ShipDate, StringFormat='{}{0:yyyy-MM-dd}'}" Style="{StaticResource BodyCell}" />
+                                    <Label Grid.Column="5" Text="{Binding IsShipped}" Style="{StaticResource BodyCell}" />
+                                    <Label Grid.Column="6" Text="{Binding IsImported}" Style="{StaticResource BodyCell}" />
+                                    <Label Grid.Column="7" Text="{Binding SkidID}" Style="{StaticResource BodyCell}" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
                 </Grid>
             </ScrollView>
+        </Border>
 
-            <!-- BOARD RESULTS -->
-            <CollectionView Grid.Row="2"
-                ItemsSource="{Binding Boards}"
-                VerticalOptions="FillAndExpand">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" />
-                </CollectionView.ItemsLayout>
+        <Grid Grid.Row="3" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+            <Button
+                Text="Previous"
+                Command="{Binding PreviousPageCommand}"
+                BackgroundColor="#E2E8F0"
+                TextColor="#0F172A" />
 
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="dto:BoardDto">
-                        <Frame Padding="6" Margin="2" BorderColor="#ccc">
-                            <!-- increased to 8 columns to add Imported -->
-                            <Grid ColumnDefinitions="1.2*,1.8*,*,*,*,*,*,*">
-                                <Label Text="{Binding SerialNumber}" Grid.Column="0"/>
-                                <Label Text="{Binding PartNumber}" Grid.Column="1"/>
-                                <Label Text="{Binding BoardType}" Grid.Column="2"/>
-                                <Label Text="{Binding PrepDate, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="3"/>
-                                <Label Text="{Binding ShipDate, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="4"/>
-                                <Label Text="{Binding IsShipped}" Grid.Column="5"/>
-                                <Label Text="{Binding IsImported}" Grid.Column="6"/>
-                                <Label Text="{Binding SkidID}" Grid.Column="7"/>
-                            </Grid>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+            <Border
+                Grid.Column="1"
+                Padding="12,8"
+                Stroke="#D8E0EA"
+                StrokeThickness="1"
+                BackgroundColor="#FFFFFF"
+                HorizontalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <Label
+                    Text="{Binding PageNumber}"
+                    FontAttributes="Bold"
+                    TextColor="#0F172A"
+                    HorizontalTextAlignment="Center" />
+            </Border>
 
-            <!-- PAGINATION (unchanged) -->
-            <HorizontalStackLayout Grid.Row="3" HorizontalOptions="Center" Spacing="20">
-                <Button Text="Previous Page"
-                    Command="{Binding PreviousPageCommand}" />
-
-                <Label Text="{Binding PageNumber}" FontAttributes="Bold" />
-
-                <Button Text="Next Page"
-                    Command="{Binding NextPageCommand}"
-                    IsEnabled="{Binding HasNextPage}" />
-            </HorizontalStackLayout>
-
+            <Button
+                Grid.Column="2"
+                Text="Next"
+                Command="{Binding NextPageCommand}"
+                IsEnabled="{Binding HasNextPage}"
+                BackgroundColor="#0F766E"
+                TextColor="#FFFFFF" />
         </Grid>
-    </ScrollView>
-
+    </Grid>
 </ContentPage>

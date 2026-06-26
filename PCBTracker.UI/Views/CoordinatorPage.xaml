@@ -5,193 +5,140 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewmodels="clr-namespace:PCBTracker.UI.ViewModels"
     x:Name="CoordinatorPageRoot"
-    Title="Coordinator">
+    Title="Coordinator"
+    BackgroundColor="#F4F7FA">
 
-	<ContentPage.ToolbarItems>
-		<!-- Manual sync button -->
-		<ToolbarItem Text="Sync"
-                     Command="{Binding RefreshCommand}" />
-	</ContentPage.ToolbarItems>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Sync" Command="{Binding RefreshCommand}" />
+    </ContentPage.ToolbarItems>
 
-	<ContentPage.Content>
-		<Grid RowDefinitions="Auto,Auto,Auto,*"
-              Padding="10"
-              RowSpacing="8">
+    <ContentPage.Resources>
+        <Style x:Key="FieldLabel" TargetType="Label">
+            <Setter Property="TextColor" Value="#475569" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+        <Style x:Key="HeaderCell" TargetType="Label">
+            <Setter Property="TextColor" Value="#334155" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+        <Style x:Key="BodyCell" TargetType="Label">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="LineBreakMode" Value="TailTruncation" />
+        </Style>
+        <Style TargetType="Entry">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="PlaceholderColor" Value="#64748B" />
+            <Setter Property="BackgroundColor" Value="#F8FAFC" />
+        </Style>
+        <Style TargetType="Picker">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="TitleColor" Value="#64748B" />
+            <Setter Property="BackgroundColor" Value="#F8FAFC" />
+        </Style>
+    </ContentPage.Resources>
 
-			<!-- Last sync label -->
-			<Label Grid.Row="0"
-                   Text="{Binding LastSyncLabel}"
-                   FontSize="12"
-                   TextColor="Gray" />
+    <Grid Padding="20" RowDefinitions="Auto,*" RowSpacing="14">
+        <Border Grid.Row="0" Padding="16" Stroke="#D8E0EA" StrokeThickness="1" BackgroundColor="#FFFFFF">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+            <Grid ColumnDefinitions="*,280,240" ColumnSpacing="14">
+                <VerticalStackLayout Grid.Column="0" Spacing="4">
+                    <Label Text="Coordinator" FontSize="24" FontAttributes="Bold" TextColor="#0F172A" />
+                    <Label Text="{Binding LastSyncLabel}" TextColor="#64748B" />
+                    <Label Text="{Binding ErrorMessage}" TextColor="#B91C1C" />
+                </VerticalStackLayout>
 
-			<!-- Search box -->
-			<Entry Grid.Row="1"
-                   Placeholder="Search order #, inventory, PO"
-                   Text="{Binding SearchText}"
-                   ClearButtonVisibility="WhileEditing" />
+                <VerticalStackLayout Grid.Column="1" Spacing="6">
+                    <Label Text="Search" Style="{StaticResource FieldLabel}" />
+                    <Entry
+                        Placeholder="Search order #, inventory, PO"
+                        Text="{Binding SearchText}"
+                        ClearButtonVisibility="WhileEditing" />
+                </VerticalStackLayout>
 
-			<!-- Processing status filter -->
-			<Picker Grid.Row="2"
-                    Title="Filter by processing status"
-                    ItemsSource="{Binding ProcessingStatusOptions}"
-                    SelectedItem="{Binding SelectedProcessingStatusFilter}" />
+                <VerticalStackLayout Grid.Column="2" Spacing="6">
+                    <Label Text="Processing Status" Style="{StaticResource FieldLabel}" />
+                    <Picker
+                        ItemsSource="{Binding ProcessingStatusOptions}"
+                        SelectedItem="{Binding SelectedProcessingStatusFilter}" />
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
 
-			<!-- Pull-to-refresh + list -->
-			<RefreshView Grid.Row="3"
-                         IsRefreshing="{Binding IsRefreshing}"
-                         Command="{Binding RefreshCommand}">
+        <RefreshView
+            Grid.Row="1"
+            IsRefreshing="{Binding IsRefreshing}"
+            Command="{Binding RefreshCommand}">
 
-				<CollectionView ItemsSource="{Binding Orders}"
-                                Margin="0,6,0,0"
-                                HorizontalOptions="FillAndExpand">
+            <Border Stroke="#D8E0EA" StrokeThickness="1" BackgroundColor="#FFFFFF">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <ScrollView Orientation="Horizontal">
+                    <CollectionView
+                        ItemsSource="{Binding Orders}"
+                        WidthRequest="1380"
+                        HorizontalOptions="FillAndExpand">
 
-					<!-- Header row with field names -->
-					<CollectionView.Header>
-						<Border Stroke="LightGray"
-                                StrokeThickness="1"
-                                BackgroundColor="#EEF2F7"
-                                Padding="6,4"
-                                Margin="0,0,0,2"
-                                HorizontalOptions="FillAndExpand">
-							<!-- Star-sized columns so they stretch/shrink with the screen -->
-							<Grid ColumnSpacing="8"
-                                  HorizontalOptions="FillAndExpand"
-                                  ColumnDefinitions="2*,4*,1*,1*,1.2*,1.2*,1.4*,1.4*,2.2*">
+                        <CollectionView.EmptyView>
+                            <Label Text="No orders found." Padding="14" TextColor="#64748B" />
+                        </CollectionView.EmptyView>
 
-								<Label Grid.Column="0"
-                                       Text="Order # / Status"
-                                       FontAttributes="Bold"
-                                       FontSize="12" />
-								<Label Grid.Column="1"
-                                       Text="Inventory ID"
-                                       FontAttributes="Bold"
-                                       FontSize="12" />
-								<Label Grid.Column="2"
-                                       Text="Order Qty"
-                                       FontAttributes="Bold"
-                                       FontSize="12" />
-								<Label Grid.Column="3"
-                                       Text="Open Qty"
-                                       FontAttributes="Bold"
-                                       FontSize="12" />
-								<Label Grid.Column="4"
-                                       Text="PO"
-                                       FontAttributes="Bold"
-                                       FontSize="12" />
-								<Label Grid.Column="5"
-                                       Text="Request Date"
-                                       FontAttributes="Bold"
-                                       FontSize="12" />
-								<Label Grid.Column="6"
-                                       Text="Processing"
-                                       FontAttributes="Bold"
-                                       FontSize="12" />
-								<Label Grid.Column="7"
-                                       Text="Updated"
-                                       FontAttributes="Bold"
-                                       FontSize="12" />
-								<Label Grid.Column="8"
-                                       Text="Change / Confirm"
-                                       FontAttributes="Bold"
-                                       FontSize="12"
-                                       HorizontalOptions="Center"
-                                       HorizontalTextAlignment="Center" />
-							</Grid>
-						</Border>
-					</CollectionView.Header>
+                        <CollectionView.Header>
+                            <Grid Padding="12,10" ColumnDefinitions="160,330,90,90,150,130,130,130,230" ColumnSpacing="12" BackgroundColor="#EAF0F6">
+                                <Label Text="Order # / Status" Style="{StaticResource HeaderCell}" />
+                                <Label Grid.Column="1" Text="Inventory ID" Style="{StaticResource HeaderCell}" />
+                                <Label Grid.Column="2" Text="Order Qty" Style="{StaticResource HeaderCell}" />
+                                <Label Grid.Column="3" Text="Open Qty" Style="{StaticResource HeaderCell}" />
+                                <Label Grid.Column="4" Text="PO" Style="{StaticResource HeaderCell}" />
+                                <Label Grid.Column="5" Text="Request Date" Style="{StaticResource HeaderCell}" />
+                                <Label Grid.Column="6" Text="Processing" Style="{StaticResource HeaderCell}" />
+                                <Label Grid.Column="7" Text="Updated" Style="{StaticResource HeaderCell}" />
+                                <Label Grid.Column="8" Text="Change / Confirm" Style="{StaticResource HeaderCell}" HorizontalTextAlignment="Center" />
+                            </Grid>
+                        </CollectionView.Header>
 
-					<CollectionView.ItemTemplate>
-						<DataTemplate>
-							<!-- Row-style layout for each order -->
-							<Border Stroke="LightGray"
-                                    StrokeThickness="1"
-                                    BackgroundColor="#FAFAFA"
-                                    Margin="0,2"
-                                    Padding="6,4"
-                                    HorizontalOptions="FillAndExpand">
-								<Grid ColumnSpacing="8"
-                                      HorizontalOptions="FillAndExpand"
-                                      VerticalOptions="Center"
-                                      ColumnDefinitions="2*,4*,1*,1*,1.2*,1.2*,1.4*,1.4*,2.2*">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="12,8" ColumnDefinitions="160,330,90,90,150,130,130,130,230" ColumnSpacing="12">
+                                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                        <Label Text="{Binding OrderNbr}" FontAttributes="Bold" TextColor="#0F172A" FontSize="13" LineBreakMode="TailTruncation" />
+                                        <Label Text="{Binding Status}" TextColor="#64748B" FontSize="11" LineBreakMode="TailTruncation" />
+                                    </VerticalStackLayout>
 
-									<!-- Order # / Acumatica Status -->
-									<VerticalStackLayout Grid.Column="0"
-                                                         Spacing="2">
-										<Label Text="{Binding OrderNbr}"
-                                               FontAttributes="Bold"
-                                               FontSize="13"
-                                               LineBreakMode="TailTruncation" />
-										<Label Text="{Binding Status}"
-                                               FontSize="11"
-                                               TextColor="Gray" />
-									</VerticalStackLayout>
+                                    <Label Grid.Column="1" Text="{Binding InventoryId}" Style="{StaticResource BodyCell}" />
+                                    <Label Grid.Column="2" Text="{Binding OrderQty, StringFormat='{}{0:0.##}'}" Style="{StaticResource BodyCell}" />
+                                    <Label Grid.Column="3" Text="{Binding OpenQty, StringFormat='{}{0:0.##}'}" Style="{StaticResource BodyCell}" />
+                                    <Label Grid.Column="4" Text="{Binding CustomerOrderNbr}" Style="{StaticResource BodyCell}" />
+                                    <Label Grid.Column="5" Text="{Binding RequestDate, StringFormat='{}{0:yyyy-MM-dd}'}" Style="{StaticResource BodyCell}" />
+                                    <Label Grid.Column="6" Text="{Binding ProcessingStatus}" TextColor="#0F766E" FontAttributes="Bold" FontSize="12" />
+                                    <Label Grid.Column="7" Text="{Binding LastUpdatedAt, StringFormat='{}{0:yyyy-MM-dd}'}" TextColor="#64748B" FontSize="12" />
 
-									<!-- Inventory -->
-									<Label Grid.Column="1"
-                                           Text="{Binding InventoryId}"
-                                           FontSize="12"
-                                           LineBreakMode="TailTruncation" />
-
-									<!-- Qty -->
-									<Label Grid.Column="2"
-                                           Text="{Binding OrderQty, StringFormat='{}{0:0.##}'}"
-                                           FontSize="12" />
-
-									<!-- Open -->
-									<Label Grid.Column="3"
-                                           Text="{Binding OpenQty, StringFormat='{}{0:0.##}'}"
-                                           FontSize="12" />
-
-									<!-- PO -->
-									<Label Grid.Column="4"
-                                           Text="{Binding CustomerOrderNbr}"
-                                           FontSize="12"
-                                           LineBreakMode="TailTruncation" />
-
-									<!-- Request date -->
-									<Label Grid.Column="5"
-                                           Text="{Binding RequestDate, StringFormat='{}{0:yyyy-MM-dd}'}"
-                                           FontSize="11" />
-
-									<!-- Current processing status (read-only display) -->
-									<Label Grid.Column="6"
-                                           Text="{Binding ProcessingStatus}"
-                                           FontSize="11"
-                                           FontAttributes="Bold" />
-
-									<!-- Last updated -->
-									<Label Grid.Column="7"
-                                           Text="{Binding LastUpdatedAt, StringFormat='{}{0:yyyy-MM-dd}'}"
-                                           FontSize="11"
-                                           TextColor="Gray" />
-
-									<!-- Dropdown + Confirm -->
-									<HorizontalStackLayout Grid.Column="8"
-                                                           Spacing="6"
-                                                           HorizontalOptions="Center"
-                                                           VerticalOptions="Center">
-
-										<!-- Per-row processing status picker -->
-										<Picker ItemsSource="{Binding BindingContext.RowProcessingStatusOptions, Source={x:Reference CoordinatorPageRoot}}"
-                                                SelectedItem="{Binding ProcessingStatus}"
-                                                MinimumWidthRequest="90" />
-
-										<!-- Confirm button -->
-										<Button Text="Confirm"
-                                                FontSize="12"
-                                                Padding="10,4"
-                                                CornerRadius="12"
-                                                HorizontalOptions="Center"
-                                                MinimumWidthRequest="80"
-                                                Command="{Binding BindingContext.ConfirmProcessingStatusCommand, Source={x:Reference CoordinatorPageRoot}}"
-                                                CommandParameter="{Binding}" />
-									</HorizontalStackLayout>
-								</Grid>
-							</Border>
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
-			</RefreshView>
-		</Grid>
-	</ContentPage.Content>
+                                    <HorizontalStackLayout Grid.Column="8" Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                                        <Picker
+                                            ItemsSource="{Binding BindingContext.RowProcessingStatusOptions, Source={x:Reference CoordinatorPageRoot}}"
+                                            SelectedItem="{Binding ProcessingStatus}"
+                                            WidthRequest="120" />
+                                        <Button
+                                            Text="Confirm"
+                                            Padding="10,4"
+                                            MinimumHeightRequest="34"
+                                            MinimumWidthRequest="80"
+                                            BackgroundColor="#0F766E"
+                                            TextColor="#FFFFFF"
+                                            Command="{Binding BindingContext.ConfirmProcessingStatusCommand, Source={x:Reference CoordinatorPageRoot}}"
+                                            CommandParameter="{Binding}" />
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </ScrollView>
+            </Border>
+        </RefreshView>
+    </Grid>
 </ContentPage>

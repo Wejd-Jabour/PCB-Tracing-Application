@@ -3,50 +3,128 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="PCBTracker.UI.Views.LoginPage"
-    Title="Login">
+    Title="Login"
+    BackgroundColor="#F4F7FA">
 
-    <VerticalStackLayout
-        Padding="30"
-        Spacing="20"
-        VerticalOptions="Center">
+    <ContentPage.Resources>
+        <Style x:Key="CaptionLabel" TargetType="Label">
+            <Setter Property="TextColor" Value="#64748B" />
+            <Setter Property="FontSize" Value="13" />
+        </Style>
 
-        <Label
-            Text="Please sign in"
-            FontSize="24"
-            HorizontalOptions="Center" />
+        <Style x:Key="FieldLabel" TargetType="Label">
+            <Setter Property="TextColor" Value="#334155" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="FontSize" Value="13" />
+        </Style>
+    </ContentPage.Resources>
 
-        <Entry
-            Placeholder="Username"
-            Text="{Binding Username}"
-            Keyboard="Default" 
-            Completed="AttemptLogin"/>
+    <Grid Padding="32">
+        <Grid
+            ColumnDefinitions="1.1*,460"
+            ColumnSpacing="40"
+            MaximumWidthRequest="1080"
+            HorizontalOptions="Center"
+            VerticalOptions="Center">
 
+            <VerticalStackLayout
+                Grid.Column="0"
+                Spacing="18"
+                VerticalOptions="Center">
 
-        <Grid>
-            
-            <Entry
-                x:Name="PasswordEntry"
-                Placeholder="Password"
-                IsPassword="{Binding IsPasswordHidden}"
-                Text="{Binding Password}"
-                Completed="AttemptLogin"/>
+                <Label
+                    Text="Mara-McLevin PCB Tracker"
+                    FontSize="36"
+                    FontAttributes="Bold"
+                    TextColor="#0F172A" />
 
-            <ImageButton
-                Source="hide_password.jpg"
-                BackgroundColor="Transparent"
-                WidthRequest="24"
-                HeightRequest="24"
-                HorizontalOptions="End"
-                VerticalOptions="Center"
-                Margin="5"
-                Clicked="OnTogglePasswordVisibility"
-                Command="{Binding TogglePasswordVisibilityCommand}" />
+                <BoxView
+                    WidthRequest="56"
+                    HeightRequest="4"
+                    HorizontalOptions="Start"
+                    Color="#0F766E" />
 
+                <Label
+                    Text="Production sign-in"
+                    FontSize="20"
+                    TextColor="#334155" />
+
+                <Label
+                    Text="McLevin Shipping"
+                    Style="{StaticResource CaptionLabel}" />
+            </VerticalStackLayout>
+
+            <Border
+                Grid.Column="1"
+                Padding="28"
+                Stroke="#D8E0EA"
+                StrokeThickness="1"
+                BackgroundColor="#FFFFFF">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="18">
+                    <VerticalStackLayout Spacing="4">
+                        <Label
+                            Text="Sign in"
+                            FontSize="24"
+                            FontAttributes="Bold"
+                            TextColor="#0F172A" />
+                        <Label
+                            Text="Enter your account credentials"
+                            Style="{StaticResource CaptionLabel}" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Username" Style="{StaticResource FieldLabel}" />
+                        <Entry
+                            Placeholder="Username"
+                            Text="{Binding Username}"
+                            Keyboard="Default"
+                            Completed="AttemptLogin"
+                            BackgroundColor="#F8FAFC"
+                            TextColor="#0F172A"
+                            PlaceholderColor="#94A3B8" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Password" Style="{StaticResource FieldLabel}" />
+                        <Grid ColumnDefinitions="*,Auto" BackgroundColor="#F8FAFC">
+                            <Entry
+                                x:Name="PasswordEntry"
+                                Grid.Column="0"
+                                Placeholder="Password"
+                                IsPassword="{Binding IsPasswordHidden}"
+                                Text="{Binding Password}"
+                                Completed="AttemptLogin"
+                                BackgroundColor="Transparent"
+                                TextColor="#0F172A"
+                                PlaceholderColor="#94A3B8" />
+
+                            <ImageButton
+                                Grid.Column="1"
+                                Source="hide_password.jpg"
+                                BackgroundColor="Transparent"
+                                WidthRequest="44"
+                                HeightRequest="44"
+                                Padding="10"
+                                HorizontalOptions="End"
+                                VerticalOptions="Center"
+                                Clicked="OnTogglePasswordVisibility"
+                                Command="{Binding TogglePasswordVisibilityCommand}" />
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <Button
+                        Text="Login"
+                        Command="{Binding LoginCommand}"
+                        BackgroundColor="#0F766E"
+                        TextColor="#FFFFFF"
+                        FontAttributes="Bold"
+                        Margin="0,6,0,0" />
+                </VerticalStackLayout>
+            </Border>
         </Grid>
-            
-        <Button
-            Text="Login"
-            Command="{Binding LoginCommand}" />
-
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>
