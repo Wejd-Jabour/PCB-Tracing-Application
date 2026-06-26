@@ -98,6 +98,12 @@ namespace PCBTracker.UI.ViewModels
         [ObservableProperty]
         private bool autoSubmitEnabled = true;
 
+        partial void OnAutoSubmitEnabledChanged(bool oldValue, bool newValue)
+        {
+            Interlocked.Increment(ref _autoSubmitVersion);
+            if (newValue) DebounceAutoSubmit();
+        }
+
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
         private string newBoardTypeText = string.Empty;
@@ -513,11 +519,19 @@ namespace PCBTracker.UI.ViewModels
                 // 5) Refresh count
                 await RefreshSkidCountAsync();
             }
-            catch (DbUpdateException dbEx) when (dbEx.InnerException is SqlException sqlEx && sqlEx.Number == 2627)
+            catch (InvalidOperationException ex) when (ex.Message.Contains("already exists on this skid", StringComparison.OrdinalIgnoreCase))
             {
                 await App.Current.MainPage.DisplayAlert(
-                    "Serial Number Taken",
-                    "That serial number already exists. Each board must be unique.",
+                    "Duplicate on Skid",
+                    "That serial number already exists on this skid. Use a different skid for recall scans.",
+                    "OK");
+                SerialNumber = string.Empty;
+            }
+            catch (DbUpdateException dbEx) when (dbEx.InnerException is SqlException sqlEx && (sqlEx.Number == 2627 || sqlEx.Number == 2601))
+            {
+                await App.Current.MainPage.DisplayAlert(
+                    "Duplicate on Skid",
+                    "That serial number already exists on this skid. Use a different skid for recall scans.",
                     "OK");
                 SerialNumber = string.Empty;
             }
@@ -536,25 +550,25 @@ namespace PCBTracker.UI.ViewModels
         // Debounced Auto-Submit
         // ------------------------------
 
-        private CancellationTokenSource _autoSubmitCts;
+        private int _autoSubmitVersion;
 
         private void DebounceAutoSubmit()
         {
-            _autoSubmitCts?.Cancel();
-            _autoSubmitCts = new CancellationTokenSource();
-            var token = _autoSubmitCts.Token;
+            var version = Interlocked.Increment(ref _autoSubmitVersion);
+            if (!AutoSubmitEnabled) return;
 
             _ = Task.Run(async () =>
             {
-                try
+                await Task.Delay(800);
+                if (version != _autoSubmitVersion || !AutoSubmitEnabled) return;
+
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    await Task.Delay(800, token);
-                    if (!token.IsCancellationRequested && CanSubmit() && autoSubmitEnabled)
+                    if (version == _autoSubmitVersion && AutoSubmitEnabled && CanSubmit())
                     {
-                        MainThread.BeginInvokeOnMainThread(() => SubmitCommand.Execute(null));
+                        SubmitCommand.Execute(null);
                     }
-                }
-                catch (TaskCanceledException) { }
+                });
             });
         }
 

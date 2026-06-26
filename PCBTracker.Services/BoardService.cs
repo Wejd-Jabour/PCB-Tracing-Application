@@ -60,6 +60,11 @@ namespace PCBTracker.Services
         public async Task SubmitBoardAsync(Board board)
         {
             using var db = await _contextFactory.CreateDbContextAsync();
+            board.SerialNumber = NormalizeSerialNumber(board.SerialNumber);
+
+            if (await db.Boards.AnyAsync(b => b.SerialNumber == board.SerialNumber && b.SkidID == board.SkidID))
+                throw new InvalidOperationException("That serial number already exists on this skid.");
+
             db.Boards.Add(board);
             await db.SaveChangesAsync();
         }
@@ -67,9 +72,14 @@ namespace PCBTracker.Services
         public async Task CreateBoardAsync(BoardDto dto)
         {
             using var db = await _contextFactory.CreateDbContextAsync();
+            var serialNumber = NormalizeSerialNumber(dto.SerialNumber);
+
+            if (await db.Boards.AnyAsync(b => b.SerialNumber == serialNumber && b.SkidID == dto.SkidID))
+                throw new InvalidOperationException("That serial number already exists on this skid.");
+
             var board = new Board
             {
-                SerialNumber = dto.SerialNumber,
+                SerialNumber = serialNumber,
                 PartNumber = dto.PartNumber,
                 BoardType = dto.BoardType,
                 PrepDate = dto.PrepDate,
@@ -89,6 +99,10 @@ namespace PCBTracker.Services
         public async Task CreateBoardAndClaimSkidAsync(BoardDto dto)
         {
             using var db = await _contextFactory.CreateDbContextAsync();
+            var serialNumber = NormalizeSerialNumber(dto.SerialNumber);
+
+            if (await db.Boards.AnyAsync(b => b.SerialNumber == serialNumber && b.SkidID == dto.SkidID))
+                throw new InvalidOperationException("That serial number already exists on this skid.");
 
             var skid = await db.Skids.FindAsync(dto.SkidID);
             if (skid != null && skid.designatedType == null)
@@ -96,7 +110,7 @@ namespace PCBTracker.Services
 
             var board = new Board
             {
-                SerialNumber = dto.SerialNumber,
+                SerialNumber = serialNumber,
                 PartNumber = dto.PartNumber,
                 BoardType = dto.BoardType,
                 PrepDate = dto.PrepDate,
@@ -216,27 +230,27 @@ namespace PCBTracker.Services
                 switch (board.BoardType)
                 {
                     case "LE":
-                        var le = await db.LE.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        var le = await db.LE.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber && x.SkidID == board.SkidID);
                         if (le != null) { le.ShipDate = shipDate; le.IsShipped = true; }
                         break;
                     case "LE Upgrade":
-                        var leu = await db.LE_Upgrade.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        var leu = await db.LE_Upgrade.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber && x.SkidID == board.SkidID);
                         if (leu != null) { leu.ShipDate = shipDate; leu.IsShipped = true; }
                         break;
                     case "SAD":
-                        var sad = await db.SAD.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        var sad = await db.SAD.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber && x.SkidID == board.SkidID);
                         if (sad != null) { sad.ShipDate = shipDate; sad.IsShipped = true; }
                         break;
                     case "SAD Upgrade":
-                        var sadu = await db.SAD_Upgrade.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        var sadu = await db.SAD_Upgrade.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber && x.SkidID == board.SkidID);
                         if (sadu != null) { sadu.ShipDate = shipDate; sadu.IsShipped = true; }
                         break;
                     case "SAT":
-                        var sat = await db.SAT.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        var sat = await db.SAT.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber && x.SkidID == board.SkidID);
                         if (sat != null) { sat.ShipDate = shipDate; sat.IsShipped = true; }
                         break;
                     case "SAT Upgrade":
-                        var satu = await db.SAT_Upgrade.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        var satu = await db.SAT_Upgrade.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber && x.SkidID == board.SkidID);
                         if (satu != null) { satu.ShipDate = shipDate; satu.IsShipped = true; }
                         break;
                 }
@@ -256,13 +270,13 @@ namespace PCBTracker.Services
 
             if (serials.Count == 0) return 0;
 
-            db.LE.RemoveRange(db.LE.Where(x => serials.Contains(x.SerialNumber)));
-            db.LE_Upgrade.RemoveRange(db.LE_Upgrade.Where(x => serials.Contains(x.SerialNumber)));
-            db.LE_Tray.RemoveRange(db.LE_Tray.Where(x => serials.Contains(x.SerialNumber)));
-            db.SAD.RemoveRange(db.SAD.Where(x => serials.Contains(x.SerialNumber)));
-            db.SAD_Upgrade.RemoveRange(db.SAD_Upgrade.Where(x => serials.Contains(x.SerialNumber)));
-            db.SAT.RemoveRange(db.SAT.Where(x => serials.Contains(x.SerialNumber)));
-            db.SAT_Upgrade.RemoveRange(db.SAT_Upgrade.Where(x => serials.Contains(x.SerialNumber)));
+            db.LE.RemoveRange(db.LE.Where(x => x.SkidID == skidId && serials.Contains(x.SerialNumber)));
+            db.LE_Upgrade.RemoveRange(db.LE_Upgrade.Where(x => x.SkidID == skidId && serials.Contains(x.SerialNumber)));
+            db.LE_Tray.RemoveRange(db.LE_Tray.Where(x => x.SkidID == skidId && serials.Contains(x.SerialNumber)));
+            db.SAD.RemoveRange(db.SAD.Where(x => x.SkidID == skidId && serials.Contains(x.SerialNumber)));
+            db.SAD_Upgrade.RemoveRange(db.SAD_Upgrade.Where(x => x.SkidID == skidId && serials.Contains(x.SerialNumber)));
+            db.SAT.RemoveRange(db.SAT.Where(x => x.SkidID == skidId && serials.Contains(x.SerialNumber)));
+            db.SAT_Upgrade.RemoveRange(db.SAT_Upgrade.Where(x => x.SkidID == skidId && serials.Contains(x.SerialNumber)));
 
             var boards = db.Boards.Where(b => b.SkidID == skidId);
             db.Boards.RemoveRange(boards);
@@ -340,33 +354,42 @@ namespace PCBTracker.Services
                 switch (board.BoardType)
                 {
                     case "LE":
-                        var le = await db.LE.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        var le = await db.LE.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber && x.SkidID == board.SkidID);
                         if (le != null) { le.ShipDate = null; le.IsShipped = false; }
                         break;
                     case "LE Upgrade":
-                        var leu = await db.LE_Upgrade.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        var leu = await db.LE_Upgrade.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber && x.SkidID == board.SkidID);
                         if (leu != null) { leu.ShipDate = null; leu.IsShipped = false; }
                         break;
                     case "SAD":
-                        var sad = await db.SAD.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        var sad = await db.SAD.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber && x.SkidID == board.SkidID);
                         if (sad != null) { sad.ShipDate = null; sad.IsShipped = false; }
                         break;
                     case "SAD Upgrade":
-                        var sadu = await db.SAD_Upgrade.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        var sadu = await db.SAD_Upgrade.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber && x.SkidID == board.SkidID);
                         if (sadu != null) { sadu.ShipDate = null; sadu.IsShipped = false; }
                         break;
                     case "SAT":
-                        var sat = await db.SAT.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        var sat = await db.SAT.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber && x.SkidID == board.SkidID);
                         if (sat != null) { sat.ShipDate = null; sat.IsShipped = false; }
                         break;
                     case "SAT Upgrade":
-                        var satu = await db.SAT_Upgrade.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber);
+                        var satu = await db.SAT_Upgrade.FirstOrDefaultAsync(x => x.SerialNumber == board.SerialNumber && x.SkidID == board.SkidID);
                         if (satu != null) { satu.ShipDate = null; satu.IsShipped = false; }
                         break;
                 }
             }
 
             return await db.SaveChangesAsync();
+        }
+
+        private static string NormalizeSerialNumber(string? serialNumber)
+        {
+            var normalized = serialNumber?.Trim();
+            if (string.IsNullOrWhiteSpace(normalized))
+                throw new InvalidOperationException("Serial number is required.");
+
+            return normalized;
         }
 
     }

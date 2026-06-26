@@ -52,10 +52,11 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Enforces unique SerialNumber on the Boards table.
-        modelBuilder.Entity<Board>()
-            .HasIndex(b => b.SerialNumber)
-            .IsUnique();
+        modelBuilder.Entity<Board>(entity =>
+        {
+            entity.HasKey(b => new { b.SerialNumber, b.SkidID });
+            entity.HasIndex(b => b.SerialNumber);
+        });
 
         modelBuilder.Entity<MaraHollyOrderLine>(entity =>
         {
