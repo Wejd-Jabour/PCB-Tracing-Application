@@ -513,11 +513,19 @@ namespace PCBTracker.UI.ViewModels
                 // 5) Refresh count
                 await RefreshSkidCountAsync();
             }
-            catch (DbUpdateException dbEx) when (dbEx.InnerException is SqlException sqlEx && sqlEx.Number == 2627)
+            catch (InvalidOperationException ex) when (ex.Message.Contains("already exists on this skid", StringComparison.OrdinalIgnoreCase))
             {
                 await App.Current.MainPage.DisplayAlert(
-                    "Serial Number Taken",
-                    "That serial number already exists. Each board must be unique.",
+                    "Duplicate on Skid",
+                    "That serial number already exists on this skid. Use a different skid for recall scans.",
+                    "OK");
+                SerialNumber = string.Empty;
+            }
+            catch (DbUpdateException dbEx) when (dbEx.InnerException is SqlException sqlEx && (sqlEx.Number == 2627 || sqlEx.Number == 2601))
+            {
+                await App.Current.MainPage.DisplayAlert(
+                    "Duplicate on Skid",
+                    "That serial number already exists on this skid. Use a different skid for recall scans.",
                     "OK");
                 SerialNumber = string.Empty;
             }

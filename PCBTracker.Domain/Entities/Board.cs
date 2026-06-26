@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +8,6 @@ namespace PCBTracker.Domain.Entities
 {
     public class Board
     {
-        [Key]
         public string SerialNumber { get; set; } = default!;
 
         public string PartNumber { get; set; } = default!;
