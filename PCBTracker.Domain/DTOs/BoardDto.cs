@@ -10,9 +10,8 @@ namespace PCBTracker.Domain.DTOs
     public class BoardDto
     {
         /// <summary>
-        /// The unique 16-character serial number assigned to the board.
-        /// This value is entered or scanned by the user and used as a primary identifier.
-        /// The service layer enforces uniqueness before persisting to the database.
+        /// The serial number scanned from the board.
+        /// A serial may appear on multiple skids, but only once per skid.
         /// </summary>
         public string SerialNumber { get; set; } = default!;
 
