@@ -4,268 +4,415 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="PCBTracker.UI.Views.SubmitPage"
     x:Name="SubmitPageRoot"
-    Title="Submit a Board">
+    Title="Submit"
+    BackgroundColor="#F4F7FA">
+
+    <ContentPage.Resources>
+        <Style x:Key="SectionTitle" TargetType="Label">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+
+        <Style x:Key="FieldLabel" TargetType="Label">
+            <Setter Property="TextColor" Value="#475569" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+
+        <Style x:Key="MutedLabel" TargetType="Label">
+            <Setter Property="TextColor" Value="#64748B" />
+            <Setter Property="FontSize" Value="13" />
+        </Style>
+
+        <Style TargetType="Entry">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="PlaceholderColor" Value="#64748B" />
+            <Setter Property="BackgroundColor" Value="#F8FAFC" />
+            <Setter Property="MinimumHeightRequest" Value="42" />
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Disabled">
+                            <VisualState.Setters>
+                                <Setter Property="TextColor" Value="#334155" />
+                                <Setter Property="PlaceholderColor" Value="#64748B" />
+                                <Setter Property="BackgroundColor" Value="#EEF2F7" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Picker">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="TitleColor" Value="#64748B" />
+            <Setter Property="BackgroundColor" Value="#F8FAFC" />
+            <Setter Property="MinimumHeightRequest" Value="42" />
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Disabled">
+                            <VisualState.Setters>
+                                <Setter Property="TextColor" Value="#334155" />
+                                <Setter Property="TitleColor" Value="#64748B" />
+                                <Setter Property="BackgroundColor" Value="#EEF2F7" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+
+        <Style TargetType="DatePicker">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="BackgroundColor" Value="#F8FAFC" />
+            <Setter Property="MinimumHeightRequest" Value="42" />
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Disabled">
+                            <VisualState.Setters>
+                                <Setter Property="TextColor" Value="#334155" />
+                                <Setter Property="BackgroundColor" Value="#EEF2F7" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
-            <Label Text="Submit Board" FontSize="24" HorizontalOptions="Center" />
-            <HorizontalStackLayout
-                Margin="0,4,0,0"
-                Spacing="10"
-                IsVisible="{Binding IsWorkingOnOrder}">
-                            <Label
-                    Text="{Binding WorkingOnOrderLabel}"
-                    TextColor="Blue"
-                    FontAttributes="Italic"
-                    VerticalOptions="Center" />
-                            <Button
-                    Text="Cancel"
-                    Command="{Binding CancelWorkingOnOrderCommand}"
-                    VerticalOptions="Center" />
-                        </HorizontalStackLayout>
-
-            <Picker
-                x:Name="BoardTypePicker"
-                Title="Board Type"
-                ItemsSource="{Binding BoardTypes}"
-                SelectedItem="{Binding SelectedBoardType}"
-                IsEnabled="{Binding CanEditBoardDetails}" />
-
-            <Entry
-                IsVisible="{Binding IsCreatingNewType}"
-                Placeholder="Enter new board type"
-                Text="{Binding NewBoardTypeText}"
-                IsEnabled="{Binding CanEditBoardDetails}" />
-
-            <Entry
-                x:Name="SerialNumberEntry"
-                Placeholder="Serial Number"
-                Text="{Binding SerialNumber}"
-                Completed="OnSerialNumberEntryCompleted"
-                IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}" />
-
-            <Entry
-                x:Name="PartNumberEntry"
-                Placeholder="Part Number"
-                Text="{Binding PartNumber}"
-                IsEnabled="{Binding CanEditBoardDetails}" />
-
-            <DatePicker
-                Date="{Binding PrepDate}"
-                IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}" />
-
-            <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                <Label
-                  Text="Mark as Shipped"
-                  VerticalOptions="Center" />
-                <Switch
-                  IsToggled="{Binding IsShipped}"
-                  IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}" />
-            </HorizontalStackLayout>
-
-            <VerticalStackLayout
-                Spacing="10"
-                Padding="20"
-                VerticalOptions="Center"
-                HorizontalOptions="Start">
-
-                <!-- Top row: arrows + picker, left-aligned -->
-                <HorizontalStackLayout
-                  Spacing="10"
-                  HorizontalOptions="Start">
-                    <Button
-                      Text="‹"
-                      Command="{Binding PageBackwardCommand}"
-                      WidthRequest="50"
-                      HeightRequest="50" />
-
-                    <Picker
-                      Title="Skid"
-                      ItemsSource="{Binding Skids}"
-                      SelectedItem="{Binding SelectedSkid}"
-                      ItemDisplayBinding="{Binding SkidName}"
-                      WidthRequest="200" />
-
-                    <Button
-                      Text="›"
-                      Command="{Binding PageForwardCommand}"
-                      WidthRequest="50"
-                      HeightRequest="50" />
-                </HorizontalStackLayout>
-
-                <Label Text="This skid is for:" VerticalOptions="Center" HorizontalOptions="Center"/>
-                <Label Text="{Binding CurrentSkidType}"
-                       FontAttributes="Bold"
-                       VerticalOptions="Center"
-                       HorizontalOptions="Center" />
-
-                <!-- Skid count -->
-                <Label Text="{Binding SkidBoardCountLabel}"
-                       FontAttributes="Bold"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center" />
-
-                <!-- Renamed button + new command -->
-                <Button
-                    Text="Confirm Skid"
-                    Command="{Binding OpenConfirmSkidCommand}"
-                    WidthRequest="200"
-                    HeightRequest="50" />
-            </VerticalStackLayout>
-
-            <Label Text="Auto Submit"
-                    FontAttributes="Bold"/>
-            <Switch
-                IsToggled="{Binding AutoSubmitEnabled}"
-                />
-
-            <!-- Submit is disabled while locked -->
-            <Button
-                x:Name="SubmitButton"
-                Text="Submit"
-                Command="{Binding SubmitCommand}"
-                Padding="20"
-                Margin="30"
-                Clicked="OnSubmitClicked"
-                IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}" />
-
-            <!-- Unlock hint (optional, non-blocking) -->
-            <Label
-                Text="This skid is locked. Select latest skid or unlock with your login password."
-                TextColor="Red"
-                IsVisible="{Binding IsSkidLocked}"
-                HorizontalOptions="Center" />
-            <Button
-                Text="Unlock This Skid"
-                Command="{Binding UnlockOldSkidCommand}"
-                IsVisible="{Binding IsSkidLocked}"
-                HorizontalOptions="Center" />
-
-
-            <!-- MINI-TAB: Active Orders -->
+        <VerticalStackLayout Padding="24" Spacing="16">
             <Border
-    Margin="0,20,0,0"
-    Stroke="LightGray"
-    StrokeThickness="1"
-    BackgroundColor="#F5F5F5">
+                Padding="18"
+                Stroke="#D8E0EA"
+                StrokeThickness="1"
+                BackgroundColor="#FFFFFF">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                    <VerticalStackLayout Grid.Column="0" Spacing="4">
+                        <Label
+                            Text="Submit Board"
+                            FontSize="24"
+                            FontAttributes="Bold"
+                            TextColor="#0F172A" />
+                        <Label
+                            Text="{Binding SkidBoardCountLabel}"
+                            Style="{StaticResource MutedLabel}" />
+                    </VerticalStackLayout>
+
+                    <Border
+                        Grid.Column="1"
+                        Padding="12,8"
+                        Stroke="#BFDBFE"
+                        StrokeThickness="1"
+                        BackgroundColor="#EFF6FF"
+                        IsVisible="{Binding IsWorkingOnOrder}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+
+                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                            <Label
+                                Text="{Binding WorkingOnOrderLabel}"
+                                TextColor="#1D4ED8"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center" />
+                            <Button
+                                Text="Cancel"
+                                Command="{Binding CancelWorkingOnOrderCommand}"
+                                BackgroundColor="#DBEAFE"
+                                TextColor="#1E3A8A"
+                                Padding="12,6"
+                                MinimumHeightRequest="34" />
+                        </HorizontalStackLayout>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <Grid ColumnDefinitions="1.35*,0.85*" ColumnSpacing="16">
+                <Border
+                    Grid.Column="0"
+                    Padding="18"
+                    Stroke="#D8E0EA"
+                    StrokeThickness="1"
+                    BackgroundColor="#FFFFFF">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="8" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="14">
+                        <Label Text="Board Details" Style="{StaticResource SectionTitle}" />
+
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="14" RowSpacing="10">
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="6">
+                                <Label Text="Board Type" Style="{StaticResource FieldLabel}" />
+                                <Picker
+                                    x:Name="BoardTypePicker"
+                                    ItemsSource="{Binding BoardTypes}"
+                                    SelectedItem="{Binding SelectedBoardType}"
+                                    IsEnabled="{Binding CanEditBoardDetails}" />
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="6">
+                                <Label Text="New Type" Style="{StaticResource FieldLabel}" />
+                                <Entry
+                                    IsVisible="{Binding IsCreatingNewType}"
+                                    Placeholder="Enter new board type"
+                                    Text="{Binding NewBoardTypeText}"
+                                    IsEnabled="{Binding CanEditBoardDetails}" />
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Row="1" Grid.ColumnSpan="2" Spacing="6">
+                                <Label Text="Serial Number" Style="{StaticResource FieldLabel}" />
+                                <Entry
+                                    x:Name="SerialNumberEntry"
+                                    Placeholder="Serial Number"
+                                    Text="{Binding SerialNumber}"
+                                    Completed="OnSerialNumberEntryCompleted"
+                                    IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}" />
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Row="2" Grid.Column="0" Spacing="6">
+                                <Label Text="Part Number" Style="{StaticResource FieldLabel}" />
+                                <Entry
+                                    x:Name="PartNumberEntry"
+                                    Placeholder="Part Number"
+                                    Text="{Binding PartNumber}"
+                                    IsEnabled="{Binding CanEditBoardDetails}" />
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Row="2" Grid.Column="1" Spacing="6">
+                                <Label Text="Prep Date" Style="{StaticResource FieldLabel}" />
+                                <DatePicker
+                                    Date="{Binding PrepDate}"
+                                    IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}" />
+                            </VerticalStackLayout>
+
+                            <Border
+                                Grid.Row="3"
+                                Grid.ColumnSpan="2"
+                                Padding="12"
+                                Stroke="#E2E8F0"
+                                StrokeThickness="1"
+                                BackgroundColor="#F8FAFC">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="8" />
+                                </Border.StrokeShape>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                    <Label
+                                        Text="Mark as Shipped"
+                                        TextColor="#334155"
+                                        FontAttributes="Bold"
+                                        VerticalOptions="Center" />
+                                    <Switch
+                                        Grid.Column="1"
+                                        IsToggled="{Binding IsShipped}"
+                                        IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}" />
+                                </Grid>
+                            </Border>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" Margin="0,4,0,0">
+                            <HorizontalStackLayout Grid.Column="0" Spacing="10" VerticalOptions="Center">
+                                <Label
+                                    Text="Auto Submit"
+                                    TextColor="#334155"
+                                    FontAttributes="Bold"
+                                    VerticalOptions="Center" />
+                                <Switch IsToggled="{Binding AutoSubmitEnabled}" />
+                            </HorizontalStackLayout>
+
+                            <Button
+                                x:Name="SubmitButton"
+                                Grid.Column="1"
+                                Text="Submit"
+                                Command="{Binding SubmitCommand}"
+                                Clicked="OnSubmitClicked"
+                                IsEnabled="{Binding IsSkidLocked, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}"
+                                BackgroundColor="#0F766E"
+                                TextColor="#FFFFFF"
+                                FontAttributes="Bold"
+                                MinimumWidthRequest="140" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border
+                    Grid.Column="1"
+                    Padding="18"
+                    Stroke="#D8E0EA"
+                    StrokeThickness="1"
+                    BackgroundColor="#FFFFFF">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="8" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="14">
+                        <Label Text="Skid" Style="{StaticResource SectionTitle}" />
+
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                            <Button
+                                Text="&lt;"
+                                Command="{Binding PageBackwardCommand}"
+                                WidthRequest="44"
+                                HeightRequest="44"
+                                Padding="0"
+                                BackgroundColor="#E2E8F0"
+                                TextColor="#0F172A" />
+
+                            <Picker
+                                Grid.Column="1"
+                                ItemsSource="{Binding Skids}"
+                                SelectedItem="{Binding SelectedSkid}"
+                                ItemDisplayBinding="{Binding SkidName}" />
+
+                            <Button
+                                Grid.Column="2"
+                                Text="&gt;"
+                                Command="{Binding PageForwardCommand}"
+                                WidthRequest="44"
+                                HeightRequest="44"
+                                Padding="0"
+                                BackgroundColor="#E2E8F0"
+                                TextColor="#0F172A" />
+                        </Grid>
+
+                        <Border
+                            Padding="14"
+                            Stroke="#CCFBF1"
+                            StrokeThickness="1"
+                            BackgroundColor="#F0FDFA">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="8" />
+                            </Border.StrokeShape>
+
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="Current Type" Style="{StaticResource FieldLabel}" />
+                                <Label
+                                    Text="{Binding CurrentSkidType}"
+                                    FontAttributes="Bold"
+                                    FontSize="20"
+                                    TextColor="#115E59" />
+                                <Label
+                                    Text="{Binding SkidBoardCountLabel}"
+                                    TextColor="#0F766E" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Button
+                            Text="Confirm Skid"
+                            Command="{Binding OpenConfirmSkidCommand}"
+                            BackgroundColor="#0F172A"
+                            TextColor="#FFFFFF"
+                            FontAttributes="Bold" />
+
+                        <Border
+                            Padding="12"
+                            Stroke="#FECACA"
+                            StrokeThickness="1"
+                            BackgroundColor="#FEF2F2"
+                            IsVisible="{Binding IsSkidLocked}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="8" />
+                            </Border.StrokeShape>
+
+                            <VerticalStackLayout Spacing="10">
+                                <Label
+                                    Text="This skid is locked."
+                                    TextColor="#991B1B"
+                                    FontAttributes="Bold" />
+                                <Button
+                                    Text="Unlock This Skid"
+                                    Command="{Binding UnlockOldSkidCommand}"
+                                    BackgroundColor="#DC2626"
+                                    TextColor="#FFFFFF" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <Border
+                Stroke="#D8E0EA"
+                StrokeThickness="1"
+                BackgroundColor="#FFFFFF">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
 
                 <VerticalStackLayout Spacing="0">
-
-                    <!-- Tab header -->
-                    <Grid Padding="10" BackgroundColor="#E0E0E0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-
+                    <Grid Padding="14,12" ColumnDefinitions="*,Auto" BackgroundColor="#F8FAFC">
                         <Label
-                Text="Active Orders"
-                FontAttributes="Bold"
-                Grid.Column="0" />
-
+                            Text="Active Orders"
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            TextColor="#0F172A" />
                         <Label
-                Text="{Binding ActiveOrdersCountLabel}"
-                FontAttributes="Bold"
-                Grid.Column="1" />
+                            Grid.Column="1"
+                            Text="{Binding ActiveOrdersCountLabel}"
+                            FontAttributes="Bold"
+                            TextColor="#475569" />
                     </Grid>
 
-                    <!-- Column headings -->
-                    <Grid Padding="8,4,8,2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*" />
-                            <!-- Order # -->
-                            <ColumnDefinition Width="2*" />
-                            <!-- Inventory ID -->
-                            <ColumnDefinition Width="*" />
-                            <!-- Qty -->
-                            <ColumnDefinition Width="*" />
-                            <!-- Scanned -->
-                            <ColumnDefinition Width="Auto" />
-                            <!-- Confirm -->
-                        </Grid.ColumnDefinitions>
-
-                        <Label Text="Order #"
-           FontAttributes="Bold"
-           Grid.Column="0" />
-                        <Label Text="Inventory ID"
-           FontAttributes="Bold"
-           Grid.Column="1" />
-                        <Label Text="Qty"
-           FontAttributes="Bold"
-           HorizontalTextAlignment="End"
-           Grid.Column="2" />
-                        <Label Text="Scanned"
-           FontAttributes="Bold"
-           HorizontalTextAlignment="End"
-           Grid.Column="3" />
-
-                        <!-- Only show this when at least one row has a Confirm button -->
-                        <Label Text="Confirm"
-           FontAttributes="Bold"
-           Margin="8,0,0,0"
-           Grid.Column="4"
-           IsVisible="{Binding HasConfirmableOrders}" />
+                    <Grid Padding="14,8" ColumnDefinitions="1.4*,2*,*,*,Auto" ColumnSpacing="10" BackgroundColor="#EAF0F6">
+                        <Label Text="Order #" FontAttributes="Bold" TextColor="#334155" />
+                        <Label Grid.Column="1" Text="Inventory ID" FontAttributes="Bold" TextColor="#334155" />
+                        <Label Grid.Column="2" Text="Qty" FontAttributes="Bold" TextColor="#334155" HorizontalTextAlignment="End" />
+                        <Label Grid.Column="3" Text="Scanned" FontAttributes="Bold" TextColor="#334155" HorizontalTextAlignment="End" />
+                        <Label
+                            Grid.Column="4"
+                            Text="Confirm"
+                            FontAttributes="Bold"
+                            TextColor="#334155"
+                            IsVisible="{Binding HasConfirmableOrders}" />
                     </Grid>
 
-                    <!-- Tab content -->
                     <CollectionView
-            x:Name="ActiveOrdersCollectionView"
-            ItemsSource="{Binding ActiveOrders}"
-            SelectedItem="{Binding SelectedActiveOrder}"
-            SelectionMode="Single"
-            HeightRequest="160">
+                        x:Name="ActiveOrdersCollectionView"
+                        ItemsSource="{Binding ActiveOrders}"
+                        SelectedItem="{Binding SelectedActiveOrder}"
+                        SelectionMode="Single"
+                        HeightRequest="180">
 
                         <CollectionView.EmptyView>
-                            <Label Text="No active orders."
-                       Padding="10" />
+                            <Label Text="No active orders." Padding="14" TextColor="#64748B" />
                         </CollectionView.EmptyView>
 
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Grid Padding="8,4">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*" />
-                                        <ColumnDefinition Width="2*" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <!-- Order number -->
-                                    <Label Text="{Binding OrderNbr}"
-                               Grid.Column="0" />
-
-                                    <!-- Inventory ID -->
-                                    <Label Text="{Binding InventoryId}"
-                               Grid.Column="1" />
-
-                                    <!-- Quantity (OrderQty) -->
-                                    <Label Text="{Binding OrderQty}"
-                               Grid.Column="2"
-                               HorizontalTextAlignment="End" />
-
-                                    <!-- Scanned counter -->
-                                    <Label Text="{Binding ScannedQty}"
-                               Grid.Column="3"
-                               HorizontalTextAlignment="End" />
-
-                                    <!-- Confirm button: only when ScannedQty >= OrderQty -->
+                                <Grid Padding="14,8" ColumnDefinitions="1.4*,2*,*,*,Auto" ColumnSpacing="10">
+                                    <Label Text="{Binding OrderNbr}" TextColor="#0F172A" />
+                                    <Label Grid.Column="1" Text="{Binding InventoryId}" TextColor="#0F172A" />
+                                    <Label Grid.Column="2" Text="{Binding OrderQty}" TextColor="#0F172A" HorizontalTextAlignment="End" />
+                                    <Label Grid.Column="3" Text="{Binding ScannedQty}" TextColor="#0F172A" HorizontalTextAlignment="End" />
                                     <Button
-                            Text="Confirm"
-                            Grid.Column="4"
-                            Command="{Binding Source={x:Reference SubmitPageRoot}, Path=BindingContext.ConfirmOrderCommand}"
-                            CommandParameter="{Binding}"
-                            IsEnabled="{Binding CanConfirm}"
-                            IsVisible="{Binding CanConfirm}" />
+                                        Grid.Column="4"
+                                        Text="Confirm"
+                                        Command="{Binding Source={x:Reference SubmitPageRoot}, Path=BindingContext.ConfirmOrderCommand}"
+                                        CommandParameter="{Binding}"
+                                        IsEnabled="{Binding CanConfirm}"
+                                        IsVisible="{Binding CanConfirm}"
+                                        BackgroundColor="#0F766E"
+                                        TextColor="#FFFFFF"
+                                        Padding="12,6"
+                                        MinimumHeightRequest="34" />
                                 </Grid>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
-
                 </VerticalStackLayout>
             </Border>
-
-
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

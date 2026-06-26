@@ -1,175 +1,213 @@
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PCBTracker.UI.Views.InspectionPage"
-             Title="Submit Inspection">
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="PCBTracker.UI.Views.InspectionPage"
+    Title="Inspection"
+    BackgroundColor="#F4F7FA">
 
-	<ScrollView>
-		<VerticalStackLayout Padding="20" Spacing="15">
+    <ContentPage.Resources>
+        <Style x:Key="SectionTitle" TargetType="Label">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+        <Style x:Key="FieldLabel" TargetType="Label">
+            <Setter Property="TextColor" Value="#475569" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+        <Style x:Key="HeaderCell" TargetType="Label">
+            <Setter Property="TextColor" Value="#334155" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+        <Style x:Key="BodyCell" TargetType="Label">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="LineBreakMode" Value="TailTruncation" />
+        </Style>
+        <Style TargetType="Entry">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="PlaceholderColor" Value="#64748B" />
+            <Setter Property="BackgroundColor" Value="#F8FAFC" />
+        </Style>
+        <Style TargetType="Editor">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="PlaceholderColor" Value="#64748B" />
+            <Setter Property="BackgroundColor" Value="#F8FAFC" />
+        </Style>
+        <Style TargetType="Picker">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="TitleColor" Value="#64748B" />
+            <Setter Property="BackgroundColor" Value="#F8FAFC" />
+        </Style>
+        <Style TargetType="DatePicker">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="BackgroundColor" Value="#F8FAFC" />
+        </Style>
+    </ContentPage.Resources>
 
-			<!-- Toggle Form Button -->
-			<Button Text="Add Inspection" Clicked="ToggleFormVisibility" />
-
-			<!-- Submit Form -->
-			<StackLayout x:Name="FormSection" IsVisible="False">
-                <Label Text="Add Inspection" FontAttributes="Bold" FontSize="18" />
-
-				<Label Text="Date" />
-				<DatePicker Date="{Binding Date}" />
-
-				<Label Text="Product / SKU" />
-				<Picker ItemsSource="{Binding ProductTypes}" SelectedItem="{Binding ProductType}" />
-
-				<Label Text="Product ID / SN" />
-				<Entry Text="{Binding SerialNumber}" Placeholder="Scan or type barcode" />
-
-				<Label Text="Issue Description" />
-				<Editor Text="{Binding IssueDescription}" AutoSize="TextChanges" />
-
-				<Label Text="Severity Level" />
-				<Picker ItemsSource="{Binding SeverityLevels}" SelectedItem="{Binding SeverityLevel}" />
-
-				<Label Text="Immediate Action Taken" />
-				<Editor Text="{Binding ImmediateActionTaken}" AutoSize="TextChanges" />
-
-				<Label Text="Additional Notes" />
-				<Editor Text="{Binding AdditionalNotes}" AutoSize="TextChanges" />
-
-                <HorizontalStackLayout Spacing="10" Margin="10">
-                    <Button Text="Submit Inspection" Command="{Binding SubmitCommand}" />
-                </HorizontalStackLayout>
-			</StackLayout>
-
-            <!-- Divider -->
-            <BoxView HeightRequest="1" BackgroundColor="Gray" Margin="0,20" />
-
-            <!-- Toggle Form Button -->
-            <Button Text="Past Inspections" Clicked="TogglePastInspectionVisibility" />
-
-            <StackLayout x:Name="PastInspectionSection" IsVisible="False">
-
-                <!-- Extract Section -->
-                <Label Text="Past Inspections" FontAttributes="Bold" FontSize="18" />
-
-                <!-- COLUMN HEADERS -->
-                <ScrollView Orientation="Horizontal" HeightRequest="40">
-                    <Grid ColumnDefinitions="2*,2*,2*,2*,2*,3*" BackgroundColor="LightGray" Padding="8">
-                        <Label Text="Date" Grid.Column="0" FontAttributes="Bold"/>
-                        <Label Text="Product Type" Grid.Column="1" FontAttributes="Bold"/>
-                        <Label Text="Serial #" Grid.Column="2" FontAttributes="Bold"/>
-                        <Label Text="Severity" Grid.Column="3" FontAttributes="Bold"/>
-                        <Label Text="Issue" Grid.Column="4" FontAttributes="Bold"/>
-                        <Label Text="Action Taken" Grid.Column="5" FontAttributes="Bold"/>
-                    </Grid>
-                </ScrollView>
-
-                <!-- INSPECTION RESULTS -->
-                <CollectionView ItemsSource="{Binding Inspections}" VerticalOptions="FillAndExpand">
-                    <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Vertical" />
-                    </CollectionView.ItemsLayout>
-
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Frame Padding="6" Margin="2" BorderColor="#ccc">
-                                <Grid ColumnDefinitions="2*,2*,2*,2*,2*,3*">
-                                    <Label Text="{Binding Date, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="0"/>
-                                    <Label Text="{Binding ProductType}" Grid.Column="1"/>
-                                    <Label Text="{Binding SerialNumber}" Grid.Column="2"/>
-                                    <Label Text="{Binding SeverityLevel}" Grid.Column="3"/>
-                                    <Label Text="{Binding IssueDescription}" Grid.Column="4"/>
-                                    <Label Text="{Binding ImmediateActionTaken}" Grid.Column="5"/>
-                                </Grid>
-                            </Frame>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-                <HorizontalStackLayout Spacing="10" Margin='10'>
-                    <Button Text="Export CSV" Command="{Binding ExportCsvCommand}" Margin="0,10" />
-                </HorizontalStackLayout>
-
-            </StackLayout>
-
-            <BoxView HeightRequest="1" BackgroundColor="Gray" Margin="0,20" />
-
-
-            <!-- Toggle Form Button -->
-            <Button Text="Add Assembly Count" Clicked="ToggleAssemblyVisibility" />
-
-            <StackLayout x:Name="AssemblyCountSection" IsVisible="False">
-
-                <VerticalStackLayout Spacing="10" Padding="10">
-                    <Label Text="Assemblies Completed" FontAttributes="Bold" FontSize="18" />
-
-                    <DatePicker Date="{Binding AssemblyDate}" />
-
-                    <Picker Title="Board Type"
-                        ItemsSource="{Binding AssemblyTypes}"
-                        SelectedItem="{Binding SelectedAssemblyType}" />
-
-                    <Entry Keyboard="Numeric"
-                        Placeholder="Count"
-                        Text="{Binding AssemblyCountText}" />
-
-                    <HorizontalStackLayout Spacing="10">
-                        <Button Text="Submit Assembly"
-                            Command="{Binding SubmitAssemblyCommand}" />
-                    </HorizontalStackLayout>
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="14">
+            <Border Padding="16" Stroke="#D8E0EA" StrokeThickness="1" BackgroundColor="#FFFFFF">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Inspection" FontSize="24" FontAttributes="Bold" TextColor="#0F172A" />
+                    <Label Text="Submit inspection notes, review past entries, and record assembly counts." TextColor="#64748B" />
                 </VerticalStackLayout>
-            </StackLayout>
+            </Border>
 
+            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
+                <Button Text="Add Inspection" Clicked="ToggleFormVisibility" BackgroundColor="#0F766E" TextColor="#FFFFFF" />
+                <Button Grid.Column="1" Text="Past Inspections" Clicked="TogglePastInspectionVisibility" BackgroundColor="#0F172A" TextColor="#FFFFFF" />
+                <Button Grid.Column="2" Text="Add Assembly Count" Clicked="ToggleAssemblyVisibility" BackgroundColor="#334155" TextColor="#FFFFFF" />
+                <Button Grid.Column="3" Text="View Assembly Count" Clicked="ToggleAssemblyViewVisibility" BackgroundColor="#E2E8F0" TextColor="#0F172A" />
+            </Grid>
 
-            <BoxView HeightRequest="1" BackgroundColor="Gray" Margin="0,20" />
+            <Border x:Name="FormSection" IsVisible="False" Padding="16" Stroke="#D8E0EA" StrokeThickness="1" BackgroundColor="#FFFFFF">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Add Inspection" Style="{StaticResource SectionTitle}" />
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="14" RowSpacing="12">
+                        <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="6">
+                            <Label Text="Date" Style="{StaticResource FieldLabel}" />
+                            <DatePicker Date="{Binding Date}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="6">
+                            <Label Text="Product / SKU" Style="{StaticResource FieldLabel}" />
+                            <Picker ItemsSource="{Binding ProductTypes}" SelectedItem="{Binding ProductType}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="6">
+                            <Label Text="Product ID / SN" Style="{StaticResource FieldLabel}" />
+                            <Entry Text="{Binding SerialNumber}" Placeholder="Scan or type barcode" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="6">
+                            <Label Text="Severity Level" Style="{StaticResource FieldLabel}" />
+                            <Picker ItemsSource="{Binding SeverityLevels}" SelectedItem="{Binding SeverityLevel}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="2" Grid.Column="0" Spacing="6">
+                            <Label Text="Issue Description" Style="{StaticResource FieldLabel}" />
+                            <Editor Text="{Binding IssueDescription}" AutoSize="TextChanges" HeightRequest="92" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="2" Grid.Column="1" Spacing="6">
+                            <Label Text="Immediate Action Taken" Style="{StaticResource FieldLabel}" />
+                            <Editor Text="{Binding ImmediateActionTaken}" AutoSize="TextChanges" HeightRequest="92" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="3" Grid.ColumnSpan="2" Spacing="6">
+                            <Label Text="Additional Notes" Style="{StaticResource FieldLabel}" />
+                            <Editor Text="{Binding AdditionalNotes}" AutoSize="TextChanges" HeightRequest="80" />
+                        </VerticalStackLayout>
+                    </Grid>
+                    <Button Text="Submit Inspection" Command="{Binding SubmitCommand}" BackgroundColor="#0F766E" TextColor="#FFFFFF" HorizontalOptions="End" />
+                </VerticalStackLayout>
+            </Border>
 
-
-            <!-- Toggle Form Button -->
-            <Button Text="View Assembly Count" Clicked="ToggleAssemblyViewVisibility" />
-
-            <StackLayout x:Name="AssemblyCountViewSection" IsVisible="False">
-                <!-- Filters -->
-                <HorizontalStackLayout Spacing="10" Padding="0,10">
-                    <VerticalStackLayout>
-                        <Label Text="From" />
-                        <DatePicker Date="{Binding AssemblyFilterFrom}" />
-                    </VerticalStackLayout>
-
-                    <VerticalStackLayout>
-                        <Label Text="To" />
-                        <DatePicker Date="{Binding AssemblyFilterTo}" />
-                    </VerticalStackLayout>
-
-                    <VerticalStackLayout>
-                        <Label Text="Board Type" />
-                        <Picker ItemsSource="{Binding AssemblyTypes}" SelectedItem="{Binding SelectedAssemblyFilterType}" />
-                    </VerticalStackLayout>
-
-                    <VerticalStackLayout VerticalOptions="End">
-                        <Button Text="Filter" Command="{Binding LoadAssembliesCommand}" />
-                    </VerticalStackLayout>
-                </HorizontalStackLayout>
-
-                <!-- Column Headers -->
-                <Grid ColumnDefinitions="2*,3*,2*" BackgroundColor="LightGray" Padding="8">
-                    <Label Text="Date" Grid.Column="0" FontAttributes="Bold" />
-                    <Label Text="Board Type" Grid.Column="1" FontAttributes="Bold" />
-                    <Label Text="Count" Grid.Column="2" FontAttributes="Bold" />
-                </Grid>
-
-                <!-- Data Rows -->
-                <CollectionView ItemsSource="{Binding SubmittedAssemblies}">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid ColumnDefinitions="2*,3*,2*" Padding="8" BackgroundColor="White">
-                                <Label Text="{Binding Date, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="0" />
-                                <Label Text="{Binding BoardType}" Grid.Column="1" />
-                                <Label Text="{Binding Count}" Grid.Column="2" />
+            <Border x:Name="PastInspectionSection" IsVisible="False" Stroke="#D8E0EA" StrokeThickness="1" BackgroundColor="#FFFFFF">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="0">
+                    <Grid Padding="14,12" ColumnDefinitions="*,Auto" BackgroundColor="#F8FAFC">
+                        <Label Text="Past Inspections" Style="{StaticResource SectionTitle}" />
+                        <Button Grid.Column="1" Text="Export CSV" Command="{Binding ExportCsvCommand}" BackgroundColor="#0F172A" TextColor="#FFFFFF" />
+                    </Grid>
+                    <ScrollView Orientation="Horizontal">
+                        <Grid WidthRequest="1120" RowDefinitions="Auto,*">
+                            <Grid Grid.Row="0" Padding="12,10" ColumnDefinitions="140,180,170,120,260,250" ColumnSpacing="12" BackgroundColor="#EAF0F6">
+                                <Label Text="Date" Style="{StaticResource HeaderCell}" />
+                                <Label Grid.Column="1" Text="Product Type" Style="{StaticResource HeaderCell}" />
+                                <Label Grid.Column="2" Text="Serial #" Style="{StaticResource HeaderCell}" />
+                                <Label Grid.Column="3" Text="Severity" Style="{StaticResource HeaderCell}" />
+                                <Label Grid.Column="4" Text="Issue" Style="{StaticResource HeaderCell}" />
+                                <Label Grid.Column="5" Text="Action Taken" Style="{StaticResource HeaderCell}" />
                             </Grid>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                            <CollectionView Grid.Row="1" ItemsSource="{Binding Inspections}" HeightRequest="260">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Padding="12,9" ColumnDefinitions="140,180,170,120,260,250" ColumnSpacing="12">
+                                            <Label Text="{Binding Date, StringFormat='{}{0:yyyy-MM-dd}'}" Style="{StaticResource BodyCell}" />
+                                            <Label Grid.Column="1" Text="{Binding ProductType}" Style="{StaticResource BodyCell}" />
+                                            <Label Grid.Column="2" Text="{Binding SerialNumber}" Style="{StaticResource BodyCell}" />
+                                            <Label Grid.Column="3" Text="{Binding SeverityLevel}" Style="{StaticResource BodyCell}" />
+                                            <Label Grid.Column="4" Text="{Binding IssueDescription}" Style="{StaticResource BodyCell}" />
+                                            <Label Grid.Column="5" Text="{Binding ImmediateActionTaken}" Style="{StaticResource BodyCell}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Grid>
+                    </ScrollView>
+                </VerticalStackLayout>
+            </Border>
 
-            </StackLayout>
+            <Border x:Name="AssemblyCountSection" IsVisible="False" Padding="16" Stroke="#D8E0EA" StrokeThickness="1" BackgroundColor="#FFFFFF">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Assemblies Completed" Style="{StaticResource SectionTitle}" />
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="14">
+                        <VerticalStackLayout Grid.Column="0" Spacing="6">
+                            <Label Text="Date" Style="{StaticResource FieldLabel}" />
+                            <DatePicker Date="{Binding AssemblyDate}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="Board Type" Style="{StaticResource FieldLabel}" />
+                            <Picker ItemsSource="{Binding AssemblyTypes}" SelectedItem="{Binding SelectedAssemblyType}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="2" Spacing="6">
+                            <Label Text="Count" Style="{StaticResource FieldLabel}" />
+                            <Entry Keyboard="Numeric" Placeholder="Count" Text="{Binding AssemblyCountText}" />
+                        </VerticalStackLayout>
+                    </Grid>
+                    <Button Text="Submit Assembly" Command="{Binding SubmitAssemblyCommand}" BackgroundColor="#0F766E" TextColor="#FFFFFF" HorizontalOptions="End" />
+                </VerticalStackLayout>
+            </Border>
 
-
+            <Border x:Name="AssemblyCountViewSection" IsVisible="False" Padding="16" Stroke="#D8E0EA" StrokeThickness="1" BackgroundColor="#FFFFFF">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Assembly Count" Style="{StaticResource SectionTitle}" />
+                    <Grid ColumnDefinitions="*,*,*,Auto" ColumnSpacing="14">
+                        <VerticalStackLayout Grid.Column="0" Spacing="6">
+                            <Label Text="From" Style="{StaticResource FieldLabel}" />
+                            <DatePicker Date="{Binding AssemblyFilterFrom}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="To" Style="{StaticResource FieldLabel}" />
+                            <DatePicker Date="{Binding AssemblyFilterTo}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="2" Spacing="6">
+                            <Label Text="Board Type" Style="{StaticResource FieldLabel}" />
+                            <Picker ItemsSource="{Binding AssemblyTypes}" SelectedItem="{Binding SelectedAssemblyFilterType}" />
+                        </VerticalStackLayout>
+                        <Button Grid.Column="3" Text="Filter" Command="{Binding LoadAssembliesCommand}" BackgroundColor="#0F766E" TextColor="#FFFFFF" VerticalOptions="End" />
+                    </Grid>
+                    <Grid Padding="12,10" ColumnDefinitions="160,240,120" ColumnSpacing="12" BackgroundColor="#EAF0F6">
+                        <Label Text="Date" Style="{StaticResource HeaderCell}" />
+                        <Label Grid.Column="1" Text="Board Type" Style="{StaticResource HeaderCell}" />
+                        <Label Grid.Column="2" Text="Count" Style="{StaticResource HeaderCell}" />
+                    </Grid>
+                    <CollectionView ItemsSource="{Binding SubmittedAssemblies}" HeightRequest="220">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="12,9" ColumnDefinitions="160,240,120" ColumnSpacing="12">
+                                    <Label Text="{Binding Date, StringFormat='{}{0:yyyy-MM-dd}'}" Style="{StaticResource BodyCell}" />
+                                    <Label Grid.Column="1" Text="{Binding BoardType}" Style="{StaticResource BodyCell}" />
+                                    <Label Grid.Column="2" Text="{Binding Count}" Style="{StaticResource BodyCell}" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
         </VerticalStackLayout>
-	</ScrollView>
+    </ScrollView>
 </ContentPage>

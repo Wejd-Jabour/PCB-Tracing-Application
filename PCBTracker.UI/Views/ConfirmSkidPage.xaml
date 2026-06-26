@@ -3,39 +3,67 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="PCBTracker.UI.Views.ConfirmSkidPage"
-    Title="Confirm Skid">
+    Title="Confirm Skid"
+    BackgroundColor="#F4F7FA">
 
-    <VerticalStackLayout Padding="20" Spacing="12">
-        <Label Text="{Binding HeaderText}" FontAttributes="Bold" FontSize="20" HorizontalOptions="Center" />
+    <ContentPage.Resources>
+        <Style x:Key="HeaderCell" TargetType="Label">
+            <Setter Property="TextColor" Value="#334155" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+        <Style x:Key="BodyCell" TargetType="Label">
+            <Setter Property="TextColor" Value="#0F172A" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="LineBreakMode" Value="TailTruncation" />
+        </Style>
+    </ContentPage.Resources>
 
-        <CollectionView ItemsSource="{Binding Boards}" HeightRequest="400">
-            <CollectionView.Header>
-                <Grid ColumnDefinitions="*,*,*,*" Padding="0,0,0,6">
-                    <Label Text="Serial" FontAttributes="Bold" />
-                    <Label Text="Part #" Grid.Column="1" FontAttributes="Bold" />
-                    <Label Text="Type" Grid.Column="2" FontAttributes="Bold" />
-                    <Label Text="ShipDate" Grid.Column="3" FontAttributes="Bold" />
-                </Grid>
-            </CollectionView.Header>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Grid ColumnDefinitions="*,*,*,*" Padding="0,4">
-                        <Label Text="{Binding SerialNumber}" />
-                        <Label Text="{Binding PartNumber}" Grid.Column="1" />
-                        <Label Text="{Binding BoardType}" Grid.Column="2" />
-                        <Label Text="{Binding ShipDate, StringFormat='{}{0:yyyy-MM-dd}'}" Grid.Column="3" />
+    <Grid Padding="20" RowDefinitions="Auto,*,Auto" RowSpacing="14">
+        <Border Grid.Row="0" Padding="16" Stroke="#D8E0EA" StrokeThickness="1" BackgroundColor="#FFFFFF">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+            <VerticalStackLayout Spacing="4">
+                <Label Text="{Binding HeaderText}" FontAttributes="Bold" FontSize="22" TextColor="#0F172A" />
+                <Label Text="{Binding TotalsText}" FontAttributes="Bold" TextColor="#0F766E" />
+            </VerticalStackLayout>
+        </Border>
+
+        <Border Grid.Row="1" Stroke="#D8E0EA" StrokeThickness="1" BackgroundColor="#FFFFFF">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+            <ScrollView Orientation="Horizontal">
+                <Grid WidthRequest="900" RowDefinitions="Auto,*">
+                    <Grid Grid.Row="0" Padding="12,10" ColumnDefinitions="180,360,160,160" ColumnSpacing="12" BackgroundColor="#EAF0F6">
+                        <Label Text="Serial" Style="{StaticResource HeaderCell}" />
+                        <Label Grid.Column="1" Text="Part #" Style="{StaticResource HeaderCell}" />
+                        <Label Grid.Column="2" Text="Type" Style="{StaticResource HeaderCell}" />
+                        <Label Grid.Column="3" Text="Ship Date" Style="{StaticResource HeaderCell}" />
                     </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                    <CollectionView Grid.Row="1" ItemsSource="{Binding Boards}">
+                        <CollectionView.EmptyView>
+                            <Label Text="No boards on this skid." Padding="14" TextColor="#64748B" />
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="12,9" ColumnDefinitions="180,360,160,160" ColumnSpacing="12">
+                                    <Label Text="{Binding SerialNumber}" Style="{StaticResource BodyCell}" />
+                                    <Label Grid.Column="1" Text="{Binding PartNumber}" Style="{StaticResource BodyCell}" />
+                                    <Label Grid.Column="2" Text="{Binding BoardType}" Style="{StaticResource BodyCell}" />
+                                    <Label Grid.Column="3" Text="{Binding ShipDate, StringFormat='{}{0:yyyy-MM-dd}'}" Style="{StaticResource BodyCell}" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+            </ScrollView>
+        </Border>
 
-        <Grid ColumnDefinitions="*,*" Padding="0,10,0,0">
-            <Label Text="{Binding TotalsText}" Grid.ColumnSpan="2" FontAttributes="Bold"/>
-        </Grid>
-
-        <HorizontalStackLayout Spacing="12" HorizontalOptions="Center">
-            <Button Text="Cancel" Command="{Binding CancelCommand}" />
-            <Button Text="Confirm" Command="{Binding ConfirmCommand}" />
+        <HorizontalStackLayout Grid.Row="2" Spacing="12" HorizontalOptions="End">
+            <Button Text="Cancel" Command="{Binding CancelCommand}" BackgroundColor="#E2E8F0" TextColor="#0F172A" MinimumWidthRequest="120" />
+            <Button Text="Confirm" Command="{Binding ConfirmCommand}" BackgroundColor="#0F766E" TextColor="#FFFFFF" MinimumWidthRequest="120" />
         </HorizontalStackLayout>
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>
